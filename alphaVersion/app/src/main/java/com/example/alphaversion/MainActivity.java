@@ -1,14 +1,19 @@
 package com.example.alphaversion;
 
+import static com.example.alphaversion.FBref.filesRef;
+
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.MediaPlayer;
 import android.media.MediaRecorder;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -24,8 +29,17 @@ import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.OnProgressListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
+
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -40,6 +54,7 @@ public class MainActivity extends AppCompatActivity {
 
     private String recordPermission = Manifest.permission.RECORD_AUDIO;
     private int PERMISSION_CODE = 21;
+    private String recordPath;
 
     private MediaRecorder mediaRecorder;
     private String recordFile;
@@ -52,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
 
         recordBtn = findViewById(R.id.record_btn);
         timer = findViewById(R.id.record_timer);
+
 
         /* Setting up on click listener
            - Class must implement 'View.OnClickListener' and override 'onClick' method
@@ -87,10 +103,13 @@ public class MainActivity extends AppCompatActivity {
         //Change text on page to file saved
         Toast.makeText(this, "Recording Stopped, File Saved : " + recordFile, Toast.LENGTH_SHORT).show();
 
+
         //Stop media recorder and set it to null for further use to record new audio
         mediaRecorder.stop();
         mediaRecorder.release();
         mediaRecorder = null;
+        uploadFile(recordPath + "/" + recordFile);
+
     }
 
     private void startRecording() {
@@ -99,7 +118,7 @@ public class MainActivity extends AppCompatActivity {
         timer.start();
 
         //Get app external directory path
-        String recordPath = this.getExternalFilesDir("/").getAbsolutePath();
+        recordPath = this.getExternalFilesDir("/").getAbsolutePath();
 
         //Get current date and time
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy_MM_dd_hh_mm_ss", Locale.CANADA);
@@ -147,5 +166,214 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    // UploadImage method
+    private void uploadFile(String filePath)
+    {
+        if (filePath != null) {
 
+            // Code for showing progressDialog while uploading
+            ProgressDialog progressDialog
+                    = new ProgressDialog(this);
+            progressDialog.setTitle("Uploading...");
+            progressDialog.show();
+
+            // Defining the child of storageReference
+            // Create a reference to "mountains.jpg"
+
+            // Create a reference to 'images/mountains.jpg'
+
+            Uri file = Uri.fromFile(new File(filePath));
+            StorageReference riversRef = filesRef.child(file.getLastPathSegment());
+            UploadTask uploadTask = riversRef.putFile(file);
+
+
+            // adding listeners on upload
+            // or failure of image
+            uploadTask.addOnSuccessListener(
+                            new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                                @Override
+                                public void onSuccess(
+                                        UploadTask.TaskSnapshot taskSnapshot)
+                                {
+
+                                    // Image uploaded successfully
+                                    // Dismiss dialog
+                                    progressDialog.dismiss();
+                                    Toast
+                                            .makeText(MainActivity.this,
+                                                    "Image Uploaded!!",
+                                                    Toast.LENGTH_SHORT)
+                                            .show();
+                                }
+                            })
+
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e)
+                        {
+
+                            // Error, Image not uploaded
+                            progressDialog.dismiss();
+                            Toast
+                                    .makeText(MainActivity.this,
+                                            "Failed " + e.getMessage(),
+                                            Toast.LENGTH_SHORT)
+                                    .show();
+                        }
+                    })
+                    .addOnProgressListener(
+                            new OnProgressListener<UploadTask.TaskSnapshot>() {
+
+                                // Progress Listener for loading
+                                // percentage on the dialog box
+                                @Override
+                                public void onProgress(
+                                        UploadTask.TaskSnapshot taskSnapshot)
+                                {
+                                    double progress
+                                            = (100.0
+                                            * taskSnapshot.getBytesTransferred()
+                                            / taskSnapshot.getTotalByteCount());
+                                    progressDialog.setMessage(
+                                            "Uploaded "
+                                                    + (int)progress + "%");
+                                }
+                            });
+        }
+    }
+
+
+    public void selectFile(View view) {
+        Intent intent_upload = new Intent();
+        intent_upload.setType("audio/*");
+        intent_upload.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(intent_upload,1);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode,int resultCode,Intent data){
+
+        if(requestCode == 1){
+
+            if(resultCode == RESULT_OK){
+
+                // Code for showing progressDialog while uploading
+                ProgressDialog progressDialog
+                        = new ProgressDialog(this);
+                progressDialog.setTitle("Uploading...");
+                progressDialog.show();
+
+                //the selected audio.
+                Uri file = data.getData();
+
+                StorageReference riversRef = filesRef.child(file.getLastPathSegment());
+                UploadTask uploadTask = riversRef.putFile(file);
+
+
+                // adding listeners on upload
+                // or failure of image
+                uploadTask.addOnSuccessListener(
+                        new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+                            @Override
+                            public void onSuccess(
+                                    UploadTask.TaskSnapshot taskSnapshot)
+                            {
+
+                                // Image uploaded successfully
+                                // Dismiss dialog
+                                progressDialog.dismiss();
+                                Toast
+                                        .makeText(MainActivity.this,
+                                                "Image Uploaded!!",
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        })
+
+                        .addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e)
+                            {
+
+                                // Error, Image not uploaded
+                                progressDialog.dismiss();
+                                Toast
+                                        .makeText(MainActivity.this,
+                                                "Failed " + e.getMessage(),
+                                                Toast.LENGTH_SHORT)
+                                        .show();
+                            }
+                        })
+                        .addOnProgressListener(
+                                new OnProgressListener<UploadTask.TaskSnapshot>() {
+
+                                    // Progress Listener for loading
+                                    // percentage on the dialog box
+                                    @Override
+                                    public void onProgress(
+                                            UploadTask.TaskSnapshot taskSnapshot)
+                                    {
+                                        double progress
+                                                = (100.0
+                                                * taskSnapshot.getBytesTransferred()
+                                                / taskSnapshot.getTotalByteCount());
+                                        progressDialog.setMessage(
+                                                "Uploaded "
+                                                        + (int)progress + "%");
+                                    }
+                                });
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
+    /**
+     * onCreateContextMenu
+     * Short description.
+     * onCreateContextMenu listener use for the ContextMenu
+     * <p>
+     *     ContextMenu menu
+     *     View v
+     *     ContextMenu.ContextMenuInfo menuInfo
+     *
+     * @param  menu - the object,v - the item that selected ,menuInfo - the info
+     * @return	true if it success
+     */
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.generalmenu, menu);
+        return true;
+    }
+
+    /**
+     * onOptionsItemSelected
+     * Short description.
+     * what happen if an item was selected
+     * <p>
+     *     MenuItem item
+     *
+     * @param  item - the menuItem
+     * @return	true if it success
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String whatClicked = (String) item.getTitle();
+        Intent si;
+
+        if(whatClicked.equals("enterData"))
+        {
+            si = new Intent(this,MainActivity.class);
+            startActivity(si);
+        }
+        else if(whatClicked.equals("auth"))
+        {
+            si = new Intent(this,AuthenticationActivity.class);
+            startActivity(si);
+        }
+
+        return  true;
+    }
 }
