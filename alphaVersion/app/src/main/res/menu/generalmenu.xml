@@ -6,4 +6,10 @@
     <item
         android:title="auth"
         />
+    <item
+        android:title="play music"
+        />
+    <item
+        android:title="fre"
+        />
 </menu>

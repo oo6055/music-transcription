@@ -1,9 +1,22 @@
 package com.example.alphaversion;
 
+import static android.content.ContentValues.TAG;
+import static com.example.alphaversion.FBref.mAuth;
+
+import android.content.Intent;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+
+import com.example.alphaversion.MainActivity;
+
+
 import androidx.activity.result.ActivityResult;
 import androidx.activity.result.ActivityResultCallback;
 import androidx.activity.result.ActivityResultLauncher;
 import androidx.activity.result.contract.ActivityResultContracts;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -15,6 +28,8 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,148 +43,111 @@ import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthCredential;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
 
-public class AuthenticationActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+public class AuthenticationActivity extends AppCompatActivity {
+        public static final String TAG = "TAG";
+        EditText mFullName,mEmail,mPassword,mPhone;
+        Button mRegisterBtn;
+        TextView mLoginBtn;
+        ProgressBar progressBar;
+        String userID;
 
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            setContentView(R.layout.activity_auth);
 
-    private final int RC_SIGN_IN = 9001;
-    private GoogleApiClient mGoogleApiClient;
-    TextView SignInStatusView;
-    private SignInButton SignInBtn;
+            mFullName   = findViewById(R.id.fullName);
+            mEmail      = findViewById(R.id.Email);
+            mPassword   = findViewById(R.id.password);
+            mPhone      = findViewById(R.id.phone);
+            mRegisterBtn= findViewById(R.id.registerBtn);
+            mLoginBtn   = findViewById(R.id.createText);
 
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_auth);
+            progressBar = findViewById(R.id.progressBar);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions
-                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this/* AppCompatActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
-
-
-        SignInStatusView = (TextView) findViewById(R.id.status);
-        SignInBtn = (SignInButton) findViewById(R.id.signInBtn);
-//        SetButtons();
-        // Get the user's ID and basic profile info using google
-
-
-
-        SignInBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signIn();
+            if(mAuth.getCurrentUser() != null){
+                Toast.makeText(this, "already connected", Toast.LENGTH_SHORT).show();
             }
-        });
 
 
-        // This object is used in order to access the Google API for Signing in
+            mRegisterBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final String email = mEmail.getText().toString().trim();
+                    String password = mPassword.getText().toString().trim();
+                    final String fullName = mFullName.getText().toString();
+                    final String phone    = mPhone.getText().toString();
 
-
-
-    }
-
-
-
-    protected void onStart() {
-        super.onStart();
-        mGoogleApiClient.connect();
-    }
-
-
-
-    protected void onStop() {
-        super.onStop();
-        if (mGoogleApiClient.isConnected()) {
-            mGoogleApiClient.disconnect();
-        }
-    }
-
-    private void signIn() {
-        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
-        startActivityForResult(signInIntent, RC_SIGN_IN);
-    }
-
-    private void signOut() {
-        Auth.GoogleSignInApi.signOut(mGoogleApiClient).setResultCallback(
-                new ResultCallback<Status>() {
-                    @Override
-                    public void onResult(Status status) {
-                        // [START_EXCLUDE]
-                        updateUI(false);
-                        // [END_EXCLUDE]
+                    if(TextUtils.isEmpty(email)){
+                        mEmail.setError("Email is Required.");
+                        return;
                     }
-                });
-        SignInStatusView.setText("not connected");
 
-    }
+                    if(TextUtils.isEmpty(password)){
+                        mPassword.setError("Password is Required.");
+                        return;
+                    }
+
+                    if(password.length() < 6){
+                        mPassword.setError("Password Must be >= 6 Characters");
+                        return;
+                    }
+
+                    progressBar.setVisibility(View.VISIBLE);
+
+                    // register the user in firebase
+
+                    mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            if(task.isSuccessful()){
+
+                                // send verification link
+
+                                FirebaseUser fuser = mAuth.getCurrentUser();
+                                fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                    @Override
+                                    public void onSuccess(Void aVoid) {
+                                        Toast.makeText(AuthenticationActivity.this, "Verification Email Has been Sent.", Toast.LENGTH_SHORT).show();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                                    @Override
+                                    public void onFailure(@NonNull Exception e) {
+                                        Log.d(TAG, "onFailure: Email not sent " + e.getMessage());
+                                    }
+                                });
+
+                                Toast.makeText(AuthenticationActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
+                                userID = mAuth.getCurrentUser().getUid();
+
+                            }else {
+                                Toast.makeText(AuthenticationActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                                progressBar.setVisibility(View.GONE);
+                            }
+                        }
+                    });
+                }
+            });
 
 
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        System.out.println("\n\n\n\nRequest code: " + requestCode);
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
-        if (requestCode == RC_SIGN_IN) {
-            if (resultCode == RESULT_OK)
-            {
-                System.out.println("OK RESULT");
-            }
-            else
-            {
-                System.out.println("NOT OK RESULT");
-            }
-            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result);
+            mLoginBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    startActivity(new Intent(getApplicationContext(),MainActivity.class));
+                }
+            });
+
         }
-    }
-
-
-    private void handleSignInResult(GoogleSignInResult result) {
-        Log.d(null,"handleSignInResult:" + result.isSuccess());
-        if (result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
-            SignInStatusView.setText("hello " + acct.getDisplayName());
-            updateUI(true);
-            SaveClientDetails(acct);
-        } else {
-            SignInStatusView.setText("not connected");
-            // Signed out, show unauthenticated UI.
-            updateUI(false);
-        }
-    }
-
-
-    private void updateUI(boolean signedIn) {
-        if (signedIn) {
-            Toast.makeText(this, "signIn", Toast.LENGTH_SHORT).show();
-        } else {
-            Toast.makeText(this, "signOut", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-
-    private void SaveClientDetails(GoogleSignInAccount account)
-    {
-        // Save to DB
-        Log.d(null,"*\nIn SAVE\n*");
-    }
-
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        // Connection failed completely. Sign in and other functions are not available.
-        Log.d(null,"ERROR ::: Problems with connection");
-    }
-
-    public void signOut(View view) {
-        signOut();
-    }
 
     /**
      * onCreateContextMenu
@@ -207,7 +185,7 @@ public class AuthenticationActivity extends AppCompatActivity implements GoogleA
 
         if(whatClicked.equals("enterData"))
         {
-            si = new Intent(this,MainActivity.class);
+            si = new Intent(this, MainActivity.class);
             startActivity(si);
         }
         else if(whatClicked.equals("auth"))

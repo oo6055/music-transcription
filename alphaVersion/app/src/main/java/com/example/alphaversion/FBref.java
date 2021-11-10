@@ -2,6 +2,7 @@ package com.example.alphaversion;
 
 
 import com.google.android.gms.auth.api.signin.internal.Storage;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -20,6 +21,7 @@ import com.google.firebase.storage.StorageReference;
 public class FBref {
 
     public static FirebaseDatabase FBDB = FirebaseDatabase.getInstance();
+    public static FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
     public static DatabaseReference refUsers=FBDB.getReference("Users");
     private static FirebaseStorage  storage  = FirebaseStorage.getInstance();

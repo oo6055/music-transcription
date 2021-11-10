@@ -373,6 +373,17 @@ public class MainActivity extends AppCompatActivity {
             si = new Intent(this,AuthenticationActivity.class);
             startActivity(si);
         }
+        else if(whatClicked.equals("play music"))
+        {
+            si = new Intent(this,playFiles.class);
+            startActivity(si);
+        }
+        else if(whatClicked.equals("fre"))
+        {
+            //si = new Intent(this,Frequency.class);
+            //startActivity(si);
+        }
+
 
         return  true;
     }
