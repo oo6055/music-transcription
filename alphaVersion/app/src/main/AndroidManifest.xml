@@ -16,6 +16,9 @@
         android:theme="@style/Theme.AlphaVersion"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".Frequency"
+            android:exported="true" />
+        <activity
             android:name=".playFiles"
             android:exported="true" />
         <activity
