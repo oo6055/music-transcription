@@ -380,8 +380,8 @@ public class MainActivity extends AppCompatActivity {
         }
         else if(whatClicked.equals("fre"))
         {
-            //si = new Intent(this,Frequency.class);
-            //startActivity(si);
+            si = new Intent(this,Frequency.class);
+            startActivity(si);
         }
         else if(whatClicked.equals("getNotes"))
         {
