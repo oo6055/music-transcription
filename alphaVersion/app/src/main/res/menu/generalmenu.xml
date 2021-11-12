@@ -12,4 +12,8 @@
     <item
         android:title="fre"
         />
+    <item
+        android:title="getNotes"
+        />
+
 </menu>

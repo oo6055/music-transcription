@@ -168,6 +168,10 @@ public class AuthenticationActivity extends AppCompatActivity {
         return true;
     }
 
+    public void signout(View view) {
+        mAuth.signOut();
+    }
+
     /**
      * onOptionsItemSelected
      * Short description.
@@ -196,4 +200,6 @@ public class AuthenticationActivity extends AppCompatActivity {
 
         return  true;
     }
+
+
 }

@@ -383,6 +383,11 @@ public class MainActivity extends AppCompatActivity {
             //si = new Intent(this,Frequency.class);
             //startActivity(si);
         }
+        else if(whatClicked.equals("getNotes"))
+        {
+            si = new Intent(this,GetNotes.class);
+            startActivity(si);
+        }
 
 
         return  true;

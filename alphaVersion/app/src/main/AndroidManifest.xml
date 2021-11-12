@@ -16,6 +16,9 @@
         android:theme="@style/Theme.AlphaVersion"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".GetNotes"
+            android:exported="true" />
+        <activity
             android:name=".Frequency"
             android:exported="true" />
         <activity
@@ -38,5 +41,6 @@
             </intent-filter>
         </activity>
     </application>
+
 
 </manifest>

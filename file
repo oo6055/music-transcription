@@ -8,31 +8,7 @@ color = #(define-music-function (parser location color) (string?) #{
     
 \header { } 
 \score  { 
- \new Voice { \new Voice { c' 4  
-                a' 4  
-                c' 4  
-                a' 4  
-                c' 4  
-                a' 4  
-                c' 4  
-                a' 4  
-                c' 4  
-                a' 4  
-                c' 4  
-                a' 4  
-                c' 4  
-                a' 4  
-                c' 4  
-                a' 4  
-                c' 4  
-                a' 4  
-                c' 4  
-                a' 4  
-                c' 4  
-                a' 4  
-                c' 4  
-                a' 4  
-                 } 
+ \new Voice { \new Voice {  } 
                
  
            } 

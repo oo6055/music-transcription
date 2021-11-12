@@ -22,8 +22,12 @@ public class FBref {
 
     public static FirebaseDatabase FBDB = FirebaseDatabase.getInstance();
     public static FirebaseAuth mAuth = FirebaseAuth.getInstance();
+    private static FirebaseDatabase database = FirebaseDatabase.getInstance();
+    public static DatabaseReference database_ref = database.getReference();
 
-    public static DatabaseReference refUsers=FBDB.getReference("Users");
+
     private static FirebaseStorage  storage  = FirebaseStorage.getInstance();
+    public static StorageReference musicNotesRef = storage.getReference("musicNotes");
     public static StorageReference filesRef = storage.getReference("files");
+
 }
