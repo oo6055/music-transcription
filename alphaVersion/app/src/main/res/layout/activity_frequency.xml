@@ -6,37 +6,51 @@
     android:layout_height="match_parent"
     tools:context=".Frequency">
 
-    <TextView
-        android:id="@+id/textAmplitude"
+
+
+    <LinearLayout
         android:layout_width="0px"
         android:layout_height="match_parent"
-        android:layout_alignParentEnd="true"
         android:layout_weight="1"
-        android:fontFamily="sans-serif-thin"
-        android:textColor="@android:color/black"
-        android:textSize="48sp" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textDecibel"
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/textAmplitude"
-        android:layout_alignParentEnd="true"
-        android:layout_weight="1"
-        android:fontFamily="sans-serif-thin"
-        android:textColor="@android:color/black"
-        android:textSize="48sp" />
+        <TextView
+            android:id="@+id/textAmplitude"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_alignParentEnd="true"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-thin"
+            android:textColor="@android:color/black"
+            android:textSize="48sp" />
 
-    <TextView
-        android:id="@+id/textFrequency"
-        android:layout_width="0px"
-        android:layout_height="match_parent"
-        android:layout_below="@+id/textDecibel"
-        android:layout_alignParentEnd="true"
-        android:layout_weight="1"
-        android:fontFamily="sans-serif-thin"
-        android:textColor="@android:color/black"
+        <TextView
+            android:id="@+id/textDecibel"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_below="@+id/textAmplitude"
+            android:layout_alignParentEnd="true"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-thin"
+            android:textColor="@android:color/black"
+            android:textSize="48sp" />
 
-        android:textSize="48sp" />
+        <TextView
+            android:id="@+id/textFrequency"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_below="@+id/textDecibel"
+            android:layout_alignParentEnd="true"
+            android:layout_weight="1"
+            android:fontFamily="sans-serif-thin"
+            android:textColor="@android:color/black"
+
+            android:textSize="48sp" />
+
+
+
+
+
+    </LinearLayout>
 
 </LinearLayout>

@@ -2,7 +2,6 @@ package com.example.alphaversion;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.NativeActivity;
 import android.content.pm.PackageManager;
 import android.media.AudioFormat;
 import android.media.AudioRecord;
@@ -42,6 +41,7 @@ public class Recorder {
                 Process.setThreadPriority(Process.THREAD_PRIORITY_URGENT_AUDIO);
 
                 int minBufferSize = AudioRecord.getMinBufferSize(sampleRate, channelConfig, audioEncoding);
+
                 @SuppressLint("MissingPermission") AudioRecord recorder = new AudioRecord(audioSource, sampleRate, channelConfig, audioEncoding, minBufferSize);
 
                 if (recorder.getState() == AudioRecord.STATE_UNINITIALIZED) {

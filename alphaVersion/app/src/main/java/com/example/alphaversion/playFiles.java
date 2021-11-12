@@ -75,7 +75,10 @@ public class playFiles extends AppCompatActivity implements AdapterView.OnItemCl
                         }
 
                         for (StorageReference item : listResult.getItems()) {
-                            listItems.add(item.getName());
+                            if (!item.getName().contains(".pdf"))
+                            {
+                                listItems.add(item.getName());
+                            }
                         }
 
                         ArrayAdapter<String> itemsAdapter =
@@ -280,6 +283,16 @@ public class playFiles extends AppCompatActivity implements AdapterView.OnItemCl
         else if(whatClicked.equals("play music"))
         {
             si = new Intent(this,playFiles.class);
+            startActivity(si);
+        }
+        else if(whatClicked.equals("fre"))
+        {
+            si = new Intent(this,Frequency.class);
+            startActivity(si);
+        }
+        else if(whatClicked.equals("getNotes"))
+        {
+            si = new Intent(this,GetNotes.class);
             startActivity(si);
         }
         return  true;

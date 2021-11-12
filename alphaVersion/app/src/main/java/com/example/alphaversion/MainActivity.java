@@ -388,8 +388,6 @@ public class MainActivity extends AppCompatActivity {
             si = new Intent(this,GetNotes.class);
             startActivity(si);
         }
-
-
         return  true;
     }
 }

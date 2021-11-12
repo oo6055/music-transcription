@@ -168,10 +168,6 @@ public class AuthenticationActivity extends AppCompatActivity {
         return true;
     }
 
-    public void signout(View view) {
-        mAuth.signOut();
-    }
-
     /**
      * onOptionsItemSelected
      * Short description.
@@ -189,7 +185,7 @@ public class AuthenticationActivity extends AppCompatActivity {
 
         if(whatClicked.equals("enterData"))
         {
-            si = new Intent(this, MainActivity.class);
+            si = new Intent(this,MainActivity.class);
             startActivity(si);
         }
         else if(whatClicked.equals("auth"))
@@ -197,7 +193,21 @@ public class AuthenticationActivity extends AppCompatActivity {
             si = new Intent(this,AuthenticationActivity.class);
             startActivity(si);
         }
-
+        else if(whatClicked.equals("play music"))
+        {
+            si = new Intent(this,playFiles.class);
+            startActivity(si);
+        }
+        else if(whatClicked.equals("fre"))
+        {
+            si = new Intent(this,Frequency.class);
+            startActivity(si);
+        }
+        else if(whatClicked.equals("getNotes"))
+        {
+            si = new Intent(this,GetNotes.class);
+            startActivity(si);
+        }
         return  true;
     }
 
