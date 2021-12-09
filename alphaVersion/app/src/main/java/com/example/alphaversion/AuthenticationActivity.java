@@ -53,101 +53,105 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.GoogleAuthProvider;
 
 public class AuthenticationActivity extends AppCompatActivity {
-        public static final String TAG = "TAG";
-        EditText mFullName,mEmail,mPassword,mPhone;
-        Button mRegisterBtn;
-        TextView mLoginBtn;
-        ProgressBar progressBar;
-        String userID;
+    public static final String TAG = "TAG";
+    EditText mFullName, mEmail, mPassword, mPhone;
+    Button mRegisterBtn;
+    TextView mLoginBtn;
+    ProgressBar progressBar;
+    String userID;
 
-        @Override
-        protected void onCreate(Bundle savedInstanceState) {
-            super.onCreate(savedInstanceState);
-            setContentView(R.layout.activity_auth);
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_auth);
 
-            mFullName   = findViewById(R.id.fullName);
-            mEmail      = findViewById(R.id.Email);
-            mPassword   = findViewById(R.id.password);
-            mPhone      = findViewById(R.id.phone);
-            mRegisterBtn= findViewById(R.id.registerBtn);
-            mLoginBtn   = findViewById(R.id.createText);
+        mFullName = findViewById(R.id.fullName);
+        mEmail = findViewById(R.id.Email);
+        mPassword = findViewById(R.id.password);
+        mPhone = findViewById(R.id.phone);
+        mRegisterBtn = findViewById(R.id.registerBtn);
+        mLoginBtn = findViewById(R.id.createText);
 
-            progressBar = findViewById(R.id.progressBar);
+        progressBar = findViewById(R.id.progressBar);
 
-            if(mAuth.getCurrentUser() != null){
-                Toast.makeText(this, "already connected", Toast.LENGTH_SHORT).show();
-            }
-
-
-            mRegisterBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    final String email = mEmail.getText().toString().trim();
-                    String password = mPassword.getText().toString().trim();
-                    final String fullName = mFullName.getText().toString();
-                    final String phone    = mPhone.getText().toString();
-
-                    if(TextUtils.isEmpty(email)){
-                        mEmail.setError("Email is Required.");
-                        return;
-                    }
-
-                    if(TextUtils.isEmpty(password)){
-                        mPassword.setError("Password is Required.");
-                        return;
-                    }
-
-                    if(password.length() < 6){
-                        mPassword.setError("Password Must be >= 6 Characters");
-                        return;
-                    }
-
-                    progressBar.setVisibility(View.VISIBLE);
-
-                    // register the user in firebase
-
-                    mAuth.createUserWithEmailAndPassword(email,password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<AuthResult> task) {
-                            if(task.isSuccessful()){
-
-                                // send verification link
-
-                                FirebaseUser fuser = mAuth.getCurrentUser();
-                                fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                    @Override
-                                    public void onSuccess(Void aVoid) {
-                                        Toast.makeText(AuthenticationActivity.this, "Verification Email Has been Sent.", Toast.LENGTH_SHORT).show();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        Log.d(TAG, "onFailure: Email not sent " + e.getMessage());
-                                    }
-                                });
-
-                                Toast.makeText(AuthenticationActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
-                                userID = mAuth.getCurrentUser().getUid();
-
-                            }else {
-                                Toast.makeText(AuthenticationActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                progressBar.setVisibility(View.GONE);
-                            }
-                        }
-                    });
-                }
-            });
-
-
-
-            mLoginBtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startActivity(new Intent(getApplicationContext(),MainActivity.class));
-                }
-            });
-
+        if (mAuth.getCurrentUser() != null) {
+            Toast.makeText(this, "already connected", Toast.LENGTH_SHORT).show();
         }
+
+
+        mRegisterBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String email = mEmail.getText().toString().trim();
+                String password = mPassword.getText().toString().trim();
+                final String fullName = mFullName.getText().toString();
+                final String phone = mPhone.getText().toString();
+
+                if (TextUtils.isEmpty(email)) {
+                    mEmail.setError("Email is Required.");
+                    return;
+                }
+
+                if (TextUtils.isEmpty(password)) {
+                    mPassword.setError("Password is Required.");
+                    return;
+                }
+
+                if (password.length() < 6) {
+                    mPassword.setError("Password Must be >= 6 Characters");
+                    return;
+                }
+
+                progressBar.setVisibility(View.VISIBLE);
+
+                // register the user in firebase
+
+                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+
+                            // send verification link
+
+                            FirebaseUser fuser = mAuth.getCurrentUser();
+                            fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                                @Override
+                                public void onSuccess(Void aVoid) {
+                                    Toast.makeText(AuthenticationActivity.this, "Verification Email Has been Sent.", Toast.LENGTH_SHORT).show();
+                                }
+                            }).addOnFailureListener(new OnFailureListener() {
+                                @Override
+                                public void onFailure(@NonNull Exception e) {
+                                    Log.d(TAG, "onFailure: Email not sent " + e.getMessage());
+                                }
+                            });
+
+                            Toast.makeText(AuthenticationActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
+                            userID = mAuth.getCurrentUser().getUid();
+
+                        } else {
+                            Toast.makeText(AuthenticationActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            progressBar.setVisibility(View.GONE);
+                        }
+                    }
+                });
+            }
+        });
+
+
+        mLoginBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+            }
+        });
+
+    }
+
+
+    public void signout(View view) {
+        mAuth.signOut();
+    }
 
     /**
      * onCreateContextMenu
@@ -210,6 +214,7 @@ public class AuthenticationActivity extends AppCompatActivity {
         }
         return  true;
     }
+
 
 
 }

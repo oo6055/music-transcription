@@ -8,7 +8,8 @@
 
 
 
-    <LinearLayout
+
+<LinearLayout
         android:layout_width="0px"
         android:layout_height="match_parent"
         android:layout_weight="1"
@@ -48,9 +49,6 @@
             android:textSize="48sp" />
 
 
-
-
-
-    </LinearLayout>
+</LinearLayout>
 
 </LinearLayout>

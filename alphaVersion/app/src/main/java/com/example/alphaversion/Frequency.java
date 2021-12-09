@@ -1,52 +1,36 @@
 package com.example.alphaversion;
 
-import static com.example.alphaversion.FBref.filesRef;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.media.MediaPlayer;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
+import com.example.alphaversion.Callback;
 import android.os.Handler;
 import android.os.Looper;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import com.example.alphaversion.AudioCalculator;
-import com.example.alphaversion.Recorder;
-import com.example.alphaversion.Callback;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.storage.FileDownloadTask;
-import com.google.firebase.storage.ListResult;
-import com.google.firebase.storage.StorageReference;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
-public class Frequency extends Activity {
+public class Frequency extends AppCompatActivity {
 
     private Recorder recorder;
     private AudioCalculator audioCalculator;
     private Handler handler;
 
     private TextView textAmplitude;
+
     private TextView textDecibel;
     private TextView textFrequency;
 
@@ -57,6 +41,7 @@ public class Frequency extends Activity {
     private boolean isPlaying = false;
 
     private File fileToPlay = null;
+
 
     //UI Elements
     private ImageButton playBtn;
@@ -76,13 +61,12 @@ public class Frequency extends Activity {
         setContentView(R.layout.activity_frequency);
         setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
 
-
-
         recorder = new Recorder(callback);
         audioCalculator = new AudioCalculator();
         handler = new Handler(Looper.getMainLooper());
 
         textAmplitude = (TextView) findViewById(R.id.textAmplitude);
+
         textDecibel = (TextView) findViewById(R.id.textDecibel);
         textFrequency = (TextView) findViewById(R.id.textFrequency);
     }
