@@ -22,6 +22,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 
+import com.google.firebase.database.DatabaseReference;
+
 public class SignItActivity extends AppCompatActivity {
 
     public static final String TAG = "TAG";
@@ -89,6 +91,11 @@ public class SignItActivity extends AppCompatActivity {
                                 @Override
                                 public void onSuccess(Void aVoid) {
                                     Toast.makeText(SignItActivity.this, "Verification Email Has been Sent.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignItActivity.this, "User created successfully", Toast.LENGTH_SHORT).show();
+                                    DatabaseReference usersRef = FBref.FBDB.getReference().child("Users");
+                                    usersRef.child(mAuth.getUid()).setValue(fullName);
+
+
                                 }
                             }).addOnFailureListener(new OnFailureListener() {
                                 @Override

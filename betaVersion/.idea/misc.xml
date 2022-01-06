@@ -3,7 +3,8 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
-        <entry key="..\:/music-transcription/betaVersion/app/src/main/res/layout/activity_sign_it.xml" value="0.1" />
+        <entry key="..\:/music-transcription/betaVersion/app/src/main/res/layout/activity_main.xml" value="0.22" />
+        <entry key="..\:/music-transcription/betaVersion/app/src/main/res/layout/activity_sign_it.xml" value="0.33" />
         <entry key="..\:/music-transcription/betaVersion/app/src/main/res/menu/generalmenu.xml" value="0.24739583333333334" />
       </map>
     </option>
