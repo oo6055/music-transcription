@@ -26,6 +26,7 @@
             android:layout_weight="1" />
 
         <ListView
+            android:id="@+id/ls"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="9" />
@@ -39,7 +40,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="0.3"
+        android:layout_weight="0.4"
         android:orientation="vertical">
 
         <Space
@@ -49,13 +50,28 @@
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatingActionButton"
+            android:layout_width="81dp"
+            android:layout_height="wrap_content"
+            android:clickable="true"
+            android:visibility="invisible"
+            app:srcCompat="@drawable/ic_add" />
+
+        <Space
             android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.1" />
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fb"
+            android:layout_width="wrap_content"
             android:layout_height="0px"
+            app:fabCustomSize="60dp"
             android:layout_weight="1"
             android:clickable="true"
+            android:focusable="true"
             android:foregroundGravity="center"
-            app:srcCompat="@android:drawable/ic_menu_add"
-            tools:ignore="SpeakableTextPresentCheck" />
+            app:srcCompat="@drawable/settings"
+            tools:ignore="OnClick,SpeakableTextPresentCheck" />
     </LinearLayout>
 
 </LinearLayout>

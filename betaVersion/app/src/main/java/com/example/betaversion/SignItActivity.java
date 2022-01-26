@@ -48,7 +48,8 @@ public class SignItActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
 
         if (mAuth.getCurrentUser() != null) {
-            Toast.makeText(this, "already connected", Toast.LENGTH_SHORT).show();
+            Intent i = new Intent(getApplicationContext(), EnterSection.class);
+            startActivity(i);
         }
 
 
@@ -119,7 +120,7 @@ public class SignItActivity extends AppCompatActivity {
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), MainActivity.class));
+                startActivity(new Intent(getApplicationContext(), EnterSection.class));
             }
         });
 

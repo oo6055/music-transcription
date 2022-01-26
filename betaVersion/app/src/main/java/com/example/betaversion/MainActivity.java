@@ -47,13 +47,13 @@ public class MainActivity extends AppCompatActivity {
 
 
         DatabaseReference privateSectionCase = FBref.FBDB.getReference().child("Private Sections");
-        Section s = new Section(mAuth.getUid(), head,"first", "now");
+        Section s = new Section(mAuth.getUid(), head,"first", "now", false);
         if (mAuth.getCurrentUser() == null) {
             Toast.makeText(this, "not connected", Toast.LENGTH_SHORT).show();
         }
         else
         {
-            privateSectionCase.child(mAuth.getUid()).setValue(s);
+            privateSectionCase.child(mAuth.getUid()).push().setValue(s);
         }
     }
 

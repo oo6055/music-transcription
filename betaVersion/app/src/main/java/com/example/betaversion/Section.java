@@ -2,23 +2,29 @@ package com.example.betaversion;
 import com.example.betaversion.Note;
 import com.example.betaversion.Node;
 import java.util.ArrayList;
-
+import java.util.List;
 
 
 public class Section {
     private String uid;
     private Node<Note> composition;
+    private boolean publicOrPrivate; // true - public
+    private String nickName;
+    private String date;
 
-    String nickName;
-    String date;
 
-
-    public Section(String uid, Node<Note> composition,String nickName,String date) {
+    public Section(String uid, Node<Note> composition,String nickName,String date, boolean privateOrPublic) {
 
         this.uid = uid;
         this.composition = composition;
         this.nickName = nickName;
         this.date = date;
+        this.publicOrPrivate = privateOrPublic;
+    }
+
+    public ArrayList<Note> Composition()
+    {
+        return composition.toArraylist();
     }
 
     public Section()
@@ -69,5 +75,13 @@ public class Section {
     public void setDate(String date)
     {
         this.date = date;
+    }
+
+    public boolean getPublicOrPrivate() {
+        return publicOrPrivate;
+    }
+
+    public void setPublicOrPrivate(boolean publicOrPrivate) {
+        this.publicOrPrivate = publicOrPrivate;
     }
 }

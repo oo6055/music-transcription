@@ -15,6 +15,25 @@ public class Node<T> {
     public T getElement() {
         return element;
     }
+    public void setElement(T e) {
+         this.element = e;
+    }
+
+    public ArrayList<T> toArraylist()
+    {
+        ArrayList<T> arr = new ArrayList<T>();
+
+        Node<T> ptr = this;
+
+        while (ptr != null)
+        {
+            arr.add(ptr.getElement());
+            ptr = ptr.getNext();
+        }
+
+        return arr;
+
+    }
 
     public Node<T> getNext() {
         return next;
