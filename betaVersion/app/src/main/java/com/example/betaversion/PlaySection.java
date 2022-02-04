@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.View;
 import android.widget.ImageButton;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -78,6 +79,8 @@ public class PlaySection extends AppCompatActivity {
 
         StorageReference voiceRef = filesRef.child("/" + fileName);
 
+
+        // DOTO: check itttt
         File localFile = null;
         try {
             localFile = File.createTempFile("images", "jpg");
@@ -179,6 +182,16 @@ public class PlaySection extends AppCompatActivity {
         super.onStop();
         if(isPlaying) {
             stopAudio();
+        }
+    }
+
+    public void play(View view) {
+        if(isPlaying){
+            pauseAudio();
+        } else {
+            if(fileToPlay != null){
+                resumeAudio();
+            }
         }
     }
 
