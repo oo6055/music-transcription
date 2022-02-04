@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+
     <item
-        android:title="auth"
+        android:title="show my sections"
+        />
+    <item
+        android:title="search sections"
+        />
+    <item
+        android:title="signout"
         />
 
 </menu>

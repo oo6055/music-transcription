@@ -16,6 +16,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BetaVersion">
         <activity
+            android:name=".LogInActivity"
+            android:exported="true" />
+        <activity
             android:name=".PlaySection"
             android:exported="true" />
         <activity

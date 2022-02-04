@@ -120,14 +120,9 @@ public class SignInActivity extends AppCompatActivity {
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), ShowMySections.class));
+                startActivity(new Intent(getApplicationContext(), LogInActivity.class));
             }
         });
 
-    }
-
-
-    public void signout(View view) {
-        mAuth.signOut();
     }
 }
