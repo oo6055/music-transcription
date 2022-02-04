@@ -24,7 +24,7 @@ import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.database.DatabaseReference;
 
-public class SignItActivity extends AppCompatActivity {
+public class SignInActivity extends AppCompatActivity {
 
     public static final String TAG = "TAG";
     EditText mFullName, mEmail, mPassword, mPhone;
@@ -36,7 +36,7 @@ public class SignItActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_it);
+        setContentView(R.layout.activity_sign_in);
 
         mFullName = findViewById(R.id.fullName);
         mEmail = findViewById(R.id.Email);
@@ -48,7 +48,7 @@ public class SignItActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
 
         if (mAuth.getCurrentUser() != null) {
-            Intent i = new Intent(getApplicationContext(), ShowAllSections.class);
+            Intent i = new Intent(getApplicationContext(), ShowMySections.class);
             startActivity(i);
         }
 
@@ -91,8 +91,8 @@ public class SignItActivity extends AppCompatActivity {
                             fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                                 @Override
                                 public void onSuccess(Void aVoid) {
-                                    Toast.makeText(SignItActivity.this, "Verification Email Has been Sent.", Toast.LENGTH_SHORT).show();
-                                    Toast.makeText(SignItActivity.this, "User created successfully", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignInActivity.this, "Verification Email Has been Sent.", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(SignInActivity.this, "User created successfully", Toast.LENGTH_SHORT).show();
                                     DatabaseReference usersRef = FBref.FBDB.getReference().child("Users");
                                     usersRef.child(mAuth.getUid()).setValue(fullName);
 
@@ -104,11 +104,11 @@ public class SignItActivity extends AppCompatActivity {
                                 }
                             });
 
-                            Toast.makeText(SignItActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
                             userID = mAuth.getCurrentUser().getUid();
 
                         } else {
-                            Toast.makeText(SignItActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                             progressBar.setVisibility(View.GONE);
                         }
                     }
@@ -120,7 +120,7 @@ public class SignItActivity extends AppCompatActivity {
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), ShowAllSections.class));
+                startActivity(new Intent(getApplicationContext(), ShowMySections.class));
             }
         });
 

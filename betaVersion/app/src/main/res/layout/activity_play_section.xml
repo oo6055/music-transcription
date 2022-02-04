@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#1575EA"
+    tools:context=".PlaySection">
+
+
+    <LinearLayout
+        android:layout_width="0px"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/filenametextview"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="32dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="File Name"
+            android:textAlignment="center"
+            android:textColor="@android:color/white"
+            android:textColorHint="#F1EFEF"
+            android:textSize="16sp"
+            />
+
+        <SeekBar
+            android:id="@+id/seekbar"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_margin="32dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/play_btn"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1"
+            android:background="#00000000"
+            app:srcCompat="@drawable/player_play_btn" />
+    </LinearLayout>
+
+</LinearLayout>

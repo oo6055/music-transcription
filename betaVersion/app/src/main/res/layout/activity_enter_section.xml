@@ -4,74 +4,129 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ShowAllSections">
+    tools:context=".GetSection">
+
 
     <LinearLayout
         android:layout_width="0px"
         android:layout_height="match_parent"
-        android:layout_weight="2.3"
+        android:layout_weight="1"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/title"
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1" />
+
+        <EditText
+            android:id="@+id/nickname"
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="2"
-            android:text="hello"
-            android:textSize="60sp" />
+            android:ems="10"
+            android:hint="nickname"
+            android:inputType="textPersonName" />
 
         <Space
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <ListView
-            android:id="@+id/ls"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="9" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="0dp"
-        android:layout_height="match_parent"
-        android:layout_weight="0.4"
-        android:orientation="vertical">
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="9" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/floatingActionButton"
-            android:layout_width="81dp"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:visibility="invisible"
-            app:srcCompat="@drawable/ic_add" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="0.1" />
-
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/fb"
-            android:layout_width="wrap_content"
             android:layout_height="0px"
-            app:fabCustomSize="60dp"
-            android:layout_weight="1"
-            android:clickable="true"
-            android:focusable="true"
-            android:foregroundGravity="center"
-            app:srcCompat="@drawable/settings"
-            tools:ignore="OnClick,SpeakableTextPresentCheck" />
+            android:layout_weight="1" />
+
+        <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1.4"
+            android:textOff="private"
+            android:textOn="public"
+            android:text="ToggleButton" />
+
+        <Chronometer
+            android:id="@+id/record_timer"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="3"
+            android:gravity="center"
+            android:textSize="64sp" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1" />
+
+        <TextView
+            android:id="@+id/fileName"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="2" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="7"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="2.3" />
+
+            <ImageButton
+                android:id="@+id/record_btn"
+                android:layout_width="0px"
+
+                android:layout_height="match_parent"
+                android:layout_weight="25"
+                android:onClick="recordclick"
+                android:clickable="true"
+
+                android:src="@drawable/record_btn_stopped" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="0.3" />
+
+            <ImageButton
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="20"
+                android:adjustViewBounds="true"
+                android:onClick="chooseAudio"
+                android:padding="20dp"
+                android:clickable="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/ic_baseline_cloud_upload" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1" />
+
+        <Button
+            android:onClick="submit"
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="2"
+            android:text="submit" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="1" />
+
     </LinearLayout>
 
 </LinearLayout>

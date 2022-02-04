@@ -71,7 +71,7 @@ public class GetSection extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_enter_section);
 
         tb = (ToggleButton) findViewById(R.id.toggleButton);
         et = (EditText) findViewById(R.id.nickname);
@@ -380,7 +380,7 @@ public class GetSection extends AppCompatActivity {
 
         if(whatClicked.equals("auth"))
         {
-            si = new Intent(this,SignItActivity.class);
+            si = new Intent(this, SignInActivity.class);
             startActivity(si);
         }
         return  true;

@@ -2,8 +2,12 @@
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.ContextMenu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -21,7 +25,7 @@ import java.util.ArrayList;
 import com.google.firebase.database.ValueEventListener;
 
 
- public class ShowAllSections extends AppCompatActivity {
+ public class ShowMySections extends AppCompatActivity  implements View.OnCreateContextMenuListener {
     ListView ls;
     FloatingActionButton fab;
     boolean isFABOpen;
@@ -32,7 +36,7 @@ import com.google.firebase.database.ValueEventListener;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_enter_section);
+        setContentView(R.layout.activity_show_my_sections);
 
 
         isFABOpen = false;
@@ -58,7 +62,7 @@ import com.google.firebase.database.ValueEventListener;
         addfab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent si = new Intent(ShowAllSections.this , GetSection.class);
+                Intent si = new Intent(ShowMySections.this , GetSection.class);
                 startActivity(si);
             }
             });
@@ -66,6 +70,7 @@ import com.google.firebase.database.ValueEventListener;
 
         ls = (ListView) findViewById(R.id.ls);
         getUserSections();
+        ls.setOnCreateContextMenuListener(this);
     }
 
     private void showFABMenu(){
@@ -89,6 +94,7 @@ import com.google.firebase.database.ValueEventListener;
             fab.startAnimation(AnimationUtils.loadAnimation(this, R.anim.rotate_close_anim));
         }
     }
+
     public void setVisible()
     {
         if (!isFABOpen)
@@ -100,6 +106,56 @@ import com.google.firebase.database.ValueEventListener;
             addfab.setVisibility(View.INVISIBLE);
         }
     }
+
+     /**
+      * onCreateContextMenu
+      * Short description.
+      * onCreateContextMenu listener use for the ContextMenu
+      * <p>
+      *     ContextMenu menu
+      *     View v
+      *     ContextMenu.ContextMenuInfo menuInfo
+      *
+      * @param  menu - the object,v - the item that selected ,menuInfo - the info
+      * @return	none
+      */
+     //@Overrid
+     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+         menu.setHeaderTitle("options");
+         MenuInflater inflater = getMenuInflater();
+         inflater.inflate(R.menu.sectionsoptions, menu);
+     }
+
+     /**
+      * onContextItemSelected
+      * Short description.
+      * onContextItemSelected listener use for the ContextMenu
+      * <p>
+      *     MenuItem item
+      *
+      * @param  item - the item that selected
+      * @return	true if it worked
+      */
+     @Override
+     public boolean onContextItemSelected(MenuItem item) {
+         String op = item.getTitle().toString();
+         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+         int i = info.position;
+         Intent si;
+
+
+         if (op.equals("play section"))
+         {
+             si = new Intent(this,PlaySection.class);
+             si.putExtra("fileName",sectionsList.get(i).getNameOfFile());
+             si.putExtra("nickname",sectionsList.get(i).getNickName());
+
+             startActivity(si);
+
+         }
+
+         return true;
+     }
 
     private void getUserSections() {
 
