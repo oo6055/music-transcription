@@ -38,7 +38,7 @@ public class GetSection extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         tb = (ToggleButton) findViewById(R.id.toggleButton);
-        et = (EditText) findViewById(R.id.example);
+        et = (EditText) findViewById(R.id.nickname);
         musicNotes = "";
     }
 
@@ -75,6 +75,9 @@ public class GetSection extends AppCompatActivity {
             privateSectionCase.child(mAuth.getUid()).push().setValue(s);
         }
     }
+
+
+
 
 
 
@@ -143,32 +146,5 @@ public class GetSection extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
-    }
-
-    public void getNotes(View view) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(this);
-
-
-
-        final EditText edittext = new EditText(this);
-        alert.setMessage("Enter Your Message");
-        alert.setTitle("Enter Your Title");
-
-        alert.setView(edittext);
-
-        alert.setPositiveButton("Yes Option", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                //What ever you want to do with the value
-                musicNotes = edittext.getText().toString();
-            }
-        });
-
-        alert.setNegativeButton("No Option", new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int whichButton) {
-                // what ever you want to do with No option.
-            }
-        });
-
-        alert.show();
     }
 }
