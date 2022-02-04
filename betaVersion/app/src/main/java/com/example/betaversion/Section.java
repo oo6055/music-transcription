@@ -1,9 +1,5 @@
 package com.example.betaversion;
-import com.example.betaversion.Note;
-import com.example.betaversion.Node;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 
 
 public class Section {
@@ -12,15 +8,18 @@ public class Section {
     private boolean publicOrPrivate; // true - public
     private String nickName;
     private String date;
+    private String nameOfFile;
 
 
-    public Section(String uid, Node<Note> composition,String nickName,String date, boolean privateOrPublic) {
+
+    public Section(String uid, Node<Note> composition, String nickName, String date, boolean privateOrPublic, String nameOfFile) {
 
         this.uid = uid;
         this.composition = composition;
         this.nickName = nickName;
         this.date = date;
         this.publicOrPrivate = privateOrPublic;
+        this.nameOfFile = nameOfFile;
     }
 
     public ArrayList<Note> Composition()
@@ -84,5 +83,13 @@ public class Section {
 
     public void setPublicOrPrivate(boolean publicOrPrivate) {
         this.publicOrPrivate = publicOrPrivate;
+    }
+
+    public String getNameOfFile() {
+        return nameOfFile;
+    }
+
+    public void setNameOfFile(String nameOfFile) {
+        this.nameOfFile = nameOfFile;
     }
 }

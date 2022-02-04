@@ -127,11 +127,6 @@ import com.google.firebase.database.ValueEventListener;
                             sectionsList.add(s);
                         }
 
-//                        if (iter.hasNext()) {
-//                            Section sec = iter.getValue(Section.class);
-//                            sectionsList.add(sec);
-//                            iter = iter.
-//                        }
                         getPublicSections();
                     }
                     @Override

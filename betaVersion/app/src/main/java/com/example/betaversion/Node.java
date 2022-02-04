@@ -11,6 +11,20 @@ public class Node<T> {
         element = e;
         next = n;
     }
+    public Node(String text)
+    {
+        Node<Note> head = new Node<Note>(null,null);
+        Node<Note> next = head;
+
+        for(int i = 0; i < (text.length() / 2); i = i + 2)
+        {
+            // just example
+            Note n = new Note(text.substring(i, i+2),1,440);
+            next.setElement(n);
+            next.setNext(new Node<Note>(null,null));
+            next = next.getNext();
+        }
+    }
 
     public T getElement() {
         return element;
@@ -34,6 +48,8 @@ public class Node<T> {
         return arr;
 
     }
+
+
 
     public Node<T> getNext() {
         return next;
