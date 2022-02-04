@@ -4,35 +4,46 @@ import static com.example.betaversion.FBref.mAuth;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Editable;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 
-public class MainActivity extends AppCompatActivity {
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
-    TextView tv;
+public class GetSection extends AppCompatActivity {
+
+    EditText et;
+    ToggleButton tb;
+    String musicNotes;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        tv = (TextView) findViewById(R.id.example);
+        tb = (ToggleButton) findViewById(R.id.toggleButton);
+        et = (EditText) findViewById(R.id.example);
+        musicNotes = "";
     }
 
-    public void submit(View view) {
-
-        String text = tv.getText().toString();
+    public Node<Note> convert(String text)
+    {
         Node<Note> head = new Node<Note>(null,null);
         Node<Note> next = head;
 
@@ -45,9 +56,17 @@ public class MainActivity extends AppCompatActivity {
             next = next.getNext();
         }
 
+        return head;
+    }
 
-        DatabaseReference privateSectionCase = FBref.FBDB.getReference().child("Private Sections");
-        Section s = new Section(mAuth.getUid(), head,"first", "now", false);
+    public void submit(View view) {
+        String name = tb.isChecked() ? "Public Sections" : "Private Sections";
+        Date date = new Date(); // This object contains the current date value
+
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
+        DatabaseReference privateSectionCase = FBref.FBDB.getReference().child(name);
+        Section s = new Section(mAuth.getUid(), convert(musicNotes),et.getText().toString(), formatter.format(date), tb.isChecked());
         if (mAuth.getCurrentUser() == null) {
             Toast.makeText(this, "not connected", Toast.LENGTH_SHORT).show();
         }
@@ -124,5 +143,32 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onCancelled(DatabaseError databaseError) {}
         });
+    }
+
+    public void getNotes(View view) {
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+
+
+        final EditText edittext = new EditText(this);
+        alert.setMessage("Enter Your Message");
+        alert.setTitle("Enter Your Title");
+
+        alert.setView(edittext);
+
+        alert.setPositiveButton("Yes Option", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //What ever you want to do with the value
+                musicNotes = edittext.getText().toString();
+            }
+        });
+
+        alert.setNegativeButton("No Option", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // what ever you want to do with No option.
+            }
+        });
+
+        alert.show();
     }
 }

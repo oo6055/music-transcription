@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".GetSection">
 
 
     <Space
@@ -29,8 +29,36 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:ems="10"
-            android:hint="example"
+            android:hint="nickname"
             android:inputType="textPersonName" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ToggleButton
+            android:id="@+id/toggleButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:textOff="private"
+            android:textOn="public"
+            />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <ImageButton
+            android:id="@+id/imageButton"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:onClick="getNotes"
+            app:srcCompat="@drawable/ic_baseline_music_note_24"
+            tools:ignore="VectorDrawableCompat" />
 
         <Space
             android:layout_width="match_parent"
@@ -42,19 +70,7 @@
             android:layout_height="0dp"
             android:layout_weight="1"
             android:onClick="submit"
-            android:text="submit" />
-
-        <Space
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:text="check"
-            android:onClick="check"/>
+            android:text="Button" />
 
         <Space
             android:layout_width="match_parent"

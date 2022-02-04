@@ -2,6 +2,7 @@ package com.example.betaversion;
 import com.example.betaversion.Note;
 import com.example.betaversion.Node;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 
@@ -44,7 +45,7 @@ public class Section {
         this.nickName = nickName;
     }
 
-    public void setUid()
+    public void setUid(String uid)
     {
         this.uid = uid;
     }

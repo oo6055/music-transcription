@@ -48,7 +48,7 @@ public class SignItActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
 
         if (mAuth.getCurrentUser() != null) {
-            Intent i = new Intent(getApplicationContext(), EnterSection.class);
+            Intent i = new Intent(getApplicationContext(), ShowAllSections.class);
             startActivity(i);
         }
 
@@ -120,7 +120,7 @@ public class SignItActivity extends AppCompatActivity {
         mLoginBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), EnterSection.class));
+                startActivity(new Intent(getApplicationContext(), ShowAllSections.class));
             }
         });
 
