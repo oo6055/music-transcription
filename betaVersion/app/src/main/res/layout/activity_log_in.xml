@@ -5,93 +5,112 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".LogInActivity">
-    <LinearLayout
-        android:layout_width="0px"
+    <Space
+        android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="1"
+        android:layout_weight="1" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="4"
         android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/textView"
+        <Space
             android:layout_width="match_parent"
-            android:layout_height="0px"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="logIn"
-            android:textColor="#1C1C19"
-            android:textSize="25sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.19" />
+            android:id="@+id/tVtitle"
+            android:text="Login"
+            android:autoSizeTextType="uniform"
+            android:textStyle="bold" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
 
         <EditText
-            android:id="@+id/Email"
+            android:id="@+id/eTemail"
             android:layout_width="match_parent"
-            android:layout_height="0px"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@android:color/black"
             android:ems="10"
-            android:hint="Email"
-            android:inputType="textEmailAddress"
-            android:padding="10dp"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#FFFFFF"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/fullName" />
+            android:hint="e-mail"
+            android:inputType="textEmailAddress" />
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
 
         <EditText
-            android:id="@+id/password"
+            android:id="@+id/eTpass"
             android:layout_width="match_parent"
-            android:layout_height="0px"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:layout_marginEnd="16dp"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:background="@android:color/black"
             android:ems="10"
-            android:hint="Password"
-            android:inputType="textPassword"
-            android:padding="10dp"
-            android:textColor="#FFFFFF"
-            android:textColorHint="#FFFFFF"
-            android:textSize="14sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Email" />
+            android:hint="password"
+            android:inputType="textPassword" />
 
-        <Button
-            android:id="@+id/registerBtn"
+        <Space
             android:layout_width="match_parent"
-            android:layout_height="0px"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="16dp"
-            android:layout_weight="1"
-            android:text="Register"
-            android:textSize="13sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/phone" />
+            android:layout_height="0dp"
+            android:layout_weight="0.5" />
 
-        <TextView
-            android:id="@+id/createText"
+        <CheckBox
+            android:id="@+id/cBstayconnect"
             android:layout_width="match_parent"
-            android:layout_height="0px"
-            android:layout_marginTop="16dp"
+            android:layout_height="0dp"
             android:layout_weight="1"
-            android:text="need to register ? signup Here"
-            android:textColor="#FFEB3B"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/registerBtn" />
+            android:text="Stay Connected" />
 
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="7" />
+
+            <Button
+                android:id="@+id/btn"
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="8"
+                android:onClick="logorreg"
+                android:text="Login" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="7" />
+
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1.5" />
     </LinearLayout>
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1" />
 
 </LinearLayout>
