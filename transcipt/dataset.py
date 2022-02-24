@@ -10,7 +10,6 @@ def load_item(set_id: str,
                           path: str,
                           ext_audio: str,
                           ext_txt: str) -> Tuple[Tensor, int, str, int, int, int]:
-    print(set_id)
     instrument_id, set_id, section_id = set_id.split("-")
 
     file_text = instrument_id + "-" + set_id + ext_txt
@@ -68,6 +67,3 @@ class MusicDataset(Dataset):
 
     def __len__(self) -> int:
         return len(self._walker)
-
-s = MusicDataset("","train")
-print(s[0])

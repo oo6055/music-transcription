@@ -12,7 +12,7 @@ from pydub import AudioSegment
 from pydub.generators import Sine
 
 
-def midi_to_wav(path, soundfont =r"C:\music-transcription\transcipt\HedSound-Accordeon5c.sf2"):
+def midi_to_wav(path, soundfont =r"C:\music-transcription\transcipt\Essential Keys-sforzando-v9.6.sf2"):
     fs = FluidSynth(sound_font=soundfont, sample_rate=22050)
     #
     fs.midi_to_audio(path, path[:path.find(".")] + ".wav")
@@ -28,7 +28,8 @@ def genrateRandomStream() -> music21.stream.Stream:
     notes = []
 
     for i in range(len_of_seq):
-        randomNote = 12 + random.randrange(0,88-12)
+        # there is 87 inputs
+        randomNote = 24 + random.randrange(84)
         note = music21.note.Note(randomNote)
         d = music21.duration.Duration(random.randrange(2,3))
         note.duration = d
@@ -79,7 +80,7 @@ def gerate_data_dir(dir, instument_id, set_id, num_of_files):
 
 
 def main():
-    gerate_data_dir("data/train", "2", "22", 14)
+    gerate_data_dir("data/test", "1", "15", 95)
 
 
 
