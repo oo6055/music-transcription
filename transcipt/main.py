@@ -31,7 +31,7 @@ def genrateRandomStream() -> music21.stream.Stream:
         # there is 87 inputs
         randomNote = 24 + random.randrange(84)
         note = music21.note.Note(randomNote)
-        d = music21.duration.Duration(random.randrange(2,3))
+        d = music21.duration.Duration(random.randrange(2,4))
         note.duration = d
         s.append(note)
         notes.append(note.nameWithOctave)
@@ -80,7 +80,9 @@ def gerate_data_dir(dir, instument_id, set_id, num_of_files):
 
 
 def main():
-    gerate_data_dir("data/test", "1", "15", 95)
+    for i in range (1,10):
+        for j in range(1, 6):
+            gerate_data_dir("data/test", str(i), str(j), 95)
 
 
 

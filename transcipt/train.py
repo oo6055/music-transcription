@@ -14,13 +14,13 @@ from torch.utils.tensorboard import SummaryWriter
 import matplotlib.pyplot as plt
 
 # default `log_dir` is "runs" - we'll be more specific here
-writer = SummaryWriter('runs/fashion_mnist_experiment_1')
+writer = SummaryWriter('runs/music_expr2')
 
 
 
 t = tfClass()
 
-def GreedyDecoder(output, labels, label_lengths, blank_label=86, collapse_repeated=True):
+def GreedyDecoder(output, labels, label_lengths, blank_label=85, collapse_repeated=True):
     arg_maxes = torch.argmax(output, dim=2)
     decodes = []
     targets = []
@@ -80,13 +80,15 @@ def train(model, device, train_loader, criterion, optimizer, scheduler, epoch, i
 
         if batch_idx % 100 == 0 or batch_idx == data_len:
             # ...log the running loss
+            writer.add_scalar('training loss',
+                              running_loss / 1000,
+                              epoch * len(train_loader.dataset) + batch_idx)
 
 
             print('Train Epoch: {} [{}/{} ({:.0f}%)]\tLoss: {:.6f}'.format(
                 epoch, batch_idx * len(spectrograms), data_len,
                 100. * batch_idx / len(train_loader), loss.item()))
 
-        print('Finished Training')
 
 
 def test(model, device, test_loader, criterion, epoch, iter_meter):
@@ -108,6 +110,9 @@ def test(model, device, test_loader, criterion, epoch, iter_meter):
 
             decoded_preds, decoded_targets = GreedyDecoder(output.transpose(0, 1), labels, label_lengths)
             for j in range(len(decoded_preds)):
+                writer.add_scalar('testing loss',
+                                  test_loss / 1000,
+                                  epoch * len(test_loader.dataset) + I)
                 test_cer.append(dataTransform.cer(decoded_targets[j], decoded_preds[j]))
                 test_wer.append(dataTransform.wer(decoded_targets[j], decoded_preds[j]))
 
@@ -117,18 +122,18 @@ def test(model, device, test_loader, criterion, epoch, iter_meter):
 
     print('Test set: Average loss: {:.4f}, Average CER: {:4f} Average WER: {:.4f}\n'.format(test_loss, avg_cer, avg_wer))
 
-def main(learning_rate=5e-4, batch_size=20, epochs=10,
+def main(learning_rate=5e-4, batch_size=20, epochs=53,
         train_url="train-clean-100", test_url="test-clean"):
 
     hparams = {
-        "n_cnn_layers": 3,
+        "n_cnn_layers": 6,
         "n_class": 86,
         "n_feats": 128,
         "stride": 2,
         "n_rnn_layers" : 2,
         "rnn_dim" : 512,
         "momentum": 0.9,
-        "dropout": 0.1,
+        "dropout": 0.3,
         "learning_rate": learning_rate,
         "batch_size": batch_size,
         "epochs": epochs
@@ -162,12 +167,13 @@ def main(learning_rate=5e-4, batch_size=20, epochs=10,
         n_cnn_layers=hparams['n_cnn_layers'], rnn_dim=hparams['rnn_dim'],n_rnn_layers=hparams['n_rnn_layers'],
         n_class=hparams['n_class'], n_feats=hparams['n_feats'], stride=hparams['stride'], dropout=hparams['dropout']).to(device)
 
+    #model.load_state_dict(torch.load("model.pth"))
     print(model)
     model = model.to(device)
     print('Num Model Parameters', sum([param.nelement() for param in model.parameters()]))
 
     optimizer = optim.AdamW(model.parameters(), hparams['learning_rate'])
-    criterion = nn.CTCLoss(blank=86).to(device)
+    criterion = nn.CTCLoss(blank=85).to(device)
     scheduler = optim.lr_scheduler.OneCycleLR(optimizer, max_lr=hparams['learning_rate'],
                                             steps_per_epoch=int(len(train_loader)),
                                             epochs=hparams['epochs'],
@@ -177,7 +183,7 @@ def main(learning_rate=5e-4, batch_size=20, epochs=10,
     for epoch in range(1, epochs + 1):
         train(model, device, train_loader, criterion, optimizer, scheduler, epoch, iter_meter)
         test(model, device, test_loader, criterion, epoch, iter_meter)
-        torch.save(model.state_dict(), "model.pth")
+        torch.save(model.state_dict(), "model3.pth")
 
 def collate_fn_train(batch):
     return dataTransform.data_processing(batch,'train')
