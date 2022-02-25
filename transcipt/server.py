@@ -1,5 +1,18 @@
 from music21 import note,stream,environment,converter
 import pyrebase
+import torch
+import torch.optim as optim
+import torchaudio
+import torch.nn.functional as F
+import dataTransform
+from comet_ml import Experiment
+import torch.utils.data as data
+from dataTransform import TextTransform as tfClass
+import os
+import torch.nn as nn
+from model import MusicRecognitionModel
+
+
 firebaseConfig = {
   "apiKey": "AIzaSyA05G0tSIcWUvDePHl-ER1PROXyYN19FsI",
   "authDomain": "alpha-version-de63c.firebaseapp.com",

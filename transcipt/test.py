@@ -103,7 +103,7 @@ def main(learning_rate=5e-4, batch_size=20, epochs=10):
     criterion = nn.CTCLoss(blank=85).to(device)
 
     iter_meter = IterMeter()
-    model.load_state_dict(torch.load("model3.pth"))
+    model = torch.jit.load('model.pt')
     criterion = nn.CTCLoss(blank=28).to(device)
     i = IterMeter()
     model.eval()

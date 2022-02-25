@@ -13,10 +13,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="7e47f6bd-517b-4798-b4ce-73643f5035be" name="Default Changelist" comment="start login">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/betaversion/FBref.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/betaversion/FBref.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/java/com/example/betaversion/LogInActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/java/com/example/betaversion/LogInActivity.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/src/main/res/layout/activity_log_in.xml" beforeDir="false" afterPath="$PROJECT_DIR$/app/src/main/res/layout/activity_log_in.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../transcipt/createData.py" beforeDir="false" afterPath="$PROJECT_DIR$/../transcipt/createData.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../transcipt/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../transcipt/server.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../transcipt/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../transcipt/test.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,7 +91,6 @@
     <property name="ResourceManagerPrefKey.ResourceType" value="ANIM" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Android Projects/AudioRecorder" />
     <property name="settings.editor.selected.configurable" value="editor.preferences.import" />
   </component>
@@ -301,16 +301,5 @@
     <MESSAGE value="update" />
     <MESSAGE value="start login" />
     <option name="LAST_COMMIT_MESSAGE" value="start login" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="java-line">
-          <url>file://$PROJECT_DIR$/app/src/main/java/com/example/betaversion/GetSection.java</url>
-          <line>62</line>
-          <option name="timeStamp" value="3" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
   </component>
 </project>
