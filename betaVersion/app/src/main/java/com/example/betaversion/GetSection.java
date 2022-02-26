@@ -93,7 +93,7 @@ public class GetSection extends AppCompatActivity {
         timer = findViewById(R.id.record_timer);
         filenameText = findViewById(R.id.fileName);
 
-        module = Module.load(assetFilePath(GetSection.this,"model.pt"));
+        module = Module.load(assetFilePath(GetSection.this,"waveformToString.ptl"));
 
 
         musicNotes = "";
@@ -300,10 +300,10 @@ public class GetSection extends AppCompatActivity {
             inTensorBuffer.put((float)val);
 
         Tensor inTensor = Tensor.fromBlob(inTensorBuffer, new long[]{1, record.length});
-        IValue[] result = module.forward(IValue.from(inTensor)).toTuple();
+        String result = module.forward(IValue.from(inTensor)).toString();
         System.out.println(result);
 
-        return "hello";
+        return result;
     }
 
 
