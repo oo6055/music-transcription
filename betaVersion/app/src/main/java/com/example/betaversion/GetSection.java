@@ -38,6 +38,7 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import org.pytorch.IValue;
+import org.pytorch.LiteModuleLoader;
 import org.pytorch.Module;
 import org.pytorch.Tensor;
 
@@ -93,7 +94,7 @@ public class GetSection extends AppCompatActivity {
         timer = findViewById(R.id.record_timer);
         filenameText = findViewById(R.id.fileName);
 
-        module = Module.load(assetFilePath(GetSection.this,"model.pt"));
+        module = LiteModuleLoader.load(assetFilePath(GetSection.this,"model.pt"));
 
 
         musicNotes = "";
