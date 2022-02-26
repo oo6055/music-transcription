@@ -38,7 +38,6 @@ import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
 import org.pytorch.IValue;
-import org.pytorch.LiteModuleLoader;
 import org.pytorch.Module;
 import org.pytorch.Tensor;
 
@@ -94,7 +93,7 @@ public class GetSection extends AppCompatActivity {
         timer = findViewById(R.id.record_timer);
         filenameText = findViewById(R.id.fileName);
 
-        module = LiteModuleLoader.load(assetFilePath(GetSection.this,"model.pt"));
+        module = Module.load(assetFilePath(GetSection.this,"model.pt"));
 
 
         musicNotes = "";
@@ -301,8 +300,8 @@ public class GetSection extends AppCompatActivity {
             inTensorBuffer.put((float)val);
 
         Tensor inTensor = Tensor.fromBlob(inTensorBuffer, new long[]{1, record.length});
-        final Tensor result = module.forward(IValue.from(inTensor)).toTensor();
-
+        IValue[] result = module.forward(IValue.from(inTensor)).toTuple();
+        System.out.println(result);
 
         return "hello";
     }
