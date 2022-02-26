@@ -1,9 +1,42 @@
+Skip to content
+Search or jump to…
+Pull requests
+Issues
+Marketplace
+Explore
+ 
+@oo6055 
+oo6055
+/
+music-transcription
+Public
+Code
+Issues
+7
+Pull requests
+1
+Discussions
+Actions
+Projects
+Wiki
+Security
+More
+music-transcription/.gitignore
+@oo6055
+oo6055 try:
+Latest commit f4c269d 15 hours ago
+ History
+ 1 contributor
+87 lines (71 sloc)  1.42 KB
+   
 # Built application files
 *.apk
 *.aar
 *.ap_
 *.aab
-
+*.wav
+*.midi
+*.sf2
 # Files for the ART/Dalvik VM
 *.dex
 
@@ -83,3 +116,16 @@ lint/generated/
 lint/outputs/
 lint/tmp/
 # lint/reports/
+© 2022 GitHub, Inc.
+Terms
+Privacy
+Security
+Status
+Docs
+Contact GitHub
+Pricing
+API
+Training
+Blog
+About
+Loading complete

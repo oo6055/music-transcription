@@ -9,6 +9,7 @@ import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -17,6 +18,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -35,8 +37,18 @@ import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
+import org.pytorch.IValue;
+import org.pytorch.Module;
+import org.pytorch.Tensor;
+
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
+import java.nio.FloatBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -47,6 +59,7 @@ public class GetSection extends AppCompatActivity {
     ToggleButton tb;
     String musicNotes;
     String recordPath;
+    private Module module;
     private TextView filenameText;
 
     private boolean isRecording = false;
@@ -80,9 +93,34 @@ public class GetSection extends AppCompatActivity {
         timer = findViewById(R.id.record_timer);
         filenameText = findViewById(R.id.fileName);
 
+        module = Module.load(assetFilePath(GetSection.this,"model.pt"));
+
 
         musicNotes = "";
     }
+
+    private String assetFilePath(Context context, String assetName) {
+        File file = new File(context.getFilesDir(), assetName);
+        if (file.exists() && file.length() > 0) {
+            return file.getAbsolutePath();
+        }
+
+        try (InputStream is = context.getAssets().open(assetName)) {
+            try (OutputStream os = new FileOutputStream(file)) {
+                byte[] buffer = new byte[4 * 1024];
+                int read;
+                while ((read = is.read(buffer)) != -1) {
+                    os.write(buffer, 0, read);
+                }
+                os.flush();
+            }
+            return file.getAbsolutePath();
+        } catch (IOException e) {
+            Log.e("error", assetName + ": " + e.getLocalizedMessage());
+        }
+        return null;
+    }
+
 
     public void recordclick(View view) {
         /*  Check, which button is pressed and do the task accordingly
@@ -117,7 +155,7 @@ public class GetSection extends AppCompatActivity {
 
 
 
-    public void submit(View view) {
+    public void submit(View view) throws IOException {
         if (isRecording)
         {
             Toast.makeText(GetSection.this, "please stop the record", Toast.LENGTH_SHORT).show();
@@ -145,6 +183,9 @@ public class GetSection extends AppCompatActivity {
         {
             file = Uri.fromFile(new File(recordFile));
         }
+        recognize(loadSoundFileURL(new File(file.getPath())));
+
+
 
         StorageReference riversRef = filesRef.child(file.getLastPathSegment());
         UploadTask uploadTask = riversRef.putFile(file);
@@ -215,6 +256,57 @@ public class GetSection extends AppCompatActivity {
         // upload the section
 
     }
+
+    public byte[] loadSoundFileURL(File path) throws IOException {
+        byte[] music1 = null;
+
+        InputStream in1=path.toURL().openStream();
+
+
+        music1= new byte[in1.available()];
+        music1=convertStreamToByteArray(in1);
+        in1.close();
+
+        return music1;
+    }
+
+    public static byte[] convertStreamToByteArray(InputStream is) throws IOException {
+
+
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        byte[] buff = new byte[10240];
+        int i = Integer.MAX_VALUE;
+        while ((i = is.read(buff, 0, buff.length)) > 0) {
+            baos.write(buff, 0, i);
+        }
+
+        return baos.toByteArray(); // be sure to close InputStream in calling function
+
+    }
+
+
+    private String recognize(byte[] record) {
+        if (module == null) {
+            module = Module.load("model.pt");
+        }
+
+        byte wav2vecinput[] = new byte[record.length];
+        for (int n = 0; n < record.length; n++)
+            wav2vecinput[n] = record[n];
+
+        FloatBuffer inTensorBuffer = Tensor.allocateFloatBuffer(record.length);
+        for (double val : wav2vecinput)
+            inTensorBuffer.put((float)val);
+
+        Tensor inTensor = Tensor.fromBlob(inTensorBuffer, new long[]{1, record.length});
+        final Tensor result = module.forward(IValue.from(inTensor)).toTensor();
+
+
+        return "hello";
+    }
+
+
 
     private void stopRecording() {
         //Stop Timer, very obvious
