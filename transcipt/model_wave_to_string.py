@@ -62,6 +62,7 @@ quantized_model = torch.quantization.quantize_dynamic(
 scripted_model = torch.jit.script(quantized_model)
 optimized_model = optimize_for_mobile(scripted_model)
 
+
 # Sanity check
 waveform , _ = torchaudio.load(r"C:\music-transcription\transcipt\1-3-0001.wav")
 print('Result:', model2(waveform))
