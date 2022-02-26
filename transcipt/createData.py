@@ -2,7 +2,6 @@ import glob
 import pickle
 import random
 import os
-import numpy
 import music21
 from model import MusicRecognitionModel
 from torch import nn as nn

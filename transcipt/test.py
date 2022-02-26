@@ -99,22 +99,19 @@ def main(learning_rate=5e-4, batch_size=20, epochs=10):
     model = model.to(device)
     print('Num Model Parameters', sum([param.nelement() for param in model.parameters()]))
 
-    optimizer = optim.AdamW(model.parameters(), hparams['learning_rate'])
-    criterion = nn.CTCLoss(blank=85).to(device)
+    model = torch.jit.load('model2.pt')
 
-    iter_meter = IterMeter()
-    model = torch.jit.load('model.pt')
-    criterion = nn.CTCLoss(blank=28).to(device)
-    i = IterMeter()
     model.eval()
     #test(model, device, test_loader,criterion, i)
 
-    _data = load_audio_item(r"C:\music-transcription\transcipt\data\test\20\5\20-5-0001.wav", 'C3 F4 G1 C#6 C#4 G#1 E7 E-3')
+    _data = load_audio_item(r"C:\music-transcription\transcipt\1-3-0001.wav", 'C3 F4 G1 C#6 C#4 G#1 E7 E-3')
     _data = dataTransform.data_processing([_data],"valid")
+
 
     spectrograms, labels, input_lengths, label_lengths = _data
     spectrograms, labels = spectrograms.to(device), labels.to(device)
 
+    print(spectrograms.shape)
     output = model(spectrograms)  # (batch, time, n_class)
     output = F.log_softmax(output, dim=2)
     output = output.transpose(0, 1)  # (time, batch, n_class)

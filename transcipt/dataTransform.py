@@ -286,6 +286,8 @@ class TextTransform:
 
 
 
+
+
     def text_to_int(self, text):
         """ Use a character map and convert text to an integer sequence """
         int_sequence = []
@@ -329,6 +331,7 @@ def data_processing(data, data_type="train"):
     for (waveform, _, utterance, _, _, _) in data:
         waveform = waveform.sum(0)
         waveform = waveform[None, :]
+        print(waveform.shape)
         if data_type == 'train':
             spec = train_audio_transforms(waveform).squeeze(0).transpose(0, 1)
         else:
