@@ -2,7 +2,6 @@ package com.example.betaversion;
 
 import static com.example.betaversion.FBref.filesRef;
 import static com.example.betaversion.FBref.mAuth;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -15,6 +14,7 @@ import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.media.MediaRecorder;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
@@ -34,18 +34,16 @@ import android.widget.ToggleButton;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.firestore.util.Assert;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
 
-import org.pytorch.IValue;
-import org.pytorch.LiteModuleLoader;
-import org.pytorch.Module;
-import org.pytorch.Tensor;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -65,7 +63,6 @@ public class GetSection extends AppCompatActivity {
     ToggleButton tb;
     String musicNotes;
     String recordPath;
-    private Module module;
     private TextView filenameText;
 
     private boolean isRecording = false;
@@ -99,74 +96,55 @@ public class GetSection extends AppCompatActivity {
         timer = findViewById(R.id.record_timer);
         filenameText = findViewById(R.id.fileName);
 
-        module = LiteModuleLoader.load(assetFilePath(GetSection.this,"waveformToString.ptl"));
-
-
         musicNotes = "";
     }
 
-    private String assetFilePath(Context context, String assetName) {
-        File file = new File(context.getFilesDir(), assetName);
-        if (file.exists() && file.length() > 0) {
-            return file.getAbsolutePath();
+    private void sendMessage(final InputStream msg) {
+
+        new LongOperation().execute(msg);
+
+
+
+
+    }
+    private class LongOperation extends AsyncTask<InputStream, Void, String> {
+        @Override
+        protected String doInBackground(InputStream... params) {
+            Client client = new Client();
+            try {
+                client.startConnection("192.168.1.196", 9002);
+                OutputStream out = client.getSock().getOutputStream();
+                byte[] bytes = new byte[16 * 1024];
+                InputStream in = params[0];
+                int count;
+                while ((count = in.read(bytes)) > 0) {
+                    out.write(bytes, 0, count);
+                }
+
+                BufferedReader input = new BufferedReader(new InputStreamReader(params[0]));
+
+                musicNotes = input.readLine();
+                System.out.println("FROM SERVER - " + musicNotes.toUpperCase());
+                client.stopConnection();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return null;
         }
 
-        try (InputStream is = context.getAssets().open(assetName)) {
-            try (OutputStream os = new FileOutputStream(file)) {
-                byte[] buffer = new byte[4 * 1024];
-                int read;
-                while ((read = is.read(buffer)) != -1) {
-                    os.write(buffer, 0, read);
-                }
-                os.flush();
-            }
-            return file.getAbsolutePath();
-        } catch (IOException e) {
-            Log.e("error", assetName + ": " + e.getLocalizedMessage());
+        @Override
+        protected void onPostExecute(String result) {
         }
-        return null;
+
+        @Override
+        protected void onPreExecute() {
+        }
+
+        @Override
+        protected void onProgressUpdate(Void... values) {
+        }
     }
 
-    private void sendMessage(final String msg) {
-
-        final Handler handler = new Handler();
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-
-                try {
-                    //Replace below IP with the IP of that device in which server socket open.
-                    //If you change port then change the port number in the server side code also.
-                    Socket s = new Socket("192.168.1.195", 9002);
-
-                    OutputStream out = s.getOutputStream();
-
-                    PrintWriter output = new PrintWriter(out);
-
-                    output.println(msg);
-                    output.flush();
-                    BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
-                    final String st = input.readLine();
-
-                    handler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            System.out.println(st);
-                        }
-                    });
-
-                    output.close();
-                    out.close();
-                    s.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-
-        thread.start();
-    }
-}
     public void recordclick(View view) {
         /*  Check, which button is pressed and do the task accordingly
          */
@@ -228,7 +206,12 @@ public class GetSection extends AppCompatActivity {
         {
             file = Uri.fromFile(new File(recordFile));
         }
-        recognize(loadSoundFileURL(new File(file.getPath())));
+
+        File fileOfAudio = new File(recordPath + "/" + recordFile);
+        // Get the size of the file
+        InputStream in = new FileInputStream(fileOfAudio);
+        sendMessage(in);
+//        recognize(loadSoundFileURL(new File(file.getPath())));
 
 
 
@@ -331,25 +314,25 @@ public class GetSection extends AppCompatActivity {
     }
 
 
-    private String recognize(byte[] record) {
-        if (module == null) {
-            module = Module.load("model.pt");
-        }
-
-        byte wav2vecinput[] = new byte[record.length];
-        for (int n = 0; n < record.length; n++)
-            wav2vecinput[n] = record[n];
-
-        FloatBuffer inTensorBuffer = Tensor.allocateFloatBuffer(record.length);
-        for (double val : wav2vecinput)
-            inTensorBuffer.put((float)val);
-
-        Tensor inTensor = Tensor.fromBlob(inTensorBuffer, new long[]{1, record.length});
-        String result = module.forward(IValue.from(inTensor)).toString();
-        System.out.println(result);
-
-        return result;
-    }
+//    private String recognize(byte[] record) {
+//        if (module == null) {
+//            module = Module.load("model.pt");
+//        }
+//
+//        byte wav2vecinput[] = new byte[record.length];
+//        for (int n = 0; n < record.length; n++)
+//            wav2vecinput[n] = record[n];
+//
+//        FloatBuffer inTensorBuffer = Tensor.allocateFloatBuffer(record.length);
+//        for (double val : wav2vecinput)
+//            inTensorBuffer.put((float)val);
+//
+//        Tensor inTensor = Tensor.fromBlob(inTensorBuffer, new long[]{1, record.length});
+//        String result = module.forward(IValue.from(inTensor)).toString();
+//        System.out.println(result);
+//
+//        return result;
+//    }
 
 
 

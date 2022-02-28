@@ -6,6 +6,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
+//        compile 'com.android.support:multidex:1.0.1'
         classpath "com.android.tools.build:gradle:7.0.2"
         classpath("com.fasterxml.jackson.core:jackson-core:2.3.2")
         classpath 'com.google.gms:google-services:4.3.10'
@@ -13,6 +14,9 @@ buildscript {
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
+
+
+
 }
 
 task clean(type: Delete) {
