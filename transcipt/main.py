@@ -1,102 +1,92 @@
-import glob
-import pickle
-import numpy
-import music21
-from midi2audio import FluidSynth
+import torch
+from torch import Tensor
+from torch.utils.mobile_optimizer import optimize_for_mobile
+import torchaudio
+import torch.nn as nn
+import numpy as np
+from model import MusicRecognitionModel
+import librosa
 
-from collections import defaultdict
-from mido import MidiFile
-from pydub import AudioSegment
-from pydub.generators import Sine
+# Wav2vec2 model emits sequences of probability (logits) distributions over the characters
+# The following class adds steps to decode the transcript (best path)
+class Music_Recognize_new(torch.nn.Module):
+    def __init__(self, model):
+        super().__init__()
+        self.model = model
+        self.valid_audio_transforms = torchaudio.transforms.MelSpectrogram()
+        self.labels = ["C1", "C#1", "D1", "E-1", "E1", "F1", "F#1", "G1", "G#1", "A1", "B-1", "B1", "C2", "C#2", "D2",
+                       "E-2", "E2", "F2", "F#2", "G2", "G#2", "A2", "B-2", "B2", "C3", "C#3", "D3", "E-3", "E3", "F3",
+                       "F#3", "G3", "G#3", "A3", "B-3", "B3", "C4", "C#4", "D4", "E-4", "E4", "F4", "F#4", "G4", "G#4",
+                       "A4", "B-4", "B4", "C5", "C#5", "D5", "E-5", "E5", "F5", "F#5", "G5", "G#5", "A5", "B-5", "B5",
+                       "C6", "C#6", "D6", "E-6", "E6", "F6", "F#6", "G6", "G#6", "A6", "B-6", "B6", "C7", "C#7", "D7",
+                       "E-7", "E7", "F7", "F#7", "G7", "G#7", "A7", "B-7", "B7", "<SPACE>"]
+
+    def forward(self, waveforms: Tensor) -> str:
+        """Given a single channel speech data, return transcription.
+        Args:
+            waveforms (Tensor): Speech tensor. Shape `[1, num_frames]`.
+        Returns:
+            str: The resulting transcript
+        """
+        waveforms = waveforms.sum(0)
+        waveforms = waveforms[None, :]
+        mel_signal = librosa.feature.melspectrogram(y=waveforms, sr=4400)
+        spectrogram = np.abs(mel_signal)
+        spec = [self.valid_audio_transforms(waveforms).squeeze(0).transpose(0, 1)]
+
+        spectrograms = nn.utils.rnn.pad_sequence(spec, batch_first=True).unsqueeze(1).transpose(2, 3)
+        logits = self.model(spectrograms)  # [batch, num_seq, num_label]
+        best_path = torch.argmax(logits[0], dim=-1)  # [num_seq,]
+        prev = ''
+        hypothesis = ''
+        for i in best_path:
+            if i == 85:
+                continue
+            char = self.labels[i]
+
+            if char == prev:
+                continue
+            if char == '<s>':
+                prev = ''
+                continue
+            hypothesis += char
+            prev = char
+        return hypothesis.replace('|', ' ')
 
 
-def note_to_freq(note, concert_A=440.0):
-    '''
-    from wikipedia: http://en.wikipedia.org/wiki/MIDI_Tuning_Standard#Frequency_values
-    '''
-    return (2.0 ** ((note - 69) / 12.0)) * concert_A
+# Load Wav2Vec2 pretrained model from Hugging Face Hub
+model = torch.jit.load('model.pt')
 
-def midi_to_wav(path):
-    mid = MidiFile(path)
-    output = AudioSegment.silent(mid.length * 1000.0)
+# Remove weight normalization which is not supported by quantization.
+model = model.eval()
+# Attach decoder
+model = Music_Recognize_new(model)
 
-    tempo = 100  # bpm
-    # inner function
-    def ticks_to_ms(ticks):
-        tick_ms = (60000.0 / tempo) / mid.ticks_per_beat
-        return ticks * tick_ms
+# Apply quantization / script / optimize for motbile
+quantized_model = torch.quantization.quantize_dynamic(
+    model, qconfig_spec={torch.nn.Linear}, dtype=torch.qint8)
+scripted_model = torch.jit.script(quantized_model)
+optimized_model = optimize_for_mobile(scripted_model)
 
-    for track in mid.tracks:
-        # position of rendering in ms
-        current_pos = 0.0
+# Sanity check
+waveform, _ = torchaudio.load(r"C:\music-transcription\transcipt\1-3-0001.wav")
+print('Result:', optimized_model(waveform))
 
-        current_notes = defaultdict(dict)
-        # current_notes = {
-        #   channel: {
-        #     note: (start_time, message)
-        #   }
-        # }
+optimized_model._save_for_lite_interpreter("waveformToString.ptl")
 
-        for msg in track:
-            current_pos += ticks_to_ms(msg.time)
-
-            if msg.type == 'note_on':
-                current_notes[msg.channel][msg.note] = (current_pos, msg)
-
-            if msg.type == 'note_off':
-                start_pos, start_msg = current_notes[msg.channel].pop(msg.note)
-
-                duration = current_pos - start_pos
-
-                signal_generator = Sine(note_to_freq(msg.note))
-                rendered = signal_generator.to_audio_segment(duration=duration - 50, volume=-20).fade_out(100).fade_in(
-                    30)
-
-                output = output.overlay(rendered, start_pos)
-
-    output.export("animal.wav", format="wav")
-
-def get_notes():
-    """ Get all the notes and chords from the midi files in the ./midi_songs directory """
-    notes = []
-
-    for file in glob.glob("midi/*.mid"):
-        midi = music21.converter.parse(file)
-
-        print("Parsing %s" % file)
-
-        notes_to_parse = None
-
-        try: # file has instrument parts
-            s2 = music21.instrument.partitionByInstrument(midi)
-            notes_to_parse = s2.parts[0].recurse()
-        except: # file has notes in a flat structure
-            notes_to_parse = midi.flat.notes
-        print()
-        for element in notes_to_parse:
-            if isinstance(element, music21.note.Note):
-                notes.append(str(element.pitch))
-            elif isinstance(element, music21.chord.Chord):
-                print(element.notes)
-                notes.append('.'.join(str(n) for n in element.normalOrder))
-
-    with open('data/notes', 'wb') as filepath:
-        pickle.dump(notes, filepath)
-
-    return notes
-sc = music21.scale.PhrygianScale('g')
-s = music21.stream.Stream()
-s.append(music21.note.Note("A1"))
-s.append(music21.note.Note("b1"))
-s.append(music21.note.Note("c1"))
-mf = music21.midi.translate.streamToMidiFile(s)
-mf.open('midi.mid', 'wb')
-mf.write()
-mf.close()
-
-# using the default sound font in 44100 Hz sample rate
-fs = FluidSynth(sound_font='weedsgm3.sf2',sample_rate=22050)
-
-fs.midi_to_audio(r"C:\music-transcription\transcipt\midi.mid", 'output.wav')
-
-# FLAC, a lossless codec, is supported as well (and recommended to be used)
+# model2 = torch.jit.load("model21.pt")
+# model = torch.jit.load('model.pt')
+#
+# model.eval()
+# # Attach decoder
+# new_model = Music_Recognize_new(model)
+#
+# # Sanity check
+# waveform, _ = torchaudio.load(r"C:\music-transcription\transcipt\1-3-0001.wav")
+#
+#
+# print('Result:', new_model(waveform))
+#
+# traced_script_module = torch.jit.trace(new_model, waveform)
+#
+# traced_script_module.save("model21.pt")

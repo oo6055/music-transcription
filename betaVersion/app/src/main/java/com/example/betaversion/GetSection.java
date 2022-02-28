@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -42,12 +43,16 @@ import org.pytorch.LiteModuleLoader;
 import org.pytorch.Module;
 import org.pytorch.Tensor;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.net.Socket;
 import java.net.URL;
 import java.nio.FloatBuffer;
 import java.text.SimpleDateFormat;
@@ -122,7 +127,46 @@ public class GetSection extends AppCompatActivity {
         return null;
     }
 
+    private void sendMessage(final String msg) {
 
+        final Handler handler = new Handler();
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+
+                try {
+                    //Replace below IP with the IP of that device in which server socket open.
+                    //If you change port then change the port number in the server side code also.
+                    Socket s = new Socket("192.168.1.195", 9002);
+
+                    OutputStream out = s.getOutputStream();
+
+                    PrintWriter output = new PrintWriter(out);
+
+                    output.println(msg);
+                    output.flush();
+                    BufferedReader input = new BufferedReader(new InputStreamReader(s.getInputStream()));
+                    final String st = input.readLine();
+
+                    handler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            System.out.println(st);
+                        }
+                    });
+
+                    output.close();
+                    out.close();
+                    s.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        thread.start();
+    }
+}
     public void recordclick(View view) {
         /*  Check, which button is pressed and do the task accordingly
          */
