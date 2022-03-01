@@ -2,6 +2,8 @@ package com.example.betaversion;
 
 import static com.example.betaversion.FBref.filesRef;
 import static com.example.betaversion.FBref.mAuth;
+import static com.example.betaversion.Node.castFromStringToNote;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -17,6 +19,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.StrictMode;
 import android.os.SystemClock;
 import android.provider.MediaStore;
 import android.util.Log;
@@ -63,9 +66,11 @@ public class GetSection extends AppCompatActivity {
     ToggleButton tb;
     String musicNotes;
     String recordPath;
+    Uri file = null;
     private TextView filenameText;
 
     private boolean isRecording = false;
+    DatabaseReference privateSectionCase = null;
 
     private String recordPermission = Manifest.permission.RECORD_AUDIO;
     private int PERMISSION_CODE = 21;
@@ -100,126 +105,52 @@ public class GetSection extends AppCompatActivity {
     }
 
     private void sendMessage(final InputStream msg) {
+        StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
-        new LongOperation().execute(msg);
-
-
-
-
-    }
-    private class LongOperation extends AsyncTask<InputStream, Void, String> {
-        @Override
-        protected String doInBackground(InputStream... params) {
-            Client client = new Client();
-            try {
-                client.startConnection("192.168.1.196", 9002);
-                OutputStream out = client.getSock().getOutputStream();
-                byte[] bytes = new byte[16 * 1024];
-                InputStream in = params[0];
-                int count;
-                while ((count = in.read(bytes)) > 0) {
-                    out.write(bytes, 0, count);
-                }
-
-                BufferedReader input = new BufferedReader(new InputStreamReader(params[0]));
-
-                musicNotes = input.readLine();
-                System.out.println("FROM SERVER - " + musicNotes.toUpperCase());
-                client.stopConnection();
-            } catch (IOException e) {
-                e.printStackTrace();
+        StrictMode.setThreadPolicy(policy);
+//        new LongOperation().execute(msg);
+        Client client = new Client();
+        try {
+            client.startConnection("192.168.1.196", 9002);
+            OutputStream out = client.getSock().getOutputStream();
+            byte[] bytes = new byte[16 * 1024];
+            InputStream in = msg;
+            int count;
+            while ((count = in.read(bytes)) > 0) {
+                out.write(bytes, 0, count);
             }
-            return null;
-        }
 
-        @Override
-        protected void onPostExecute(String result) {
-        }
+            BufferedReader input = new BufferedReader(new InputStreamReader(client.getSock().getInputStream()));
+            char a = (char) input.read();
 
-        @Override
-        protected void onPreExecute() {
-        }
-
-        @Override
-        protected void onProgressUpdate(Void... values) {
-        }
-    }
-
-    public void recordclick(View view) {
-        /*  Check, which button is pressed and do the task accordingly
-         */
-
-        if(isRecording) {
-            //Stop Recording
-            stopRecording();
-
-            // Change button image and set Recording state to false
-            recordBtn.setImageDrawable(getResources().getDrawable(R.drawable.record_btn_stopped, null));
-            isRecording = false;
-        }
-        else {
-            //Check permission to record audio
-            if(checkPermissions()) {
-                //Start Recording
-                startRecording();
-
-                // Change button image and set Recording state to false
-                recordBtn.setImageDrawable(getResources().getDrawable(R.drawable.record_btn_recording, null));
-                isRecording = true;
-            }
-            else
+            while (input.ready())
             {
-                Toast.makeText(GetSection.this, "please give permissions", Toast.LENGTH_SHORT).show();
+                musicNotes += a;
+                a = (char) input.read();
             }
+            musicNotes += a;
 
+            Toast.makeText(GetSection.this, musicNotes, Toast.LENGTH_SHORT).show();
 
+            client.stopConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-    }
-
-
-
-    public void submit(View view) throws IOException {
-        if (isRecording)
-        {
-            Toast.makeText(GetSection.this, "please stop the record", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Uri file = null;
-        String name = tb.isChecked() ? "Public Sections" : "Private Sections";
         Date date = new Date(); // This object contains the current date value
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+        Node<Note> n = castFromStringToNote(musicNotes);
+        Section s = new Section(mAuth.getUid(),n,et.getText().toString(), formatter.format(date), tb.isChecked(), recordFile);
 
-        DatabaseReference privateSectionCase = FBref.FBDB.getReference().child(name);
-        Section s = new Section(mAuth.getUid(),new Node<Note>(musicNotes),et.getText().toString(), formatter.format(date), tb.isChecked(), recordFile);
-        if (mAuth.getCurrentUser() == null) {
-            Toast.makeText(this, "not connected", Toast.LENGTH_SHORT).show();
-            return;
-        }
-
-        // upload the file
-        if (!recordFile.isEmpty())
-        {
-            file = Uri.fromFile(new File(recordPath + "/" + recordFile));
-        }
-        else
-        {
-            file = Uri.fromFile(new File(recordFile));
-        }
-
-        File fileOfAudio = new File(recordPath + "/" + recordFile);
-        // Get the size of the file
-        InputStream in = new FileInputStream(fileOfAudio);
-        sendMessage(in);
-//        recognize(loadSoundFileURL(new File(file.getPath())));
 
 
 
         StorageReference riversRef = filesRef.child(file.getLastPathSegment());
         UploadTask uploadTask = riversRef.putFile(file);
+        musicNotes = "";
 
         ProgressDialog progressDialog
-                = new ProgressDialog(this);
+                = new ProgressDialog(GetSection.this);
         progressDialog.setTitle("Uploading...");
         progressDialog.show();
 
@@ -282,6 +213,77 @@ public class GetSection extends AppCompatActivity {
                         });
 
         // upload the section
+
+
+
+
+    }
+
+
+    public void recordclick(View view) {
+        /*  Check, which button is pressed and do the task accordingly
+         */
+
+        if(isRecording) {
+            //Stop Recording
+            stopRecording();
+
+            // Change button image and set Recording state to false
+            recordBtn.setImageDrawable(getResources().getDrawable(R.drawable.record_btn_stopped, null));
+            isRecording = false;
+        }
+        else {
+            //Check permission to record audio
+            if(checkPermissions()) {
+                //Start Recording
+                startRecording();
+
+                // Change button image and set Recording state to false
+                recordBtn.setImageDrawable(getResources().getDrawable(R.drawable.record_btn_recording, null));
+                isRecording = true;
+            }
+            else
+            {
+                Toast.makeText(GetSection.this, "please give permissions", Toast.LENGTH_SHORT).show();
+            }
+
+
+        }
+    }
+
+
+
+    public void submit(View view) throws IOException {
+        if (isRecording)
+        {
+            Toast.makeText(GetSection.this, "please stop the record", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String name = tb.isChecked() ? "Public Sections" : "Private Sections";
+
+
+        privateSectionCase = FBref.FBDB.getReference().child(name);
+        if (mAuth.getCurrentUser() == null) {
+            Toast.makeText(this, "not connected", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // upload the file
+        if (!recordFile.isEmpty())
+        {
+            file = Uri.fromFile(new File(recordPath + "/" + recordFile));
+        }
+        else
+        {
+            file = Uri.fromFile(new File(recordFile));
+        }
+
+        File fileOfAudio = new File(recordPath + "/" + recordFile);
+        // Get the size of the file
+        InputStream in = new FileInputStream(fileOfAudio);
+        sendMessage(in);
+//        recognize(loadSoundFileURL(new File(file.getPath())));
 
     }
 

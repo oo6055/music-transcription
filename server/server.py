@@ -32,7 +32,7 @@ while True:
                 file.close()
                 # os.system('ffmpeg -i file.3gp file.wav')
                 print('sending data back to the client')
-                connection.sendall("<space>f3<space>".encode())
+                connection.sendall("f3f4f5".encode())
             else:
                 print('no more data from', client_address)
                 break

@@ -18,6 +18,7 @@ public class Client {
         return clientSocket;
     }
 
+
     public void stopConnection() throws IOException {
         clientSocket.close();
     }

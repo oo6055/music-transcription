@@ -11,7 +11,8 @@ public class Node<T> {
         element = e;
         next = n;
     }
-    public Node(String text)
+
+    public static Node<Note> castFromStringToNote(String text)
     {
         Node<Note> head = new Node<Note>(null,null);
         Node<Note> next = head;
@@ -24,6 +25,7 @@ public class Node<T> {
             next.setNext(new Node<Note>(null,null));
             next = next.getNext();
         }
+        return head;
     }
 
     public T getElement() {

@@ -22,10 +22,6 @@ public class Section {
         this.nameOfFile = nameOfFile;
     }
 
-    public ArrayList<Note> Composition()
-    {
-        return composition.toArraylist();
-    }
 
     public Section()
     {
