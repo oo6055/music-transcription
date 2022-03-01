@@ -113,12 +113,23 @@ public class GetSection extends AppCompatActivity {
         try {
             client.startConnection("192.168.1.196", 9002);
             OutputStream out = client.getSock().getOutputStream();
-            byte[] bytes = new byte[16 * 1024];
+            byte[] bytes = new byte[1024];
             InputStream in = msg;
             int count;
             while ((count = in.read(bytes)) > 0) {
+                out.write("true".getBytes(), 0, 4);
+
                 out.write(bytes, 0, count);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getSock().getInputStream()));
+
+                // get the more
+                for (int i = 0; i < 4; i++)
+                {
+                    input.read();
+                }
+
             }
+            out.write("fals".getBytes(), 0, 4);
 
             BufferedReader input = new BufferedReader(new InputStreamReader(client.getSock().getInputStream()));
             char a = (char) input.read();
@@ -314,28 +325,6 @@ public class GetSection extends AppCompatActivity {
         return baos.toByteArray(); // be sure to close InputStream in calling function
 
     }
-
-
-//    private String recognize(byte[] record) {
-//        if (module == null) {
-//            module = Module.load("model.pt");
-//        }
-//
-//        byte wav2vecinput[] = new byte[record.length];
-//        for (int n = 0; n < record.length; n++)
-//            wav2vecinput[n] = record[n];
-//
-//        FloatBuffer inTensorBuffer = Tensor.allocateFloatBuffer(record.length);
-//        for (double val : wav2vecinput)
-//            inTensorBuffer.put((float)val);
-//
-//        Tensor inTensor = Tensor.fromBlob(inTensorBuffer, new long[]{1, record.length});
-//        String result = module.forward(IValue.from(inTensor)).toString();
-//        System.out.println(result);
-//
-//        return result;
-//    }
-
 
 
     private void stopRecording() {
