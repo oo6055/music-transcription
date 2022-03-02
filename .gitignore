@@ -30,6 +30,7 @@ Latest commit f4c269d 15 hours ago
 87 lines (71 sloc)  1.42 KB
    
 # Built application files
+*.exe
 *.apk
 *.aar
 *.ap_
