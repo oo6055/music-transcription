@@ -7,7 +7,7 @@ import time
 
 
 def get_data_back():
-    model2 = torch.jit.load('waveformToString.pt')
+    model2 = torch.jit.load('waveformToString.ptl')
     waveform, _ = torchaudio.load(r"file.wav")
     return model2(waveform)
 
