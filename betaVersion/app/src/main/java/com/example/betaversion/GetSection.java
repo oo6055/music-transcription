@@ -61,7 +61,8 @@ import java.util.Date;
 import java.util.Locale;
 
 public class GetSection extends AppCompatActivity {
-
+    final String IP = "192.168.1.196";
+    final int port = 9002;
     EditText et;
     ToggleButton tb;
     String musicNotes;
@@ -111,7 +112,7 @@ public class GetSection extends AppCompatActivity {
 //        new LongOperation().execute(msg);
         Client client = new Client();
         try {
-            client.startConnection("192.168.1.196", 9002);
+            client.startConnection(IP, port);
             OutputStream out = client.getSock().getOutputStream();
             byte[] bytes = new byte[1024];
             InputStream in = msg;

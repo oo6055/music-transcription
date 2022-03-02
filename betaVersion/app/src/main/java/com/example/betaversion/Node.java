@@ -14,13 +14,14 @@ public class Node<T> {
 
     public static Node<Note> castFromStringToNote(String text)
     {
+        String[] notes = text.split("<SPACE>");
         Node<Note> head = new Node<Note>(null,null);
         Node<Note> next = head;
 
-        for(int i = 0; i < (text.length() / 2); i = i + 2)
+        for(int i = 0; i < notes.length; i = i ++)
         {
             // just example
-            Note n = new Note(text.substring(i, i+2),1,440);
+            Note n = new Note(notes[i],1,440); // need to update
             next.setElement(n);
             next.setNext(new Node<Note>(null,null));
             next = next.getNext();

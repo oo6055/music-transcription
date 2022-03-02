@@ -48,6 +48,7 @@ def start_server():
                     file.write(data)
                     file.close()
                     # create wav file
+                    os.remove("file.wav")
                     os.system('ffmpeg -i file.3gp file.wav')
                     databack = get_data_back()
 
