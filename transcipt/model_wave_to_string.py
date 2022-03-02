@@ -39,12 +39,10 @@ class Music_Recognize_new(torch.nn.Module):
 
             if char == prev:
                 continue
-            if char == '<s>':
-                prev = ''
-                continue
-            hypothesis += char
+
+            hypothesis += char + ' '
             prev = char
-        return hypothesis.replace('|', ' ')
+        return hypothesis[0:-1]
 
 
 # Load Wav2Vec2 pretrained model from Hugging Face Hub
