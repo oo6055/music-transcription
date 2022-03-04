@@ -110,54 +110,20 @@ public class GetSection extends AppCompatActivity {
 
         StrictMode.setThreadPolicy(policy);
 //        new LongOperation().execute(msg);
-        Client client = new Client();
-        try {
-            client.startConnection(IP, port);
-            OutputStream out = client.getSock().getOutputStream();
-            byte[] bytes = new byte[1024];
-            InputStream in = msg;
-            int count;
-            while ((count = in.read(bytes)) > 0) {
-                out.write("true".getBytes(), 0, 4);
 
-                out.write(bytes, 0, count);
-                BufferedReader input = new BufferedReader(new InputStreamReader(client.getSock().getInputStream()));
-
-                // get the more
-                for (int i = 0; i < 4; i++)
-                {
-                    input.read();
-                }
-
-            }
-            out.write("fals".getBytes(), 0, 4);
-
-            BufferedReader input = new BufferedReader(new InputStreamReader(client.getSock().getInputStream()));
-            char a = (char) input.read();
-
-            while (input.ready())
-            {
-                musicNotes += a;
-                a = (char) input.read();
-            }
-            musicNotes += a;
-
-            Toast.makeText(GetSection.this, musicNotes, Toast.LENGTH_SHORT).show();
-
-            client.stopConnection();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         Date date = new Date(); // This object contains the current date value
 
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         Node<Note> n = castFromStringToNote(musicNotes);
-        Section s = new Section(mAuth.getUid(),n,et.getText().toString(), formatter.format(date), tb.isChecked(), recordFile);
+        String name_of_file = mAuth.getUid() + file.getPath().substring(file.getPath().lastIndexOf("/")+1);
+
+        getTranscript(msg, name_of_file);
+        Section s = new Section(mAuth.getUid(),n,et.getText().toString(), formatter.format(date), tb.isChecked(), name_of_file);
 
 
 
 
-        StorageReference riversRef = filesRef.child(file.getLastPathSegment());
+        StorageReference riversRef = filesRef.child(name_of_file);
         UploadTask uploadTask = riversRef.putFile(file);
         musicNotes = "";
 
@@ -229,6 +195,50 @@ public class GetSection extends AppCompatActivity {
 
 
 
+    }
+
+    private void getTranscript(InputStream msg, String name_of_file) {
+        Client client = new Client();
+        try {
+            client.startConnection(IP, port);
+            OutputStream out = client.getSock().getOutputStream();
+            byte[] bytes = new byte[1024];
+            InputStream in = msg;
+            int count;
+            while ((count = in.read(bytes)) > 0) {
+                out.write("true".getBytes(), 0, 4);
+
+                out.write(bytes, 0, count);
+                BufferedReader input = new BufferedReader(new InputStreamReader(client.getSock().getInputStream()));
+
+                // get the more
+                for (int i = 0; i < 4; i++)
+                {
+                    input.read();
+                }
+
+            }
+            out.write("fals".getBytes(), 0, 4);
+            out.write(name_of_file.getBytes(), 0, name_of_file.length());
+
+            BufferedReader input = new BufferedReader(new InputStreamReader(client.getSock().getInputStream()));
+            char a = (char) input.read();
+
+            while (input.ready())
+            {
+                musicNotes += a;
+                a = (char) input.read();
+            }
+            musicNotes += a;
+
+            Toast.makeText(GetSection.this, musicNotes, Toast.LENGTH_SHORT).show();
+
+
+
+            client.stopConnection();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

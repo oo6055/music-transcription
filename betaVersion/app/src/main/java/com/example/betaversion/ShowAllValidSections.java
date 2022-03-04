@@ -3,6 +3,7 @@ package com.example.betaversion;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -14,10 +15,12 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
@@ -116,6 +119,28 @@ public class ShowAllValidSections extends AppCompatActivity {
 
             startActivity(si);
 
+        }
+        else if (op.equals("get transcript"))
+        {
+            String pathInFireBase = sectionsList.get(i).getNameOfFile();
+            pathInFireBase = pathInFireBase.substring(0,pathInFireBase.indexOf(".")) + ".pdf";
+            StorageReference pdfRef = FBref.filesRef.child("/" + pathInFireBase);
+            pdfRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
+                @Override
+                public void onSuccess(Uri downloadUrl) {
+                    Intent intent = new Intent(Intent.ACTION_VIEW);
+                    intent.setDataAndType(downloadUrl, "application/pdf");
+
+                    // FLAG_GRANT_READ_URI_PERMISSION is needed on API 24+ so the activity opening the file can read it
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                    if (intent.resolveActivity(getPackageManager()) == null) {
+                        // Show an error
+                    } else {
+                        startActivity(intent);
+                    }
+                }
+            });
         }
 
         return true;

@@ -1,9 +1,45 @@
 import socket
 import sys
 import os
+import pyrebase
 import torch
+import music21
 import torchaudio
 import time
+
+firebaseConfig = {
+  "apiKey": "AIzaSyDWb8bINnFe7fYGXU63XpXFBm60j2hcOj4",
+  "authDomain": "betaversion-90c06.firebaseapp.com",
+  "databaseURL": "https://betaversion-90c06-default-rtdb.firebaseio.com",
+  "projectId": "betaversion-90c06",
+  "storageBucket": "betaversion-90c06.appspot.com",
+  "messagingSenderId": "999205442490",
+  "appId": "1:999205442490:web:12c12cf6d535e1fd0ec383",
+  "measurementId": "G-4HJM7WEJKD"
+}
+
+firebase = pyrebase.initialize_app(firebaseConfig)
+
+db=firebase.database()
+storge = firebase.storage()
+
+def string_to_notes(string, file_name):
+    music_stream = music21.stream.Stream()
+    print(string.split(" "))
+
+    for note_str in string.split(" "):
+        if note_str == "<SPACE>":
+            continue
+        if note_str == '':
+            continue
+        n = music21.note.Note(note_str, quarterLength=1)
+        music_stream.append(n)
+    conv = music21.converter.subConverters.ConverterLilypond()
+    conv.write(music_stream, fmt='lilypond', fp='file', subformats=['pdf'])
+    storge.child("files/" + file_name).put("file.pdf")
+
+
+
 
 
 def get_data_back():
@@ -43,6 +79,10 @@ def start_server():
                     connection.sendall("more".encode())
                     con = connection.recv(4)
                     print('con =  "%s"' % con)
+
+                name_of_file = connection.recv(1024).decode()
+                name_of_file = name_of_file[:name_of_file.find(".")] + ".pdf"
+                print(name_of_file)
                 if data:
                     file = open("file.3gp", "wb")
                     file.write(data)
@@ -51,7 +91,9 @@ def start_server():
                     os.remove("file.wav")
                     os.system('ffmpeg -i file.3gp file.wav')
                     databack = get_data_back()
+                    print(databack)
 
+                    string_to_notes(databack, name_of_file)
 
 
 
