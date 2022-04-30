@@ -9,8 +9,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import android.Manifest;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
@@ -22,6 +24,7 @@ import android.os.Handler;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.provider.MediaStore;
+import android.text.Editable;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -38,6 +41,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.firestore.util.Assert;
+import com.google.firebase.ml.modeldownloader.CustomModel;
+import com.google.firebase.ml.modeldownloader.CustomModelDownloadConditions;
+import com.google.firebase.ml.modeldownloader.DownloadType;
+import com.google.firebase.ml.modeldownloader.FirebaseModelDownloader;
 import com.google.firebase.storage.OnProgressListener;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -61,7 +68,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class GetSection extends AppCompatActivity {
-    final String IP = "192.168.1.196";
+    String IP = "192.168.1.196";
     final int port = 9002;
     EditText et;
     ToggleButton tb;
@@ -105,27 +112,58 @@ public class GetSection extends AppCompatActivity {
         musicNotes = "";
     }
 
+
     private void sendMessage(final InputStream msg) {
+
+        AlertDialog.Builder alert = new AlertDialog.Builder(this);
+        final EditText edittext = new EditText(this);
+        edittext.setText("192.168.1.0");
+        alert.setMessage("Enter the IP of the server");
+        alert.setTitle("IP of Server");
+
+        alert.setView(edittext);
+
+        alert.setPositiveButton("Upload", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                //What ever you want to do with the value
+                //OR
+                IP = edittext.getText().toString();
+                update(msg);
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // what ever you want to do with No option.
+            }
+        });
+
+        alert.show();
+    }
+
+
+    private void update(InputStream msg)
+    {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
 
         StrictMode.setThreadPolicy(policy);
-//        new LongOperation().execute(msg);
 
         Date date = new Date(); // This object contains the current date value
 
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        Node<Note> n = castFromStringToNote(musicNotes);
+
         String name_of_file = mAuth.getUid() + file.getPath().substring(file.getPath().lastIndexOf("/")+1);
 
         getTranscript(msg, name_of_file);
+        Node<Note> n = castFromStringToNote(musicNotes);
+        musicNotes = "";
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+
         Section s = new Section(mAuth.getUid(),n,et.getText().toString(), formatter.format(date), tb.isChecked(), name_of_file);
-
-
 
 
         StorageReference riversRef = filesRef.child(name_of_file);
         UploadTask uploadTask = riversRef.putFile(file);
-        musicNotes = "";
+
 
         ProgressDialog progressDialog
                 = new ProgressDialog(GetSection.this);
@@ -190,21 +228,25 @@ public class GetSection extends AppCompatActivity {
                             }
                         });
 
+
+
+
+
         // upload the section
-
-
-
-
     }
+
 
     private void getTranscript(InputStream msg, String name_of_file) {
         Client client = new Client();
         try {
+
+
             client.startConnection(IP, port);
             OutputStream out = client.getSock().getOutputStream();
             byte[] bytes = new byte[1024];
             InputStream in = msg;
             int count;
+            out.write(CodesOfMessages.ADDSECTIONCODE.getBytes(), 0, CodesOfMessages.ADDSECTIONCODE.length());
             while ((count = in.read(bytes)) > 0) {
                 out.write("true".getBytes(), 0, 4);
 

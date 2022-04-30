@@ -35,6 +35,11 @@ public class Section {
     {
         return composition.toArraylist();
     }
+
+    public Node<Note> NodeGetComposition()
+    {
+        return composition;
+    }
     public void setNickName(String nickName)
     {
         this.nickName = nickName;

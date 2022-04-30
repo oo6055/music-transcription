@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ChangeNotes">
+
+    <com.example.betaversion.MusicNotesView
+        android:id="@+id/musicNotesView"
+        android:layout_width="421dp"
+        android:layout_height="698dp"
+        tools:layout_editor_absoluteX="-3dp" />
+
+    <com.nitishp.sheetmusic.MusicBarView
+        android:id="@+id/view"
+        android:layout_width="80dp"
+        android:layout_height="30dp"
+        tools:layout_editor_absoluteX="0dp"
+        tools:layout_editor_absoluteY="701dp">
+
+        <com.nitishp.sheetmusic.NoteView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:noteDuration="HALF"
+            app:noteValue="LOWER_B" />
+
+        <com.nitishp.sheetmusic.NoteView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:noteDuration="HALF"
+            app:noteValue="LOWER_C" />
+
+        <com.nitishp.sheetmusic.NoteView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:noteDuration="FOURTH"
+            app:noteValue="HIGHER_E" />
+
+        <com.nitishp.sheetmusic.NoteView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:noteDuration="FOURTH"
+            app:noteValue="HIGHER_B" />
+
+        <com.nitishp.sheetmusic.NoteView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:noteDuration="FOURTH"
+            app:noteValue="HIGHER_C" />
+    </com.nitishp.sheetmusic.MusicBarView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

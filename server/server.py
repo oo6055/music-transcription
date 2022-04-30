@@ -7,6 +7,7 @@ import music21
 import torchaudio
 import time
 
+ADD_DATA_CODE = "100"
 firebaseConfig = {
   "apiKey": "AIzaSyDWb8bINnFe7fYGXU63XpXFBm60j2hcOj4",
   "authDomain": "betaversion-90c06.firebaseapp.com",
@@ -22,6 +23,7 @@ firebase = pyrebase.initialize_app(firebaseConfig)
 
 db=firebase.database()
 storge = firebase.storage()
+
 
 def string_to_notes(string, file_name):
     music_stream = music21.stream.Stream()
@@ -39,9 +41,6 @@ def string_to_notes(string, file_name):
     storge.child("files/" + file_name).put("file.pdf")
 
 
-
-
-
 def get_data_back():
     model2 = torch.jit.load('waveformToString.ptl')
     waveform, _ = torchaudio.load(r"file.wav")
@@ -54,6 +53,9 @@ def start_server():
 
     # Bind the socket to the port
     server_address = ('0.0.0.0', 9002)
+
+    f = os.system("ipconfig")
+    print(f)
     print('starting up on %s port %s' % server_address)
     sock.bind(server_address)
 
@@ -70,38 +72,10 @@ def start_server():
 
             # Receive the data in small chunks and retransmit it
             while True:
-                con = connection.recv(4)
-                data = b''
-                while con.decode() == 'true':
+                codeOfMsg = connection.recv(4).decode()
 
-                    data += connection.recv(1024)
-                    print('received "%s"' % data)
-                    connection.sendall("more".encode())
-                    con = connection.recv(4)
-                    print('con =  "%s"' % con)
-
-                name_of_file = connection.recv(1024).decode()
-                name_of_file = name_of_file[:name_of_file.find(".")] + ".pdf"
-                print(name_of_file)
-                if data:
-                    file = open("file.3gp", "wb")
-                    file.write(data)
-                    file.close()
-                    # create wav file
-                    os.remove("file.wav")
-                    os.system('ffmpeg -i file.3gp file.wav')
-                    databack = get_data_back()
-                    print(databack)
-
-                    string_to_notes(databack, name_of_file)
-
-
-
-                    print('sending data back to the client')
-                    data = ""
-                    connection.sendall(databack.encode())
-                else:
-                    print('no more data from', client_address)
+                if codeOfMsg == ADD_DATA_CODE:
+                    add_section(connection)
                     break
 
         finally:
@@ -109,14 +83,47 @@ def start_server():
             connection.close()
 
 
+def add_section(connection):
+
+
+    con = connection.recv(4)
+    data = b''
+    while con.decode() == 'true':
+        data += connection.recv(1024)
+        print('received "%s"' % data)
+        connection.sendall("more".encode())
+        con = connection.recv(4)
+        print('con =  "%s"' % con)
+
+    name_of_file = connection.recv(1024).decode()
+    name_of_file = name_of_file[:name_of_file.find(".")] + ".pdf"
+    print(name_of_file)
+    if data:
+        file = open("file.3gp", "wb")
+        file.write(data)
+        file.close()
+        # create wav file
+        os.remove("file.wav")
+        os.system('ffmpeg -i file.3gp file.wav')
+        databack = get_data_back()
+        print(databack)
+
+        string_to_notes(databack, name_of_file)
+
+        print('sending data back to the client')
+        data = ""
+        connection.sendall(databack.encode())
+    else:
+        print('no more data from', client_address)
+
+
 def file_to_wav():
-
-
     os.system('ffmpeg -i file.3gp file.wav')
 
 
 def main():
-    #file_to_wav()
+    string_to_notes("c1 d4" , "file2.pdf")
+    sdf
     start_server()
 
 if __name__ == "__main__":

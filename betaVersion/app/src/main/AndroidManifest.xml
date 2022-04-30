@@ -16,6 +16,12 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BetaVersion">
         <activity
+            android:name=".TryView"
+            android:exported="true" />
+        <activity
+            android:name=".ChangeNotes"
+            android:exported="true" />
+        <activity
             android:name=".LogInActivity"
             android:exported="true" />
         <activity

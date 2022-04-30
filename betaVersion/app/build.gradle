@@ -43,5 +43,8 @@ dependencies {
     implementation 'com.google.firebase:firebase-database:20.0.2'
     implementation 'com.google.firebase:firebase-storage:20.0.0'
     implementation 'com.google.firebase:firebase-firestore:24.0.1'
+    implementation 'com.google.firebase:firebase-ml-modeldownloader:24.0.2'
+    implementation  'com.github.nitishp:sheetmusicview:v1.2.0'
+
 
 }
