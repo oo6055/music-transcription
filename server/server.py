@@ -122,8 +122,6 @@ def file_to_wav():
 
 
 def main():
-    string_to_notes("c1 d4" , "file2.pdf")
-    sdf
     start_server()
 
 if __name__ == "__main__":

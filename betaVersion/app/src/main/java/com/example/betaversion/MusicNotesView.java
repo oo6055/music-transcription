@@ -30,6 +30,7 @@ public class MusicNotesView extends View {
     private ArrayList<MusicNoteCircle> middleOfCircles;
     float r;
     private float dalteForNotes;
+    boolean notesAdded = false;
     public MusicNotesView(Context context) {
 
         super(context);
@@ -62,26 +63,31 @@ public class MusicNotesView extends View {
             public void onGlobalLayout() {
                 getViewTreeObserver().removeOnGlobalLayoutListener(this);
                 structre = getResizesdBitMap(structre, getWidth(), getHeight());
+
             }
         });
         middleOfCircles = new ArrayList<>();
         notes = new ArrayList<>();
         notes.add("c4");
+        notes.add("d4");
+        notesAdded = false;
+
+
 
     }
-    public void addNotes(ArrayList<String> notes, Canvas canvas)
+    public void addNotes(ArrayList<String> notes, float width, float height)
     {
         int cxOfset = 0;
-        r = canvas.getHeight() / 18;
+        r = height / 15;
         float posOfNote = 0;
-        float offsetOfTheStart = canvas.getWidth()  / 6;
-        float horizontalOffset = canvas.getWidth() / 15;
+        float offsetOfTheStart = width / 6;
+        float horizontalOffset = width / 10;
         char special = 0;
         for (int i = 0; i < notes.size(); i++)
         {
             special = 0;
             // get the position of the note (by his name)
-            posOfNote = getPostion(canvas.getHeight(), notes.get(i));
+            posOfNote = getPostion(height, notes.get(i));
 
             // check if the number is a sign
             if (notes.get(i).length() >= 2 && notes.get(i).charAt(1) == '-')
@@ -92,12 +98,12 @@ public class MusicNotesView extends View {
             {
                 special = 'd';
             }
-            middleOfCircles.add(new MusicNoteCircle(offsetOfTheStart + cxOfset ,posOfNote, special));
-            Paint p = new Paint();
-            p.setColor(Color.BLACK);
-            canvas.drawCircle(middleOfCircles.get(i).getX() ,middleOfCircles.get(i).getY(),r ,p);
 
+
+            middleOfCircles.add(new MusicNoteCircle(offsetOfTheStart + cxOfset ,posOfNote, special));
             cxOfset += horizontalOffset;
+
+
         }
 
     }
@@ -115,12 +121,14 @@ public class MusicNotesView extends View {
         p.setTextSize(fontSize);
         canvas.drawText("#",xOfNote - delta - radius, yNote + p.getTextSize() / 3,p);
     }
-    private void drawCircles(Canvas canvas)
+
+
+
+    private void drawCircles(Canvas canvas, int height)
     {
         Paint p = new Paint();
         p.setColor(Color.BLACK);
-        float sizeOfLineVertical = canvas.getHeight() / 4;
-        float height = canvas.getHeight();
+        float sizeOfLineVertical = height / 3;
         float width = canvas.getWidth();
 
 
@@ -130,19 +138,19 @@ public class MusicNotesView extends View {
             // get the position of the note (by his name)
 
             // draw the note and the line
-//            canvas.drawCircle(middleOfCircles.get(i).getX() ,middleOfCircles.get(i).getY(),r ,p);
+            canvas.drawCircle(middleOfCircles.get(i).getX() ,middleOfCircles.get(i).getY(),r ,p);
             canvas.drawLine(middleOfCircles.get(i).getX() + r ,middleOfCircles.get(i).getY(),middleOfCircles.get(i).getX() + r,middleOfCircles.get(i).getY() - sizeOfLineVertical ,p);
             // check if need to add more line in the bottom
             float notInTheMiddle = 0;
 
             // check if it is in a odd place
             float currentHigh = middleOfCircles.get(i).getY();
-            if (((currentHigh  - (height - height / 10)) % (dalteForNotes * 2)) != 0)
+            if ((((int)currentHigh  - (int)((float)height - (float)height / 10.0)) % (dalteForNotes * 2)) != 0)
             {
                 notInTheMiddle = 1;
             }
 
-            while (currentHigh >= height - height / 10)
+            while ((int)currentHigh >= (int)((float)height - (float)height / 10.0))
             {
                 float sizeOfLineHorizontal = width / 50;
                 canvas.drawLine(middleOfCircles.get(i).getX() - sizeOfLineHorizontal,currentHigh - notInTheMiddle * dalteForNotes,middleOfCircles.get(i).getX()   + sizeOfLineHorizontal, currentHigh - notInTheMiddle * dalteForNotes, p);
@@ -178,17 +186,18 @@ public class MusicNotesView extends View {
     }
 
 
-    private float getPostion(int height, String s) {
+    private float getPostion(float height, String s) {
         char notes[] = {'c','d','e','f','g','a','b'};
         dalteForNotes = height / 16;
         float notePos =  height - height / 10 - findElement(notes, s.charAt(0)) * dalteForNotes;
+
 
         // check if the second number is the octava of the note
         if (s.length() >= 2 && s.charAt(1) >= '0' && s.charAt(1) <= '9')
         {
             notePos -= 7 * dalteForNotes * (int) ((s.charAt(1) - '0') - 4);
         }
-        return notePos;
+           return notePos;
 
     }
     private int findElement(char[] arr, char toFind)
@@ -225,8 +234,17 @@ public class MusicNotesView extends View {
             {
                 float x = event.getX();
                 float y = event.getY();
+                int index = getIndex(x,y);
 
-
+                if (index != -1)
+                {
+                    if (y % dalteForNotes < dalteForNotes / 2)
+                    {
+                        y -= y % dalteForNotes;
+                    }
+                    middleOfCircles.get(index).setY(y);
+                }
+                postInvalidate();
                 return true;
             }
         }
@@ -234,11 +252,31 @@ public class MusicNotesView extends View {
         return value;
     }
 
+    private int getIndex(float x, float y) {
+        for (int i = 0; i < middleOfCircles.size(); i++)
+        {
+            float dalteX = (float) Math.pow(x - middleOfCircles.get(i).getX() ,2);
+            float dalteY = (float) Math.pow(y - middleOfCircles.get(i).getY() ,2);
+
+            if (dalteX + dalteY < Math.pow(r * 3.5 ,2))
+            {
+                return i;
+            }
+        }
+        return -1;
+    }
+
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawBitmap(structre, 0,0,null);
 
-        addNotes(notes, canvas);
-        // drawCircles(canvas);
+        if (! notesAdded)
+        {
+            addNotes(notes, structre.getWidth(), structre.getHeight());
+            notesAdded = true;
+        }
+
+
+        drawCircles(canvas, structre.getHeight());
     }
 }

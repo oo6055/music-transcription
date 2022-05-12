@@ -3,19 +3,21 @@ package com.example.betaversion;
 public class MusicNoteCircle {
     private float x;
     private float y;
-    private char sprcial;
+    private char special;
 
     MusicNoteCircle(float x, float y, char sprcial)
     {
-
+        this.x = x;
+        this.y = y;
+        this.special = sprcial;
     }
 
     public char getSprcial() {
-        return sprcial;
+        return this.special;
     }
 
     public void setSprcial(char sprcial) {
-        this.sprcial = sprcial;
+        this.special = sprcial;
     }
 
     public float getY() {

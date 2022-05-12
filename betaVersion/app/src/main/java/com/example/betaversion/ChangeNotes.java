@@ -23,17 +23,12 @@ import java.util.ArrayList;
 
 public class ChangeNotes extends AppCompatActivity {
     Section curr;
-    MusicBarView mbv;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_notes);
-
-
-        mbv = (MusicBarView) findViewById(R.id.view);
-        mbv.addNote(new NoteData(NoteData.NoteValue.HIGHER_E, FOURTH));
 
 
         Intent gi = getIntent();

@@ -48,6 +48,7 @@ public class SignInActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.progressBar);
 
         if (mAuth.getCurrentUser() != null) {
+            finish();
             Intent i = new Intent(getApplicationContext(), ShowMySections.class);
             startActivity(i);
         }
