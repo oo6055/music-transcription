@@ -41,9 +41,9 @@ def string_to_notes(string, file_name):
     storge.child("files/" + file_name).put("file.pdf")
 
 
-def get_data_back():
+def get_data_back(file_name = "file.wav"):
     model2 = torch.jit.load('waveformToString.ptl')
-    waveform, _ = torchaudio.load(r"file.wav")
+    waveform, _ = torchaudio.load(file_name)
     return model2(waveform)
 
 
@@ -114,7 +114,7 @@ def add_section(connection):
         data = ""
         connection.sendall(databack.encode())
     else:
-        print('no more data from', client_address)
+        print('no more data from celint')
 
 
 def file_to_wav():
@@ -122,6 +122,7 @@ def file_to_wav():
 
 
 def main():
+    print(get_data_back("3-4-0007.wav"))
     start_server()
 
 if __name__ == "__main__":

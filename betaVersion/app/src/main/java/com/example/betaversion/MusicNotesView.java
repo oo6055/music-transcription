@@ -29,6 +29,7 @@ public class MusicNotesView extends View {
     private Bitmap structre;
     private ArrayList<MusicNoteCircle> middleOfCircles;
     float r;
+    float height;
     private float dalteForNotes;
     boolean notesAdded = false;
     public MusicNotesView(Context context) {
@@ -99,11 +100,8 @@ public class MusicNotesView extends View {
                 special = 'd';
             }
 
-
             middleOfCircles.add(new MusicNoteCircle(offsetOfTheStart + cxOfset ,posOfNote, special));
             cxOfset += horizontalOffset;
-
-
         }
 
     }
@@ -132,7 +130,6 @@ public class MusicNotesView extends View {
         float width = canvas.getWidth();
 
 
-
         for (int i = 0; i < middleOfCircles.size(); i++)
         {
             // get the position of the note (by his name)
@@ -145,7 +142,7 @@ public class MusicNotesView extends View {
 
             // check if it is in a odd place
             float currentHigh = middleOfCircles.get(i).getY();
-            if ((((int)currentHigh  - (int)((float)height - (float)height / 10.0)) % (dalteForNotes * 2)) != 0)
+            if ((((int)currentHigh  - (int)((float)height - (float)height / 10.0)) % (dalteForNotes * 2)) > dalteForNotes)
             {
                 notInTheMiddle = 1;
             }
@@ -160,7 +157,7 @@ public class MusicNotesView extends View {
 
 
             currentHigh = middleOfCircles.get(i).getY();
-            if (((currentHigh  - (height - height / 10 - dalteForNotes * 12 )) % (dalteForNotes * 2)) != 0)
+            if (((currentHigh  - (height - height / 10 - dalteForNotes * 12 )) % (dalteForNotes * 2)) > dalteForNotes)
             {
                 notInTheMiddle = 1;
             }
@@ -191,14 +188,13 @@ public class MusicNotesView extends View {
         dalteForNotes = height / 16;
         float notePos =  height - height / 10 - findElement(notes, s.charAt(0)) * dalteForNotes;
 
-
         // check if the second number is the octava of the note
         if (s.length() >= 2 && s.charAt(1) >= '0' && s.charAt(1) <= '9')
         {
             notePos -= 7 * dalteForNotes * (int) ((s.charAt(1) - '0') - 4);
         }
-           return notePos;
 
+        return notePos;
     }
     private int findElement(char[] arr, char toFind)
     {
@@ -219,6 +215,45 @@ public class MusicNotesView extends View {
 
         matrix.setRectToRect(src,dst, Matrix.ScaleToFit.CENTER );
         return Bitmap.createBitmap(bitmap,0,0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+    }
+
+    public Node<Note> getSection()
+    {
+        Node<Note> ptrOfNode = new Node<>(null,null);
+        Node<Note> head = ptrOfNode;
+        for (int i = 0; i < middleOfCircles.size(); i++)
+        {
+            String note = getNote(middleOfCircles.get(i).getY(), middleOfCircles.get(i).getSprcial());
+            // need to change
+            ptrOfNode.setElement(new Note(note, 1, 440));
+
+            if (i != middleOfCircles.size() - 1)
+            {
+                ptrOfNode.setNext(new Node<>(null,null));
+                ptrOfNode = ptrOfNode.getNext();
+            }
+        }
+
+        return head;
+    }
+
+    private String getNote(float y, char sprcial)
+    {
+        char notes[] = {'c','d','e','f','g','a','b'};
+        float theNotesPostions = (y - (height - height / 10)) % (dalteForNotes * 8);
+
+        // check if the second number is the octava of the note
+        float theNumberOfNotesOffset = (theNotesPostions / dalteForNotes);
+        int index =  -1 * (int) Math.round(theNumberOfNotesOffset);
+
+        if (sprcial == 0)
+        {
+            return String.valueOf(notes[index]);
+        }
+        else
+        {
+            return String.valueOf(notes[index]) + String.valueOf(sprcial);
+        }
     }
 
     @Override
@@ -272,6 +307,7 @@ public class MusicNotesView extends View {
 
         if (! notesAdded)
         {
+            height = structre.getHeight();
             addNotes(notes, structre.getWidth(), structre.getHeight());
             notesAdded = true;
         }

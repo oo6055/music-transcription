@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,12 +24,15 @@ import java.util.ArrayList;
 
 public class ChangeNotes extends AppCompatActivity {
     Section curr;
+    MusicNotesView musicNotesView;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_notes);
+
+        musicNotesView = (MusicNotesView) findViewById(R.id.musicNotesView);
 
 
         Intent gi = getIntent();
@@ -57,5 +61,18 @@ public class ChangeNotes extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    public void saveNotes(View view) {
+        Node<Note> theNotes = musicNotesView.getSection();
+        String notes = "";
+
+        while (theNotes != null)
+        {
+            notes += theNotes.getElement().name + " ";
+            theNotes = theNotes.getNext();
+        }
+
+        Toast.makeText(this, notes, Toast.LENGTH_SHORT).show();
     }
 }
