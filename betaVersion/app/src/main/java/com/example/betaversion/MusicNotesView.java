@@ -69,8 +69,8 @@ public class MusicNotesView extends View {
         });
         middleOfCircles = new ArrayList<>();
         notes = new ArrayList<>();
-        notes.add("c4");
-        notes.add("d4");
+        notes.add("a4");
+        notes.add("b3");
         notesAdded = false;
 
 
@@ -142,12 +142,15 @@ public class MusicNotesView extends View {
 
             // check if it is in a odd place
             float currentHigh = middleOfCircles.get(i).getY();
-            if ((((int)currentHigh  - (int)((float)height - (float)height / 10.0)) % (dalteForNotes * 2)) > dalteForNotes)
+
+            // if the current height is devide in dalteForNotes
+            if (((currentHigh  - (height - height / 10.0) % (dalteForNotes * 2))) == 0)
             {
                 notInTheMiddle = 1;
             }
 
-            while ((int)currentHigh >= (int)((float)height - (float)height / 10.0))
+            // if the current height is less than first do
+            while (currentHigh >= ((float)height - (float)height / 10.0))
             {
                 float sizeOfLineHorizontal = width / 50;
                 canvas.drawLine(middleOfCircles.get(i).getX() - sizeOfLineHorizontal,currentHigh - notInTheMiddle * dalteForNotes,middleOfCircles.get(i).getX()   + sizeOfLineHorizontal, currentHigh - notInTheMiddle * dalteForNotes, p);
@@ -163,6 +166,7 @@ public class MusicNotesView extends View {
             }
 
             // check if need to add more line in the high
+            // check if need to add moreline in the high
             while (currentHigh <= height - height / 10 - dalteForNotes * 12 )
             {
                 float sizeOfLineHorizontal = width / 50;
@@ -185,7 +189,7 @@ public class MusicNotesView extends View {
 
     private float getPostion(float height, String s) {
         char notes[] = {'c','d','e','f','g','a','b'};
-        dalteForNotes = height / 16;
+        dalteForNotes = height / 18;
         float notePos =  height - height / 10 - findElement(notes, s.charAt(0)) * dalteForNotes;
 
         // check if the second number is the octava of the note
@@ -240,19 +244,33 @@ public class MusicNotesView extends View {
     private String getNote(float y, char sprcial)
     {
         char notes[] = {'c','d','e','f','g','a','b'};
-        float theNotesPostions = (y - (height - height / 10)) % (dalteForNotes * 8);
+        // get the note pos (note hight - the first do) % num of notes in octave
+        float theNotesPostions = (y - (height - height / 10)) % (dalteForNotes * 7);
+        // get the do of the cotave
+        float noteHight = (y - theNotesPostions);
+        float octave = (noteHight - (height - height / 10)) / (dalteForNotes * 7);
+
+
 
         // check if the second number is the octava of the note
         float theNumberOfNotesOffset = (theNotesPostions / dalteForNotes);
         int index =  -1 * (int) Math.round(theNumberOfNotesOffset);
 
+        int octaveOfNote = (Math.round(octave) * -1) + 4;
+
+
+        if (index < 0)
+        {
+            index = notes.length + (index % 7);
+        }
         if (sprcial == 0)
         {
-            return String.valueOf(notes[index]);
+            String toReturn = String.valueOf(notes[index % 7]) + String.valueOf(octaveOfNote);
+            return toReturn;
         }
         else
         {
-            return String.valueOf(notes[index]) + String.valueOf(sprcial);
+            return String.valueOf(notes[index % 7]) + String.valueOf(octaveOfNote) + String.valueOf(sprcial);
         }
     }
 
@@ -271,12 +289,21 @@ public class MusicNotesView extends View {
                 float y = event.getY();
                 int index = getIndex(x,y);
 
+                // if there is a valid index
                 if (index != -1)
                 {
-                    if (y % dalteForNotes < dalteForNotes / 2)
+                    // if there is not accurate touch so make it accurate
+                    if ((y - (height - height / 10)) % dalteForNotes < dalteForNotes / 2)
                     {
-                        y -= y % dalteForNotes;
+                        y -= (y - (height - height / 10)) % dalteForNotes;
                     }
+                    else
+                    {
+
+                        y -= (y - (height - height / 10)) % dalteForNotes;
+
+                    }
+
                     middleOfCircles.get(index).setY(y);
                 }
                 postInvalidate();

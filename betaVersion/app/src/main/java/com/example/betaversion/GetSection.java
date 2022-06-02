@@ -7,6 +7,7 @@ import static com.example.betaversion.Node.castFromStringToNote;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import android.Manifest;
 import android.app.AlertDialog;
@@ -16,6 +17,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.graphics.drawable.Drawable;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -293,7 +295,7 @@ public class GetSection extends AppCompatActivity {
             stopRecording();
 
             // Change button image and set Recording state to false
-            recordBtn.setImageDrawable(getResources().getDrawable(R.drawable.record_btn_stopped, null));
+            recordBtn.setImageDrawable(getDrawableResource(R.drawable.record_btn_stopped));
             isRecording = false;
         }
         else {
@@ -303,7 +305,7 @@ public class GetSection extends AppCompatActivity {
                 startRecording();
 
                 // Change button image and set Recording state to false
-                recordBtn.setImageDrawable(getResources().getDrawable(R.drawable.record_btn_recording, null));
+                recordBtn.setImageDrawable(getDrawableResource(R.drawable.record_btn_recording));
                 isRecording = true;
             }
             else
@@ -313,6 +315,9 @@ public class GetSection extends AppCompatActivity {
 
 
         }
+    }
+    private Drawable getDrawableResource(int resID) {
+        return ContextCompat.getDrawable(this, resID);
     }
 
 

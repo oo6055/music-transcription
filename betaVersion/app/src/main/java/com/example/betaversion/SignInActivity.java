@@ -96,6 +96,8 @@ public class SignInActivity extends AppCompatActivity {
                                     Toast.makeText(SignInActivity.this, "User created successfully", Toast.LENGTH_SHORT).show();
                                     DatabaseReference usersRef = FBref.FBDB.getReference().child("Users");
                                     usersRef.child(mAuth.getUid()).setValue(fullName);
+                                    Intent i = new Intent(getApplicationContext(), ShowMySections.class);
+                                    startActivity(i);
 
 
                                 }

@@ -122,7 +122,6 @@ def file_to_wav():
 
 
 def main():
-    print(get_data_back("3-4-0007.wav"))
     start_server()
 
 if __name__ == "__main__":
