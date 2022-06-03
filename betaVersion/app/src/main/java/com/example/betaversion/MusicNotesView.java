@@ -69,8 +69,8 @@ public class MusicNotesView extends View {
         });
         middleOfCircles = new ArrayList<>();
         notes = new ArrayList<>();
-        notes.add("a4");
-        notes.add("b3");
+        notes.add("a3");
+        notes.add("c4");
         notesAdded = false;
 
 
@@ -138,31 +138,32 @@ public class MusicNotesView extends View {
             canvas.drawCircle(middleOfCircles.get(i).getX() ,middleOfCircles.get(i).getY(),r ,p);
             canvas.drawLine(middleOfCircles.get(i).getX() + r ,middleOfCircles.get(i).getY(),middleOfCircles.get(i).getX() + r,middleOfCircles.get(i).getY() - sizeOfLineVertical ,p);
             // check if need to add more line in the bottom
-            float notInTheMiddle = 0;
+            float notInTheMiddle = 1;
 
             // check if it is in a odd place
             float currentHigh = middleOfCircles.get(i).getY();
 
             // if the current height is devide in dalteForNotes
-            if (((currentHigh  - (height - height / 10.0) % (dalteForNotes * 2))) == 0)
+            if ((Math.round(currentHigh - (height - height / 10))) % Math.round(dalteForNotes * 2) == 0)
             {
-                notInTheMiddle = 1;
+                notInTheMiddle = 0;
             }
 
             // if the current height is less than first do
-            while (currentHigh >= ((float)height - (float)height / 10.0))
+            while (Math.round(currentHigh - (height - height / 10.0)) >= 0)
             {
-                float sizeOfLineHorizontal = width / 50;
-                canvas.drawLine(middleOfCircles.get(i).getX() - sizeOfLineHorizontal,currentHigh - notInTheMiddle * dalteForNotes,middleOfCircles.get(i).getX()   + sizeOfLineHorizontal, currentHigh - notInTheMiddle * dalteForNotes, p);
+                float sizeOfLineHorizontal =  r + width / 70;
+                canvas.drawLine(middleOfCircles.get(i).getX() - sizeOfLineHorizontal,currentHigh - notInTheMiddle * r,middleOfCircles.get(i).getX()   + sizeOfLineHorizontal, currentHigh - notInTheMiddle * r, p);
                 currentHigh -= dalteForNotes * 2;
             }
 
-
+            // deal with to high
 
             currentHigh = middleOfCircles.get(i).getY();
-            if (((currentHigh  - (height - height / 10 - dalteForNotes * 12 )) % (dalteForNotes * 2)) > dalteForNotes)
+            notInTheMiddle = 1;
+            if (((Math.round(currentHigh  - ((height - height / 10.0) - dalteForNotes * 12)) % Math.round(dalteForNotes * 2))) == 0)
             {
-                notInTheMiddle = 1;
+                notInTheMiddle = 0;
             }
 
             // check if need to add more line in the high
@@ -245,11 +246,10 @@ public class MusicNotesView extends View {
     {
         char notes[] = {'c','d','e','f','g','a','b'};
         // get the note pos (note hight - the first do) % num of notes in octave
-        float theNotesPostions = (y - (height - height / 10)) % (dalteForNotes * 7);
+        float theNotesPostions = (y - (height - height / 10 + dalteForNotes * 7 * 4)) % (dalteForNotes * 7);
         // get the do of the cotave
         float noteHight = (y - theNotesPostions);
         float octave = (noteHight - (height - height / 10)) / (dalteForNotes * 7);
-
 
 
         // check if the second number is the octava of the note
@@ -257,6 +257,7 @@ public class MusicNotesView extends View {
         int index =  -1 * (int) Math.round(theNumberOfNotesOffset);
 
         int octaveOfNote = (Math.round(octave) * -1) + 4;
+
 
 
         if (index < 0)
