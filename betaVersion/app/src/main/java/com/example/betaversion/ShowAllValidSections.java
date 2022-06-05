@@ -142,6 +142,15 @@ public class ShowAllValidSections extends AppCompatActivity {
                 }
             });
         }
+        else if (op.equals("change section"))
+        {
+            si = new Intent(this,ChangeNotes.class);
+            si.putExtra("fileName",sectionsList.get(i).getNameOfFile());
+            si.putExtra("privacy",sectionsList.get(i).getPublicOrPrivate());
+
+
+            startActivity(si);
+        }
 
         return true;
     }

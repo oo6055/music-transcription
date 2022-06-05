@@ -44,7 +44,10 @@ public class Node<T> {
 
         while (ptr != null)
         {
-            arr.add(ptr.getElement());
+            if (ptr.getElement() != null)
+            {
+                arr.add(ptr.getElement());
+            }
             ptr = ptr.getNext();
         }
 

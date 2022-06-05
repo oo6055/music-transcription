@@ -36,13 +36,26 @@
 
             <Button
                 android:layout_width="0px"
-                android:onClick="saveNotes"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:text="Button" />
+                android:onClick="saveNotes"
+                android:text="save" />
 
             <Space
                 android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <Button
+                android:id="@+id/button"
+                android:layout_width="0px"
+                android:onClick="addNote"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:text="add note" />
+
+            <Space
+                android:layout_width="0px"
                 android:layout_height="match_parent"
                 android:layout_weight="1" />
         </LinearLayout>
@@ -51,6 +64,49 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="0.1" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0px"
+            android:layout_weight="0.5"
+            android:orientation="horizontal">
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:onClick="addDiaz"
+                android:text="#"
+                android:textSize="34sp" />
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+
+            <Button
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:onClick="addBamol"
+                android:text="♭"
+                android:textSize="34sp" />
+
+            <Space
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1" />
+        </LinearLayout>
+
+        <Space
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
 
 </LinearLayout>

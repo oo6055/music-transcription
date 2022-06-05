@@ -25,15 +25,17 @@ import java.util.List;
 
 
 public class MusicNotesView extends View {
-    private ArrayList<String> notes;
+    private ArrayList<String> notes; // not update many times
     private Bitmap structre;
     private ArrayList<MusicNoteCircle> middleOfCircles;
     float r;
     float height;
     private float dalteForNotes;
     boolean notesAdded = false;
-    public MusicNotesView(Context context) {
+    int indexOfLastTouches;
 
+    public MusicNotesView(Context context) {
+        // if it gets a contex
         super(context);
         init(null);
     }
@@ -48,17 +50,18 @@ public class MusicNotesView extends View {
         init(attrs);
     }
 
-    // need to remove
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public MusicNotesView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs);
     }
+
     private void init(@Nullable AttributeSet set)
     {
-
+        // create the line with the clef
         structre = BitmapFactory.decodeResource(getResources(), R.drawable.musicnotesstructre);
 
+        // when it gets the layout
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -67,15 +70,14 @@ public class MusicNotesView extends View {
 
             }
         });
+
+        // init a new list
+        notesAdded = true;
         middleOfCircles = new ArrayList<>();
-        notes = new ArrayList<>();
-        notes.add("a3");
-        notes.add("c4");
-        notesAdded = false;
-
-
+        indexOfLastTouches = -1;
 
     }
+
     public void addNotes(ArrayList<String> notes, float width, float height)
     {
         int cxOfset = 0;
@@ -84,6 +86,9 @@ public class MusicNotesView extends View {
         float offsetOfTheStart = width / 6;
         float horizontalOffset = width / 10;
         char special = 0;
+        middleOfCircles = new ArrayList<>();
+
+
         for (int i = 0; i < notes.size(); i++)
         {
             special = 0;
@@ -93,11 +98,11 @@ public class MusicNotesView extends View {
             // check if the number is a sign
             if (notes.get(i).length() >= 2 && notes.get(i).charAt(1) == '-')
             {
-                special = 'b';
+                special = '-';
             }
             if (notes.get(i).length() >= 2 && notes.get(i).charAt(1) == '#')
             {
-                special = 'd';
+                special = '#';
             }
 
             middleOfCircles.add(new MusicNoteCircle(offsetOfTheStart + cxOfset ,posOfNote, special));
@@ -150,7 +155,7 @@ public class MusicNotesView extends View {
             }
 
             // if the current height is less than first do
-            while (Math.round(currentHigh - (height - height / 10.0)) >= 0)
+            while (Math.round(currentHigh) >= Math.round(height - height / 10.0))
             {
                 float sizeOfLineHorizontal =  r + width / 70;
                 canvas.drawLine(middleOfCircles.get(i).getX() - sizeOfLineHorizontal,currentHigh - notInTheMiddle * r,middleOfCircles.get(i).getX()   + sizeOfLineHorizontal, currentHigh - notInTheMiddle * r, p);
@@ -161,9 +166,14 @@ public class MusicNotesView extends View {
 
             currentHigh = middleOfCircles.get(i).getY();
             notInTheMiddle = 1;
+            // draw the lines
             if (((Math.round(currentHigh  - ((height - height / 10.0) - dalteForNotes * 12)) % Math.round(dalteForNotes * 2))) == 0)
             {
+                float sizeOfLineHorizontal = width / 50;
+
                 notInTheMiddle = 0;
+                canvas.drawLine(middleOfCircles.get(i).getX() - sizeOfLineHorizontal,currentHigh + notInTheMiddle * dalteForNotes,middleOfCircles.get(i).getX()  + sizeOfLineHorizontal, currentHigh + notInTheMiddle * dalteForNotes, p);
+
             }
 
             // check if need to add more line in the high
@@ -175,12 +185,12 @@ public class MusicNotesView extends View {
                 currentHigh += dalteForNotes * 2;
             }
 
-            // check if the number is a sign
-            if (notes.get(i).length() >= 2 && notes.get(i).charAt(1) == '-')
+            // check if there is a sign
+            if (middleOfCircles.get(i).getSprcial() == '-')
             {
                 addBamol(canvas, middleOfCircles.get(i).getX(), middleOfCircles.get(i).getY(), r, width / 40, width / 20);
             }
-            if (notes.get(i).length() >= 2 && notes.get(i).charAt(1) == '#')
+            if (middleOfCircles.get(i).getSprcial() == '#')
             {
                 addDiaz(canvas, middleOfCircles.get(i).getX(), middleOfCircles.get(i).getY(), r, width / 40, width / 24);
             }
@@ -192,15 +202,27 @@ public class MusicNotesView extends View {
         char notes[] = {'c','d','e','f','g','a','b'};
         dalteForNotes = height / 18;
         float notePos =  height - height / 10 - findElement(notes, s.charAt(0)) * dalteForNotes;
+        int indexOfNumber = 0;
 
-        // check if the second number is the octava of the note
-        if (s.length() >= 2 && s.charAt(1) >= '0' && s.charAt(1) <= '9')
+        // if the pos of the number is diffrent so I need to get him from diffrent index
+        if (s.length() >= 2 && (s.charAt(1) == '-' || s.charAt(1) == '#'))
         {
-            notePos -= 7 * dalteForNotes * (int) ((s.charAt(1) - '0') - 4);
+            indexOfNumber = 2;
         }
+        else
+        {
+            indexOfNumber = 1;
+        }
+        // check if the second number is the octava of the note
+        if (s.length() >= indexOfNumber + 1 && s.charAt(indexOfNumber) >= '0' && s.charAt(indexOfNumber) <= '9')
+        {
+            notePos -= 7 * dalteForNotes * (int) ((s.charAt(indexOfNumber) - '0') - 4);
+        }
+
 
         return notePos;
     }
+
     private int findElement(char[] arr, char toFind)
     {
         for (int i = 0; i < arr.length; i++)
@@ -258,8 +280,6 @@ public class MusicNotesView extends View {
 
         int octaveOfNote = (Math.round(octave) * -1) + 4;
 
-
-
         if (index < 0)
         {
             index = notes.length + (index % 7);
@@ -271,7 +291,8 @@ public class MusicNotesView extends View {
         }
         else
         {
-            return String.valueOf(notes[index % 7]) + String.valueOf(octaveOfNote) + String.valueOf(sprcial);
+            String valueOfSpecial = sprcial == '#' ? "#" : "-";
+            return String.valueOf(notes[index % 7]) + valueOfSpecial +  String.valueOf(octaveOfNote);
         }
     }
 
@@ -288,10 +309,10 @@ public class MusicNotesView extends View {
             {
                 float x = event.getX();
                 float y = event.getY();
-                int index = getIndex(x,y);
+                indexOfLastTouches = getIndex(x,y);
 
                 // if there is a valid index
-                if (index != -1)
+                if (indexOfLastTouches != -1)
                 {
                     // if there is not accurate touch so make it accurate
                     if ((y - (height - height / 10)) % dalteForNotes < dalteForNotes / 2)
@@ -305,7 +326,7 @@ public class MusicNotesView extends View {
 
                     }
 
-                    middleOfCircles.get(index).setY(y);
+                    middleOfCircles.get(indexOfLastTouches).setY(y);
                 }
                 postInvalidate();
                 return true;
@@ -336,11 +357,60 @@ public class MusicNotesView extends View {
         if (! notesAdded)
         {
             height = structre.getHeight();
+
             addNotes(notes, structre.getWidth(), structre.getHeight());
             notesAdded = true;
         }
 
 
         drawCircles(canvas, structre.getHeight());
+        notes = convertToSectionOfStrings(getSection().toArraylist());
+    }
+
+    private ArrayList<String> convertToSectionOfStrings(ArrayList<Note> arr) {
+        ArrayList<String> notesArr = new ArrayList<>();
+        for (int i = 0; i < arr.size(); i++)
+        {
+            notesArr.add(arr.get(i).name);
+        }
+        return notesArr;
+    }
+
+    public void setNotes(Node<Note> com) {
+        notes = new ArrayList<>();
+        while (com != null)
+        {
+            if (com != null)
+            {
+                notes.add(com.getElement().name);
+                com = com.getNext();
+            }
+
+        }
+
+        notesAdded = false;
+        postInvalidate();
+    }
+
+    public void addNote(String note) {
+        notes.add(note);
+
+        notesAdded = false;
+        postInvalidate();
+    }
+
+    public void addDiaz() {
+        if (indexOfLastTouches != -1) {
+            middleOfCircles.get(indexOfLastTouches).setSprcial('#');
+            postInvalidate();
+        }
+    }
+
+    public void addBamol() {
+        if (indexOfLastTouches != -1)
+        {
+            middleOfCircles.get(indexOfLastTouches).setSprcial('-');
+            postInvalidate();
+        }
     }
 }

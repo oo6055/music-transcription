@@ -46,13 +46,8 @@ public class ChangeNotes extends AppCompatActivity {
             public void onDataChange(DataSnapshot dataSnapshot) {
                 curr = dataSnapshot.getValue(Section.class);
                 Node<Note> com = curr.NodeGetComposition();
-                String sec = "";
-                while (com != null)
-                {
-                    sec += com.getElement().name + " ";
-                    com = com.getNext();
-                }
-                Toast.makeText(ChangeNotes.this, sec, Toast.LENGTH_SHORT).show();
+
+                musicNotesView.setNotes(com);
             }
 
             @Override
@@ -74,5 +69,18 @@ public class ChangeNotes extends AppCompatActivity {
         }
 
         Toast.makeText(this, notes, Toast.LENGTH_SHORT).show();
+    }
+
+    public void addNote(View view) {
+        musicNotesView.addNote("c4");
+
+    }
+
+    public void addBamol(View view) {
+        musicNotesView.addBamol();
+    }
+
+    public void addDiaz(View view) {
+        musicNotesView.addDiaz();
     }
 }
