@@ -6,6 +6,8 @@ import static com.nitishp.sheetmusic.NoteData.NoteValue.LOWER_B;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -25,6 +27,9 @@ import java.util.ArrayList;
 public class ChangeNotes extends AppCompatActivity {
     Section curr;
     MusicNotesView musicNotesView;
+    String privacy;
+    String uid;
+    String address;
 
 
     @Override
@@ -35,16 +40,26 @@ public class ChangeNotes extends AppCompatActivity {
         musicNotesView = (MusicNotesView) findViewById(R.id.musicNotesView);
 
 
+
         Intent gi = getIntent();
         String name = gi.getStringExtra("fileName");
         boolean typeOfPrivacy = gi.getBooleanExtra("privacy", true);
-        String privacy = typeOfPrivacy ? "Public Sections" : "Private Sections";
-        Query q = FBref.FBDB.getReference().child(privacy).child(FBref.mAuth.getUid()).orderByChild("nameOfFile").equalTo(name);
+        uid = gi.getStringExtra("uid");
+        privacy = typeOfPrivacy ? "Public Sections" : "Private Sections";
+
+
+        Query q = FBref.FBDB.getReference().child(privacy).child(uid).orderByChild("nameOfFile").equalTo(name);
         q.addListenerForSingleValueEvent(new ValueEventListener() {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 curr = dataSnapshot.getValue(Section.class);
+                // get the path of the section (for the update)
+                address = dataSnapshot.getKey();
+                for (DataSnapshot sec : dataSnapshot.getChildren())
+                {
+                    curr = sec.getValue(Section.class);
+                }
                 Node<Note> com = curr.NodeGetComposition();
 
                 musicNotesView.setNotes(com);
@@ -60,6 +75,8 @@ public class ChangeNotes extends AppCompatActivity {
 
     public void saveNotes(View view) {
         Node<Note> theNotes = musicNotesView.getSection();
+        curr.setComposition(theNotes.toArraylist());
+
         String notes = "";
 
         while (theNotes != null)
@@ -67,6 +84,40 @@ public class ChangeNotes extends AppCompatActivity {
             notes += theNotes.getElement().name + " ";
             theNotes = theNotes.getNext();
         }
+
+        if (uid != FBref.mAuth.getUid())
+        {
+            new AlertDialog.Builder(ChangeNotes.this)
+                    .setTitle("Public Or Private")
+                    .setMessage("It is not your section! do you want public or private acesses?")
+
+                    // Specifying a listener allows you to take an action before dismissing the dialog.
+                    // The dialog is automatically dismissed when a dialog button is clicked.
+                    .setPositiveButton(
+                    "public",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            FBref.FBDB.getReference().child("Private Sections").child(FBref.mAuth.getUid()).push().setValue(curr);
+                        }
+                    })
+
+                    .setNegativeButton(
+                    "Private",
+                    new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            FBref.FBDB.getReference().child("Private Sections").child(FBref.mAuth.getUid()).push().setValue(curr);
+                        }
+                    })
+                    .show();
+
+        }
+        else // if the user created the section
+        {
+            FBref.FBDB.getReference().child(privacy).child(uid).child(address).setValue(curr);
+        }
+
 
         Toast.makeText(this, notes, Toast.LENGTH_SHORT).show();
     }

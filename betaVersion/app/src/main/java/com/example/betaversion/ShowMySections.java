@@ -184,6 +184,8 @@ import com.google.firebase.storage.StorageReference;
              si = new Intent(this,ChangeNotes.class);
              si.putExtra("fileName",sectionsList.get(i).getNameOfFile());
              si.putExtra("privacy",sectionsList.get(i).getPublicOrPrivate());
+             si.putExtra("uid",sectionsList.get(i).getUid());
+
 
 
              startActivity(si);

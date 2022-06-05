@@ -146,6 +146,7 @@ public class ShowAllValidSections extends AppCompatActivity {
         {
             si = new Intent(this,ChangeNotes.class);
             si.putExtra("fileName",sectionsList.get(i).getNameOfFile());
+            si.putExtra("uid",sectionsList.get(i).getUid());
             si.putExtra("privacy",sectionsList.get(i).getPublicOrPrivate());
 
 

@@ -64,6 +64,7 @@ public class Section {
         {
             next = new Node<Note>(n.get(i),null);
             ptr.setNext(next);
+            ptr = ptr.getNext();
         }
     }
 
