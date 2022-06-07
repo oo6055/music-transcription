@@ -1,19 +1,26 @@
 package com.example.betaversion;
 
-public class Note {
-    public double duration;
-    public double freqency;
-    public String name;
+import java.util.Dictionary;
+import java.util.Hashtable;
 
-    public Note(String name, double duration, double freqency)
-    {
+public class Note {
+    public float duration;
+    public float freqency;
+    public String name;
+    private Dictionary notesAndFrequ = new Hashtable();
+
+    public Note(String name, float duration, float freqency) {
         this.duration = duration;
         this.name = name;
         this.freqency = freqency;
     }
 
-    public Note()
+    public Note() {
+    }
+
+    public static float takeFreqency(String name)
     {
+        return 440;
     }
 
     @Override
@@ -41,12 +48,12 @@ public class Note {
     }
 
 
-    public void setDuration(double dur)
+    public void setDuration(float dur)
     {
          duration = dur;
     }
 
-    public void setFreqency(double fre)
+    public void setFreqency(float fre)
     {
         freqency = fre;
     }

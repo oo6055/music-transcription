@@ -9,7 +9,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.media.AudioFormat;
+import android.media.AudioManager;
+import android.media.AudioTrack;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Toast;
 
@@ -30,6 +34,16 @@ public class ChangeNotes extends AppCompatActivity {
     String privacy;
     String uid;
     String address;
+
+    // originally from http://marblemice.blogspot.com/2010/04/generate-and-play-tone-in-android.html
+    // and modified by Steve Pomeroy <steve@staticfree.info>
+    private final int sampleRate = 8000;
+    private int numSamples = 0;
+    private ArrayList<Double> sample;// hz
+
+    ArrayList<Byte>  generatedSnd;
+
+    Handler handler = new Handler();
 
 
     @Override
@@ -85,20 +99,23 @@ public class ChangeNotes extends AppCompatActivity {
             theNotes = theNotes.getNext();
         }
 
-        if (uid != FBref.mAuth.getUid())
+        if (!uid.equals(FBref.mAuth.getUid()))
         {
             new AlertDialog.Builder(ChangeNotes.this)
                     .setTitle("Public Or Private")
                     .setMessage("It is not your section! do you want public or private acesses?")
 
+
                     // Specifying a listener allows you to take an action before dismissing the dialog.
                     // The dialog is automatically dismissed when a dialog button is clicked.
                     .setPositiveButton(
-                    "public",
+                    "Public",
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
-                            FBref.FBDB.getReference().child("Private Sections").child(FBref.mAuth.getUid()).push().setValue(curr);
+                            curr.setUid(FBref.mAuth.getUid());
+                            curr.setPublicOrPrivate(true);
+                            FBref.FBDB.getReference().child("Public Sections").child(FBref.mAuth.getUid()).push().setValue(curr);
                         }
                     })
 
@@ -107,6 +124,8 @@ public class ChangeNotes extends AppCompatActivity {
                     new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
+                            curr.setUid(FBref.mAuth.getUid());
+                            curr.setPublicOrPrivate(false);
                             FBref.FBDB.getReference().child("Private Sections").child(FBref.mAuth.getUid()).push().setValue(curr);
                         }
                     })
@@ -133,5 +152,92 @@ public class ChangeNotes extends AppCompatActivity {
 
     public void addDiaz(View view) {
         musicNotesView.addDiaz();
+    }
+
+    public void playSection(View view) {
+
+        // Use a new tread as this can take a while
+        final Thread thread = new Thread(new Runnable() {
+            public void run() {
+
+
+
+                    handler.post(new Runnable() {
+
+                        public void run() {
+
+                            genTone(curr.getComposition());
+                            playSound();
+                        }
+                    });
+
+            }
+        });
+        thread.start();
+
+
+
+
+    }
+
+    void genTone(ArrayList<Note> notes){
+        // fill out the array
+
+        sample = new ArrayList<>();
+        generatedSnd = new ArrayList<>();
+        for (int i = 0; i < notes.size(); i++)
+        {
+            // calculate the num of samples
+            numSamples = (int) (notes.get(i).duration * sampleRate);
+
+
+            for (int j = 0; j < numSamples; j++) {
+                sample.add(Math.sin(2 * Math.PI * j / (sampleRate/notes.get(i).freqency)));
+            }
+
+            // put a lit of silence
+            numSamples = (int) (0.1 * sampleRate);
+
+            for (int j = 0; j < numSamples; j++) {
+                sample.add(0.0);
+            }
+
+        }
+
+
+
+
+
+        // convert to 16 bit pcm sound array
+        // assumes the sample buffer is normalised.
+        for (int i = 0; i < sample.size(); i++) {
+
+            double dVal = sample.get(i);
+            // scale to maximum amplitude
+            final short val = (short) ((dVal * 32767));
+            // in 16 bit wav PCM, first byte is the low order byte
+            generatedSnd.add((byte) (val & 0x00ff));
+            generatedSnd.add((byte) ((val & 0xff00) >>> 8));
+
+        }
+    }
+
+    void playSound(){
+        final AudioTrack audioTrack = new AudioTrack(AudioManager.STREAM_MUSIC,
+                sampleRate, AudioFormat.CHANNEL_OUT_MONO,
+                AudioFormat.ENCODING_PCM_16BIT, generatedSnd.size(),
+                AudioTrack.MODE_STATIC);
+        audioTrack.write(convertListToByte(generatedSnd), 0, generatedSnd.size());
+        audioTrack.play();
+    }
+    byte[] convertListToByte(ArrayList<Byte> generatedSnd)
+    {
+        byte[] arr = new byte[generatedSnd.size()];
+
+        for (int i = 0; i < generatedSnd.size(); i++)
+        {
+            arr[i] = generatedSnd.get(i);
+        }
+        return  arr;
     }
 }
