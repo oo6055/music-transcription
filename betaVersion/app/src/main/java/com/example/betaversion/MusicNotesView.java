@@ -252,7 +252,7 @@ public class MusicNotesView extends View {
         {
             String note = getNote(middleOfCircles.get(i).getY(), middleOfCircles.get(i).getSprcial());
             // need to change
-            ptrOfNode.setElement(new Note(note, 1, 440));
+            ptrOfNode.setElement(new Note(note, 1, Note.takeFreqency(note)));
 
             if (i != middleOfCircles.size() - 1)
             {

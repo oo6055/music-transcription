@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#03A9F4"
     tools:context=".LogInActivity">
+
     <Space
         android:layout_width="0dp"
         android:layout_height="match_parent"
@@ -13,7 +15,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="match_parent"
-        android:layout_weight="4"
+        android:layout_weight="19"
         android:orientation="vertical">
 
         <Space
@@ -22,13 +24,13 @@
             android:layout_weight="0.5" />
 
         <TextView
+            android:id="@+id/tVtitle"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="center"
-            android:id="@+id/tVtitle"
-            android:text="Login"
             android:autoSizeTextType="uniform"
+            android:gravity="center"
+            android:text="Login"
             android:textStyle="bold" />
 
         <Space
@@ -41,6 +43,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:background="#009688"
             android:ems="10"
             android:hint="e-mail"
             android:inputType="textEmailAddress" />
@@ -55,6 +58,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
+            android:background="#009688"
             android:ems="10"
             android:hint="password"
             android:inputType="textPassword" />
@@ -91,9 +95,10 @@
                 android:id="@+id/btn"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight="8"
-                android:onClick="logorreg"
-                android:text="Login" />
+                android:layout_weight="12"
+                android:onClick="login"
+                android:text="Login"
+                app:backgroundTint="#B35952" />
 
             <Space
                 android:layout_width="0dp"

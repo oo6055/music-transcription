@@ -5,7 +5,6 @@ import pyrebase
 import torch
 import music21
 import torchaudio
-import time
 
 ADD_DATA_CODE = "100"
 firebaseConfig = {

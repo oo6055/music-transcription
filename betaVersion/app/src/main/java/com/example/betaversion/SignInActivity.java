@@ -42,8 +42,6 @@ public class SignInActivity extends AppCompatActivity {
         mEmail = findViewById(R.id.Email);
         mPassword = findViewById(R.id.password);
         mPhone = findViewById(R.id.phone);
-        mRegisterBtn = findViewById(R.id.registerBtn);
-        mLoginBtn = findViewById(R.id.createText);
 
         progressBar = findViewById(R.id.progressBar);
 
@@ -53,79 +51,73 @@ public class SignInActivity extends AppCompatActivity {
             startActivity(i);
         }
 
+    }
 
-        mRegisterBtn.setOnClickListener(new View.OnClickListener() {
+    public void register(View view) {
+
+        final String email = mEmail.getText().toString().trim();
+        String password = mPassword.getText().toString().trim();
+        final String fullName = mFullName.getText().toString();
+        final String phone = mPhone.getText().toString();
+
+        if (TextUtils.isEmpty(email)) {
+            mEmail.setError("Email is Required.");
+            return;
+        }
+
+        if (TextUtils.isEmpty(password)) {
+            mPassword.setError("Password is Required.");
+            return;
+        }
+
+        if (password.length() < 6) {
+            mPassword.setError("Password Must be >= 6 Characters");
+            return;
+        }
+
+        progressBar.setVisibility(View.VISIBLE);
+
+        // register the user in firebase
+
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
-            public void onClick(View v) {
-                final String email = mEmail.getText().toString().trim();
-                String password = mPassword.getText().toString().trim();
-                final String fullName = mFullName.getText().toString();
-                final String phone = mPhone.getText().toString();
+            public void onComplete(@NonNull Task<AuthResult> task) {
+                if (task.isSuccessful()) {
 
-                if (TextUtils.isEmpty(email)) {
-                    mEmail.setError("Email is Required.");
-                    return;
-                }
+                    // send verification link
 
-                if (TextUtils.isEmpty(password)) {
-                    mPassword.setError("Password is Required.");
-                    return;
-                }
-
-                if (password.length() < 6) {
-                    mPassword.setError("Password Must be >= 6 Characters");
-                    return;
-                }
-
-                progressBar.setVisibility(View.VISIBLE);
-
-                // register the user in firebase
-
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
-                    @Override
-                    public void onComplete(@NonNull Task<AuthResult> task) {
-                        if (task.isSuccessful()) {
-
-                            // send verification link
-
-                            FirebaseUser fuser = mAuth.getCurrentUser();
-                            fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                                @Override
-                                public void onSuccess(Void aVoid) {
-                                    Toast.makeText(SignInActivity.this, "Verification Email Has been Sent.", Toast.LENGTH_SHORT).show();
-                                    Toast.makeText(SignInActivity.this, "User created successfully", Toast.LENGTH_SHORT).show();
-                                    DatabaseReference usersRef = FBref.FBDB.getReference().child("Users");
-                                    usersRef.child(mAuth.getUid()).setValue(fullName);
-                                    Intent i = new Intent(getApplicationContext(), ShowMySections.class);
-                                    startActivity(i);
+                    FirebaseUser fuser = mAuth.getCurrentUser();
+                    fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
+                        @Override
+                        public void onSuccess(Void aVoid) {
+                            Toast.makeText(SignInActivity.this, "Verification Email Has been Sent.", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(SignInActivity.this, "User created successfully", Toast.LENGTH_SHORT).show();
+                            DatabaseReference usersRef = FBref.FBDB.getReference().child("Users");
+                            usersRef.child(mAuth.getUid()).setValue(fullName);
+                            Intent i = new Intent(getApplicationContext(), ShowMySections.class);
+                            startActivity(i);
 
 
-                                }
-                            }).addOnFailureListener(new OnFailureListener() {
-                                @Override
-                                public void onFailure(@NonNull Exception e) {
-                                }
-                            });
-
-                            Toast.makeText(SignInActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
-                            userID = mAuth.getCurrentUser().getUid();
-
-                        } else {
-                            Toast.makeText(SignInActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                            progressBar.setVisibility(View.GONE);
                         }
-                    }
-                });
+                    }).addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                        }
+                    });
+
+                    Toast.makeText(SignInActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
+                    userID = mAuth.getCurrentUser().getUid();
+
+                } else {
+                    Toast.makeText(SignInActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                    progressBar.setVisibility(View.GONE);
+                }
             }
         });
+    }
 
-
-        mLoginBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getApplicationContext(), LogInActivity.class));
-            }
-        });
+    public void moveToLogIn(View view) {
+        startActivity(new Intent(getApplicationContext(), LogInActivity.class));
 
     }
 }

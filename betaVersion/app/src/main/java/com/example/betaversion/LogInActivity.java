@@ -58,7 +58,7 @@ public class LogInActivity extends AppCompatActivity {
      * If login or register process is Ok saving stay connect status & pass to next activity
      * <p>
      */
-    public void logorreg(View view) {
+    public void login(View view) {
 
         email = eTemail.getText().toString();
         password = eTpass.getText().toString();

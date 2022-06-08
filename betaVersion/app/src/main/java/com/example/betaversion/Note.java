@@ -18,9 +18,29 @@ public class Note {
     public Note() {
     }
 
-    public static float takeFreqency(String name)
+    public static float takeFreqency(String note)
     {
-        return 440;
+        String[] notes = {"A", "A#", "B", "C", "C#", "D", "D#", "E", "F", "F#", "G", "G#"};
+
+        if (note.contains("-"))
+        {
+            int indexOfNote = java.util.Arrays.asList(notes).indexOf(note.substring(0, note.length() - 2).toUpperCase()) - 1;
+            String octave = note.length() == 3 ? String.valueOf(note.charAt(2)) : String.valueOf(note.charAt(1));
+            note = indexOfNote < 0 ? notes[notes.length + indexOfNote] : notes[indexOfNote];
+            note += octave;
+        }
+
+        int octave = note.length() == 3 ? Integer.parseInt(String.valueOf(note.charAt(2))) : Integer.parseInt(String.valueOf(note.charAt(1)));
+        int keyNumber = java.util.Arrays.asList(notes).indexOf(note.substring(0, note.length() - 1).toUpperCase());
+
+        if (keyNumber < 3) {
+            keyNumber = keyNumber + 12 + ((octave - 1) * 12) + 1;
+        } else {
+            keyNumber = keyNumber + ((octave - 1) * 12) + 1;
+        }
+
+        // Return frequency of note
+        return (float) (440 * Math.pow(2, (float)(keyNumber - 49) / 12));
     }
 
     @Override
