@@ -29,7 +29,6 @@ public class Note {
             note = indexOfNote < 0 ? notes[notes.length + indexOfNote] : notes[indexOfNote];
             note += octave;
         }
-
         int octave = note.length() == 3 ? Integer.parseInt(String.valueOf(note.charAt(2))) : Integer.parseInt(String.valueOf(note.charAt(1)));
         int keyNumber = java.util.Arrays.asList(notes).indexOf(note.substring(0, note.length() - 1).toUpperCase());
 

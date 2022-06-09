@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#1575EA"
+    android:background="#03A9F4"
     tools:context=".PlaySection">
 
 
@@ -27,8 +27,7 @@
             android:textAlignment="center"
             android:textColor="@android:color/white"
             android:textColorHint="#F1EFEF"
-            android:textSize="16sp"
-            />
+            android:textSize="48sp" />
 
         <SeekBar
             android:id="@+id/seekbar"
@@ -42,8 +41,8 @@
             android:layout_width="match_parent"
             android:layout_height="0px"
             android:layout_weight="1"
-            android:onClick="play"
             android:background="#00000000"
+            android:onClick="play"
             app:srcCompat="@drawable/player_play_btn" />
     </LinearLayout>
 

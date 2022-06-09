@@ -76,6 +76,7 @@ public class GetSection extends AppCompatActivity {
     ToggleButton tb;
     String musicNotes;
     String recordPath;
+    ProgressDialog progressDialog;
     Uri file = null;
     private TextView filenameText;
 
@@ -130,7 +131,38 @@ public class GetSection extends AppCompatActivity {
                 //What ever you want to do with the value
                 //OR
                 IP = edittext.getText().toString();
-                update(msg);
+
+                progressDialog = new ProgressDialog(GetSection.this);
+                progressDialog.setMessage("Loading..."); // Setting Message
+                progressDialog.setTitle("updating"); // Setting Title
+                progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER); // Progress Dialog Style Spinner
+                progressDialog.show(); // Display Progress Dialog
+                progressDialog.setCancelable(false);
+
+
+                new Thread(new Runnable() {
+                    public void run() {
+                        try {
+                            update(msg);
+
+                            GetSection.this.runOnUiThread(new Runnable() {
+                                public void run() {
+                                    Toast.makeText(GetSection.this, musicNotes, Toast.LENGTH_SHORT).show();
+                                }
+                            });
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+
+
+                        progressDialog.dismiss();
+
+                    }
+                }).start();
+
+
             }
         });
 
@@ -155,86 +187,28 @@ public class GetSection extends AppCompatActivity {
 
         String name_of_file = mAuth.getUid() + file.getPath().substring(file.getPath().lastIndexOf("/")+1);
 
+        // get the transcript
+
         getTranscript(msg, name_of_file);
+
+        // check if it is empty
+        if ((int)musicNotes.charAt(0) == 65535)
+        {
+            musicNotes = "";
+        }
+
+
+
         Node<Note> n = castFromStringToNote(musicNotes);
         musicNotes = "";
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
         Section s = new Section(mAuth.getUid(),n,et.getText().toString(), formatter.format(date), tb.isChecked(), name_of_file);
 
-
+        // update the section
         StorageReference riversRef = filesRef.child(name_of_file);
-        UploadTask uploadTask = riversRef.putFile(file);
-
-
-        ProgressDialog progressDialog
-                = new ProgressDialog(GetSection.this);
-        progressDialog.setTitle("Uploading...");
-        progressDialog.show();
-
-
-        // adding listeners on upload
-        // or failure of image
-        uploadTask.addOnSuccessListener(
-                new OnSuccessListener<UploadTask.TaskSnapshot>() {
-
-                    @Override
-                    public void onSuccess(
-                            UploadTask.TaskSnapshot taskSnapshot)
-                    {
-
-                        // Image uploaded successfully
-                        // Dismiss dialog
-                        progressDialog.dismiss();
-                        Toast
-                                .makeText(GetSection.this,
-                                        "section Uploaded!!",
-                                        Toast.LENGTH_SHORT)
-                                .show();
-
-                        // add to the section
-                        privateSectionCase.child(mAuth.getUid()).push().setValue(s);
-                    }
-                })
-
-                .addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e)
-                    {
-
-                        // Error, Image not uploaded
-                        progressDialog.dismiss();
-                        Toast
-                                .makeText(GetSection.this,
-                                        "Failed " + e.getMessage(),
-                                        Toast.LENGTH_SHORT)
-                                .show();
-                    }
-                })
-                .addOnProgressListener(
-                        new OnProgressListener<UploadTask.TaskSnapshot>() {
-
-                            // Progress Listener for loading
-                            // percentage on the dialog box
-                            @Override
-                            public void onProgress(
-                                    UploadTask.TaskSnapshot taskSnapshot)
-                            {
-                                double progress
-                                        = (100.0
-                                        * taskSnapshot.getBytesTransferred()
-                                        / taskSnapshot.getTotalByteCount());
-                                progressDialog.setMessage(
-                                        "Uploaded "
-                                                + (int)progress + "%");
-                            }
-                        });
-
-
-
-
-
-        // upload the section
+        riversRef.putFile(file);
+        privateSectionCase.child(mAuth.getUid()).push().setValue(s);
     }
 
 
@@ -275,7 +249,7 @@ public class GetSection extends AppCompatActivity {
             }
             musicNotes += a;
 
-            Toast.makeText(GetSection.this, musicNotes, Toast.LENGTH_SHORT).show();
+
 
 
 
@@ -316,6 +290,7 @@ public class GetSection extends AppCompatActivity {
 
         }
     }
+
     private Drawable getDrawableResource(int resID) {
         return ContextCompat.getDrawable(this, resID);
     }
@@ -355,35 +330,6 @@ public class GetSection extends AppCompatActivity {
 //        recognize(loadSoundFileURL(new File(file.getPath())));
 
     }
-
-    public byte[] loadSoundFileURL(File path) throws IOException {
-        byte[] music1 = null;
-
-        InputStream in1=path.toURL().openStream();
-
-
-        music1= new byte[in1.available()];
-        music1=convertStreamToByteArray(in1);
-        in1.close();
-
-        return music1;
-    }
-
-    public static byte[] convertStreamToByteArray(InputStream is) throws IOException {
-
-
-
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        byte[] buff = new byte[10240];
-        int i = Integer.MAX_VALUE;
-        while ((i = is.read(buff, 0, buff.length)) > 0) {
-            baos.write(buff, 0, i);
-        }
-
-        return baos.toByteArray(); // be sure to close InputStream in calling function
-
-    }
-
 
     private void stopRecording() {
         //Stop Timer, very obvious

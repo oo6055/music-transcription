@@ -20,11 +20,14 @@ public class Node<T> {
 
         for(int i = 0; i < notes.length; i ++)
         {
-            // just example
-            Note n = new Note(notes[i],1,Note.takeFreqency(notes[i])); // need to update
-            next.setElement(n);
-            next.setNext(new Node<Note>(null,null));
-            next = next.getNext();
+            if (!notes[i].equals(""))
+            {
+                // just example
+                Note n = new Note(notes[i],1,Note.takeFreqency(notes[i])); // need to update
+                next.setElement(n);
+                next.setNext(new Node<Note>(null,null));
+                next = next.getNext();
+            }
         }
         return head;
     }
