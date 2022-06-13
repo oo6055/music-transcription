@@ -188,11 +188,16 @@ public class GetSection extends AppCompatActivity {
         String name_of_file = mAuth.getUid() + file.getPath().substring(file.getPath().lastIndexOf("/")+1);
 
         // get the transcript
-
-        getTranscript(msg, name_of_file);
+        try {
+            getTranscript(msg, name_of_file);
+        }
+        catch (Exception e)
+        {
+            musicNotes = "";
+        }
 
         // check if it is empty
-        if ((int)musicNotes.charAt(0) == 65535)
+        if (musicNotes.length() >= 1 && (int)musicNotes.charAt(0) == 65535)
         {
             musicNotes = "";
         }

@@ -51,7 +51,7 @@ public class MusicNotesView extends View {
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public MusicNotesView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        public MusicNotesView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs);
     }
@@ -198,14 +198,14 @@ public class MusicNotesView extends View {
     }
 
 
-    private float getPostion(float height, String s) {
+    private float getPostion(float height, String nameOfNote) {
         char notes[] = {'c','d','e','f','g','a','b'};
         dalteForNotes = height / 18;
-        float notePos =  height - height / 10 - findElement(notes, s.charAt(0)) * dalteForNotes;
+        float notePos =  height - height / 10 - findElement(notes, nameOfNote.charAt(0)) * dalteForNotes;
         int indexOfNumber = 0;
 
         // if the pos of the number is diffrent so I need to get him from diffrent index
-        if (s.length() >= 2 && (s.charAt(1) == '-' || s.charAt(1) == '#'))
+        if (nameOfNote.length() >= 2 && (nameOfNote.charAt(1) == '-' || nameOfNote.charAt(1) == '#'))
         {
             indexOfNumber = 2;
         }
@@ -214,9 +214,9 @@ public class MusicNotesView extends View {
             indexOfNumber = 1;
         }
         // check if the second number is the octava of the note
-        if (s.length() >= indexOfNumber + 1 && s.charAt(indexOfNumber) >= '0' && s.charAt(indexOfNumber) <= '9')
+        if (nameOfNote.length() >= indexOfNumber + 1 && nameOfNote.charAt(indexOfNumber) >= '0' && nameOfNote.charAt(indexOfNumber) <= '9')
         {
-            notePos -= 7 * dalteForNotes * (int) ((s.charAt(indexOfNumber) - '0') - 4);
+            notePos -= 7 * dalteForNotes * (int) ((nameOfNote.charAt(indexOfNumber) - '0') - 4);
         }
 
 

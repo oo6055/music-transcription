@@ -11,6 +11,5 @@ public class FBref {
     public static FirebaseAuth mAuth = FirebaseAuth.getInstance();
     private static FirebaseStorage  storage  = FirebaseStorage.getInstance();
     public static StorageReference filesRef = storage.getReference("files");
-    public static DatabaseReference refUsers=FBDB.getReference("Users");
 
 }

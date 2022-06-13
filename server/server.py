@@ -35,6 +35,8 @@ def string_to_notes(string, file_name):
             continue
         n = music21.note.Note(note_str, quarterLength=1)
         music_stream.append(n)
+        
+    # convert to musuicNotes ods
     conv = music21.converter.subConverters.ConverterLilypond()
     conv.write(music_stream, fmt='lilypond', fp='file', subformats=['pdf'])
     storge.child("files/" + file_name).put("file.pdf")
@@ -72,6 +74,7 @@ def start_server():
             # Receive the data in small chunks and retransmit it
             while True:
                 codeOfMsg = connection.recv(4).decode()
+
 
                 if codeOfMsg == ADD_DATA_CODE:
                     add_section(connection)

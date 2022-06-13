@@ -7,7 +7,6 @@ public class Note {
     public float duration;
     public float freqency;
     public String name;
-    private Dictionary notesAndFrequ = new Hashtable();
 
     public Note(String name, float duration, float freqency) {
         this.duration = duration;
