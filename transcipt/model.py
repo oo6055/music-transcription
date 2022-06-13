@@ -3,7 +3,9 @@ import torch.nn.functional as F
 
 
 class CNNLayerNorm(nn.Module):
-    """Layer normalization built for cnns input"""
+    """
+    normalization layer
+    """
 
     def __init__(self, n_feats):
         super(CNNLayerNorm, self).__init__()
@@ -18,7 +20,6 @@ class CNNLayerNorm(nn.Module):
 
 class ResidualCNN(nn.Module):
     """Residual CNN inspired by https://arxiv.org/pdf/1603.05027.pdf
-        except with layer norm instead of batch norm
     """
 
     def __init__(self, in_channels, out_channels, kernel, stride, dropout, n_feats):
@@ -45,26 +46,6 @@ class ResidualCNN(nn.Module):
         return x  # (batch, channel, feature, time)
 
 
-class BidirectionalGRU(nn.Module):
-
-    def __init__(self, rnn_dim, hidden_size, dropout, batch_first):
-        super(BidirectionalGRU, self).__init__()
-
-        self.BiGRU = nn.GRU(
-            input_size=rnn_dim, hidden_size=hidden_size,
-            num_layers=1, batch_first=batch_first, bidirectional=True)
-        print(rnn_dim)
-        self.layer_norm = nn.LayerNorm(rnn_dim)
-        self.dropout = nn.Dropout(dropout)
-
-    def forward(self, x):
-        x = self.layer_norm(x)
-        x = F.gelu(x)
-        x, _ = self.BiGRU(x)
-        x = self.dropout(x)
-        return x
-
-
 class MusicRecognitionModel(nn.Module):
     """Speech Recognition Model Inspired by DeepSpeech 2"""
 
@@ -80,12 +61,6 @@ class MusicRecognitionModel(nn.Module):
         ])
         self.fully_connected = nn.Linear(n_feats * 32, rnn_dim * 2)
 
-        # self.birnn_layers = nn.Sequential(*[
-        #     BidirectionalGRU(rnn_dim=rnn_dim * 2 if i == 0 else rnn_dim * 2,
-        #                      hidden_size=rnn_dim, dropout=dropout, batch_first=i == 0)
-        #     for i in range(n_rnn_layers)
-        # ])
-
         self.classifier = nn.Sequential(
             nn.Linear(rnn_dim * 2, rnn_dim),  # birnn returns rnn_dim*2
             nn.GELU(),
@@ -94,7 +69,10 @@ class MusicRecognitionModel(nn.Module):
         )
 
     def forward(self, x):
+
+        # [1,1,128,0] to [20,32,64,525]
         x = self.cnn(x)
+        #
         x = self.rescnn_layers(x)
 
         sizes = x.size()

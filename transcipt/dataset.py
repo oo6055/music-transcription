@@ -6,10 +6,7 @@ from torch import Tensor
 from torch.utils.data import Dataset
 
 
-def load_item(set_id: str,
-                          path: str,
-                          ext_audio: str,
-                          ext_txt: str) -> Tuple[Tensor, int, str, int, int, int]:
+def load_item(set_id, path, ext_audio, ext_txt):
     instrument_id, set_id, section_id = set_id.split("-")
 
     file_text = instrument_id + "-" + set_id + ext_txt
