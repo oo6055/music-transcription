@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:title="show my sections"
+        android:icon="@drawable/ic_baseline_home"
+        />
+    <item
+        android:id="@+id/publicsec"
+        android:title="search sections"
+        android:icon="@drawable/ic_baseline_search"
+        />
+</menu>

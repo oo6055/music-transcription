@@ -23,10 +23,14 @@ public class Node<T> {
             if (!notes[i].equals(""))
             {
                 // just example
-                Note n = new Note(notes[i],1,Note.takeFreqency(notes[i])); // need to update
-                next.setElement(n);
-                next.setNext(new Node<Note>(null,null));
-                next = next.getNext();
+                if (!notes[i].equals("<SPACE>"))
+                {
+                    Note n = new Note(notes[i],1,Note.takeFreqency(notes[i])); // need to update
+                    next.setElement(n);
+                    next.setNext(new Node<Note>(null,null));
+                    next = next.getNext();
+                }
+
             }
         }
         return head;

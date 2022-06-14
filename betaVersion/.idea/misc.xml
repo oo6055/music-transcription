@@ -3,7 +3,11 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/music-transcription/betaVersion/app/src/main/res/drawable/bg_gradient.xml" value="0.2635416666666667" />
+        <entry key="..\:/music-transcription/betaVersion/app/src/main/res/drawable/ic_baseline_cloud_upload.xml" value="0.3527777777777778" />
+        <entry key="..\:/music-transcription/betaVersion/app/src/main/res/drawable/ic_baseline_music_note_24.xml" value="0.2635416666666667" />
         <entry key="..\:/music-transcription/betaVersion/app/src/main/res/drawable/ic_launcher_background.xml" value="0.3962962962962963" />
+        <entry key="..\:/music-transcription/betaVersion/app/src/main/res/drawable/splash_background.xml" value="0.2635416666666667" />
         <entry key="..\:/music-transcription/betaVersion/app/src/main/res/layout/activity_change_notes.xml" value="0.22" />
         <entry key="..\:/music-transcription/betaVersion/app/src/main/res/layout/activity_enter_section.xml" value="0.27853260869565216" />
         <entry key="..\:/music-transcription/betaVersion/app/src/main/res/layout/activity_log_in.xml" value="0.33" />
@@ -13,10 +17,12 @@
         <entry key="..\:/music-transcription/betaVersion/app/src/main/res/layout/activity_show_my_sections.xml" value="0.24739583333333334" />
         <entry key="..\:/music-transcription/betaVersion/app/src/main/res/layout/activity_sign_in.xml" value="0.22" />
         <entry key="..\:/music-transcription/betaVersion/app/src/main/res/layout/activity_sign_it.xml" value="0.33" />
+        <entry key="..\:/music-transcription/betaVersion/app/src/main/res/layout/activity_splash_screen.xml" value="0.37182971014492755" />
         <entry key="..\:/music-transcription/betaVersion/app/src/main/res/layout/activity_try_view.xml" value="0.1947463768115942" />
         <entry key="..\:/music-transcription/betaVersion/app/src/main/res/layout/attrs.xml" value="0.23385416666666667" />
         <entry key="..\:/music-transcription/betaVersion/app/src/main/res/layout/mylist.xml" value="0.22" />
         <entry key="..\:/music-transcription/betaVersion/app/src/main/res/menu/generalmenu.xml" value="0.24739583333333334" />
+        <entry key="..\:/music-transcription/betaVersion/app/src/main/res/menu/menudown.xml" value="0.13574660633484162" />
         <entry key="..\:/music-transcription/betaVersion/app/src/main/res/menu/sectionsoptions.xml" value="0.42916666666666664" />
       </map>
     </option>

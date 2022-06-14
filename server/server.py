@@ -73,8 +73,10 @@ def start_server():
 
             # Receive the data in small chunks and retransmit it
             while True:
-                codeOfMsg = connection.recv(4).decode()
-
+                try:
+                    codeOfMsg = connection.recv(4).decode()
+                except (Exception):
+                    codeOfMsg = "0"
 
                 if codeOfMsg == ADD_DATA_CODE:
                     add_section(connection)
@@ -105,7 +107,8 @@ def add_section(connection):
         file.write(data)
         file.close()
         # create wav file
-        os.remove("file.wav")
+        if (os.path.isfile("file.wav")):
+            os.remove("file.wav")
         os.system('ffmpeg -i file.3gp file.wav')
         databack = get_data_back()
         print(databack)

@@ -1,5 +1,6 @@
 package com.example.betaversion;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -28,6 +30,8 @@ public class ShowAllValidSections extends AppCompatActivity {
 
     ListView ls;
     ArrayList<Section> sectionsList;
+    BottomNavigationView btnnav;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +39,11 @@ public class ShowAllValidSections extends AppCompatActivity {
         setContentView(R.layout.activity_show_all_valid_sections);
 
         sectionsList = new ArrayList<Section>();
+        btnnav = (BottomNavigationView) findViewById(R.id.btnnav);
+        btnnav.setSelectedItemId(R.id.publicsec);
+
+        btnnav.setOnNavigationItemSelectedListener(bottomNavMethod);
+
 
         ls = (ListView) findViewById(R.id.ls);
         getAllPublicSections();
@@ -70,6 +79,18 @@ public class ShowAllValidSections extends AppCompatActivity {
                     }
                 });
     }
+
+    private BottomNavigationView.OnNavigationItemSelectedListener bottomNavMethod = new
+            BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    if (item.getTitle().equals("show my sections")) {
+                        Intent si = new Intent(ShowAllValidSections.this, ShowMySections.class);
+                        startActivity(si);
+                    }
+                    return false;
+                }
+            };
 
 
 

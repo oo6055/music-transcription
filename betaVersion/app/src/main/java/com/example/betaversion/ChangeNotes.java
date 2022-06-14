@@ -1,7 +1,5 @@
 package com.example.betaversion;
 
-import static com.nitishp.sheetmusic.NoteData.NoteDuration.FOURTH;
-import static com.nitishp.sheetmusic.NoteData.NoteValue.LOWER_B;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -23,9 +21,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
-import com.nitishp.sheetmusic.MusicBarView;
-import com.nitishp.sheetmusic.NoteData;
-
 import java.util.ArrayList;
 
 public class ChangeNotes extends AppCompatActivity {
@@ -95,7 +90,7 @@ public class ChangeNotes extends AppCompatActivity {
 
         while (theNotes != null)
         {
-            notes += theNotes.getElement().name + " ";
+            notes += theNotes.getElement().getName() + " ";
             theNotes = theNotes.getNext();
         }
 
@@ -188,11 +183,11 @@ public class ChangeNotes extends AppCompatActivity {
         for (int i = 0; i < notes.size(); i++)
         {
             // calculate the num of samples
-            numSamples = (int) (notes.get(i).duration * sampleRate);
+            numSamples = (int) (notes.get(i).getDuration() * sampleRate);
 
 
             for (int j = 0; j < numSamples; j++) {
-                sample.add(Math.sin(2 * Math.PI * j / (sampleRate/notes.get(i).freqency)));
+                sample.add(Math.sin(2 * Math.PI * j / (sampleRate/notes.get(i).getFreqency())));
             }
 
             // put a lit of silence

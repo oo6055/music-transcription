@@ -1,0 +1,263 @@
+@startuml
+class ChangeNotes extends AppCompatActivity
+{
+    - curr:Section
+    - musicNotesView:MusicNotesView
+    - privacy:String
+    - uid:String
+    - address:String
+    - sample:ArrayList<Double>
+    - generatedSnd:ArrayList<Byte>
+
+    + saveNotes(View view):void
+    + addNote(View view):void
+    + addBamol(View view):void
+    + addDiaz(View view):void
+
+    + playSection(View view):void
+    + genTone(ArrayList<Note> notes):void{
+
+    - playSound():void
+    - convertListToByte(ArrayList<Byte> generatedSnd):byte[]
+ }
+Class Client
+{
+    - Socket:clientSocket
+    + startConnection(String ip, int port):void
+    +  getSock():Socket
+    +  stopConnection():void
+}
+class CodesOfMessages {
+    + static  ADDSECTIONCODE:String
+}
+class FBref {
+    + static FBDB:FirebaseDatabase
+    + static mAuth:FirebaseAuth
+    + static storage:FirebaseStorage
+    + static filesRef:StorageReference
+
+}
+class GetSection extends AppCompatActivity {
+    - IP:String
+    - port:final int
+    - et:EditText
+    - tb:ToggleButton
+    - musicNotes:String
+    - recordPath:String
+    - progressDialog:ProgressDialog
+    - file:Uri
+    - filenameText:TextView
+    -  isRecording:boolean
+    - privateSectionCase:DatabaseReference
+    - recordPermission:String
+    -  recordBtn:ImageButton
+    - mediaRecorder:MediaRecorder
+    - recordFile:String
+    -  timer:Chronometer
+    - sendMessage(final InputStream msg):void
+    - update(InputStream msg):void
+    - getTranscript(InputStream msg, String name_of_file):void
+    +  recordclick(View view):void
+    - getDrawableResource(int resID):Drawable
+    + submit(View view):void
+    - stopRecording():void
+    - startRecording():void
+    -  checkPermissions():boolean
+    + onStop():void
+
+
+    + chooseAudio(View view):void
+
+    # onActivityResult(int requestCode,int resultCode,Intent data):void
+
+
+    - getRealPathFromURI(Uri contentURI):String
+
+    + verifyStoragePermissions():boolean
+
+    + onCreateOptionsMenu(Menu menu):boolean
+
+    + onOptionsItemSelected(MenuItem item):boolean
+    }
+
+class LogInActivity extends AppCompatActivity {
+
+        - tVtitle:TextView
+        - eTemail:EditText
+        - eTpass:EditText
+        - cBstayconnect:CheckBox
+        - btn:Button
+
+        - email:String
+        - password:String
+        - stayConnect:Boolean
+        +  login(View view):void
+        }
+class MusicNoteCircle {
+    - x:float
+    - y:float
+    - special:char
+    + getSpecial():char
+    + setSpecial(char sprcial):void
+    + getY():float
+    + setY(float y):void
+    + getX():float
+    + setX(float x):void
+
+    }
+class MusicNotesView extends View {
+    - notes:ArrayList<String>
+    - structre:Bitmap
+    - middleOfCircles:ArrayList<MusicNoteCircle>
+    - r:float
+    - height:float
+    - dalteForNotes:float
+    - notesAdded:boolean
+    - indexOfLastTouches:int
+
+    -  init(AttributeSet set):void
+    + addNotes(ArrayList<String> notes, float width, float height):void
+    - addBamol(Canvas canvas, float xOfNote, float yNote, float radius, float delta,float fontSize):void
+    - addDiaz(Canvas canvas, float xOfNote, float yNote, float radius, float delta,float fontSize):void
+    - drawCircles(Canvas canvas, int height):void
+    - getPostion(float height, String nameOfNote):float
+    - findElement(char[] arr, char toFind):int
+    - getResizesdBitMap(Bitmap bitmap, int width, int height):Bitmap
+    + getSection():Node<Note>
+    - getNote(float y, char special):String
+    + onTouchEvent(MotionEvent event):boolean
+    - getIndex(float x, float y):int
+    # onDraw(Canvas canvas):void
+    - convertToSectionOfStrings(ArrayList<Note> arr):ArrayList<String>
+    + setNotes(Node<Note> com):void
+    + addNote(String note):void
+    +  addDiaz():void
+    +  addBamol():void
+}
+
+class MyListAdapter extends BaseAdapter {
+
+    Activity context:private
+    - sections:ArrayList<Section>
+
+    + getCount():int
+
+    + getItem(int position):Object
+
+    +  getItemId(int position):long
+
+    + getView(int position, View view, ViewGroup parent):View
+}
+class Node<T> {
+    - element:T
+    - next:Node<T>
+    + static castFromStringToNote(String text):Node<Note>
+    + getElement():T
+    + setElement(T e):void
+    + toArraylist():ArrayList<T>
+    + getNext():Node<T>
+    + setNext(Node<T> n):void
+    }
+
+class Note {
+        - duration:float
+        - freqency:float
+        - name:String
+        + static takeFreqency(String note):float
+        + getDuration():double
+        + getFreqency():double
+        +  getName():String
+        + setDuration(float dur):void
+        + setFreqency(float fre):void
+        + setName(String name):void
+    }
+
+class PlaySection extends AppCompatActivity {
+
+    - mediaPlayer:MediaPlayer
+    - isPlaying:boolean
+    - fileToPlay:File
+    - playBtn:ImageButton
+    - playerSeekbar:SeekBar
+    - fileNameTv:TextView
+    - seekbarHandler:Handler
+    - updateSeekbar:Runnable
+    - pauseAudio():void
+    - resumeAudio():void
+    - stopAudio():void
+    - playAudio(File fileToPlay):void
+    - updateRunnable():void
+    + onStop():void
+    + play(View view):void
+    }
+class Section {
+    - uid:String
+    - composition:Node<Note>
+    - publicOrPrivate:boolean
+    - nickName:String
+    - date:String
+    - nameOfFile:String
+    + getUid():String
+    +  getComposition():ArrayList<Note>
+    +  NodeGetComposition():Node<Note>
+    + setNickName(String nickName):void
+    + setUid(String uid):void
+    + getNickName():String
+    + setComposition(ArrayList<Note> n):void
+    + getDate():String
+    + setDate(String date):void
+    + getPublicOrPrivate():boolean
+    + setPublicOrPrivate(boolean publicOrPrivate):void
+    + getNameOfFile():String
+    + setNameOfFile(String nameOfFile):void
+}
+class ShowAllValidSections extends AppCompatActivity {
+
+    - ls:ListView
+    - sectionsList:ArrayList<Section>
+    - btnnav:BottomNavigationView
+    - getAllPublicSections():void
+    + onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo):void
+    + onContextItemSelected(MenuItem item):boolean
+    - updateListView(ArrayList<Section> sectionsList):void
+    + onCreateOptionsMenu(Menu menu):boolean
+    + onOptionsItemSelected(MenuItem item):boolean
+}
+class ShowMySections extends AppCompatActivity  implements View.OnCreateContextMenuListener {
+     - ls:ListView
+     - fab:FloatingActionButton
+     - isFABOpen:boolean
+     - addfab:FloatingActionButton
+     - sectionsList:ArrayList<Section>
+     - btnnav:BottomNavigationView
+     - hello:TextView
+     - showFABMenu():void
+     - closeFABMenu():void
+     + setAnimation():void
+     + setVisible():void
+     + onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo):void
+     + onContextItemSelected(MenuItem item):boolean
+     - getUserSections():void
+     - getPublicSections():void
+     - updateListView(ArrayList<Section> sectionsList):void
+    + onCreateOptionsMenu(Menu menu):boolean
+    + onOptionsItemSelected(MenuItem item):boolean
+     }
+     class SignInActivity extends AppCompatActivity {
+     - mFullName:EditText
+     - mEmail:EditText
+     - mPassword:EditText
+     - mPhone:EditText
+     - mRegisterBtn:Button
+     - mLoginBtn:TextView
+     - progressBar:ProgressBar
+     - userID:String
+     - register(View view):void
+     + moveToLogIn(View view):void
+     }
+     class SplashScreen extends AppCompatActivity
+     {
+     }
+
+
+@enduml

@@ -4,9 +4,9 @@ import java.util.Dictionary;
 import java.util.Hashtable;
 
 public class Note {
-    public float duration;
-    public float freqency;
-    public String name;
+    private float duration;
+    private float freqency;
+    private String name;
 
     public Note(String name, float duration, float freqency) {
         this.duration = duration;

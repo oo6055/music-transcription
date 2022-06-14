@@ -268,15 +268,15 @@ public class MusicNotesView extends View {
     {
         char notes[] = {'c','d','e','f','g','a','b'};
         // get the note pos (note hight - the first do) % num of notes in octave
-        float theNotesPostions = (y - (height - height / 10 + dalteForNotes * 7 * 4)) % (dalteForNotes * 7);
+        float theNotesPostions = ((-1 * (y - (height - height / 10)) + dalteForNotes * 7 * 4)) % (dalteForNotes * 7);
         // get the do of the cotave
-        float noteHight = (y - theNotesPostions);
+        float noteHight = (y + theNotesPostions);
         float octave = (noteHight - (height - height / 10)) / (dalteForNotes * 7);
 
 
         // check if the second number is the octava of the note
         float theNumberOfNotesOffset = (theNotesPostions / dalteForNotes);
-        int index =  -1 * (int) Math.round(theNumberOfNotesOffset);
+        int index =  (int) Math.round(theNumberOfNotesOffset);
 
         int octaveOfNote = (Math.round(octave) * -1) + 4;
 
@@ -371,7 +371,7 @@ public class MusicNotesView extends View {
         ArrayList<String> notesArr = new ArrayList<>();
         for (int i = 0; i < arr.size(); i++)
         {
-            notesArr.add(arr.get(i).name);
+            notesArr.add(arr.get(i).getName());
         }
         return notesArr;
     }
@@ -382,7 +382,7 @@ public class MusicNotesView extends View {
         {
             if (com != null)
             {
-                notes.add(com.getElement().name);
+                notes.add(com.getElement().getName());
                 com = com.getNext();
             }
 

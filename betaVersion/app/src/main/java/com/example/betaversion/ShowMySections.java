@@ -19,6 +19,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -30,52 +31,67 @@ import com.google.firebase.storage.StorageReference;
 
 
  public class ShowMySections extends AppCompatActivity  implements View.OnCreateContextMenuListener {
-    ListView ls;
-    FloatingActionButton fab;
-    boolean isFABOpen;
-    FloatingActionButton addfab;
-    ArrayList<Section> sectionsList;
-    TextView hello;
+     ListView ls;
+     FloatingActionButton fab;
+     boolean isFABOpen;
+     FloatingActionButton addfab;
+     ArrayList<Section> sectionsList;
+     BottomNavigationView btnnav;
+     TextView hello;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_show_my_sections);
+     @Override
+     protected void onCreate(Bundle savedInstanceState) {
+         super.onCreate(savedInstanceState);
+         setContentView(R.layout.activity_show_my_sections);
+
+         isFABOpen = false;
+         btnnav = (BottomNavigationView) findViewById(R.id.btnnav);
+         hello = (TextView) findViewById(R.id.title);
+         fab = (FloatingActionButton) findViewById(R.id.fb);
+         addfab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
+         fab.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 setAnimation();
+                 setVisible();
+                 if (!isFABOpen) {
+                     showFABMenu();
+                 } else {
+                     closeFABMenu();
+                 }
+                 isFABOpen = !isFABOpen;
+             }
+         });
+
+         btnnav.setOnNavigationItemSelectedListener(bottomNavMethod);
+
+         sectionsList = new ArrayList<Section>();
+
+         addfab.setOnClickListener(new View.OnClickListener() {
+             @Override
+             public void onClick(View view) {
+                 Intent si = new Intent(ShowMySections.this, GetSection.class);
+                 startActivity(si);
+             }
+         });
 
 
-        isFABOpen = false;
-        hello = (TextView) findViewById(R.id.title);
-        fab = (FloatingActionButton) findViewById(R.id.fb);
-        addfab = (FloatingActionButton) findViewById(R.id.floatingActionButton);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                setAnimation();
-                setVisible();
-                if(!isFABOpen){
-                    showFABMenu();
-                }else{
-                    closeFABMenu();
-                }
-                isFABOpen=!isFABOpen;
-            }
-        });
+         ls = (ListView) findViewById(R.id.ls);
+         getUserSections();
+         ls.setOnCreateContextMenuListener(this);
+     }
 
-        sectionsList = new ArrayList<Section>();
-
-        addfab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent si = new Intent(ShowMySections.this , GetSection.class);
-                startActivity(si);
-            }
-            });
-
-
-        ls = (ListView) findViewById(R.id.ls);
-        getUserSections();
-        ls.setOnCreateContextMenuListener(this);
-    }
+     private BottomNavigationView.OnNavigationItemSelectedListener bottomNavMethod = new
+             BottomNavigationView.OnNavigationItemSelectedListener() {
+                 @Override
+                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                     if (item.getTitle().equals("search sections")) {
+                         Intent si = new Intent(ShowMySections.this, ShowAllValidSections.class);
+                         startActivity(si);
+                     }
+                     return false;
+                 }
+     };
 
     private void showFABMenu(){
         addfab.startAnimation(AnimationUtils.loadAnimation(this,R.anim.rotate_close_anim));
@@ -297,12 +313,8 @@ import com.google.firebase.storage.StorageReference;
          String whatClicked = (String) item.getTitle();
          Intent si;
 
-         if(whatClicked.equals("search sections"))
-         {
-             si = new Intent(this,ShowAllValidSections.class);
-             startActivity(si);
-         }
-         else if(whatClicked.equals("signout"))
+
+         if(whatClicked.equals("signout"))
          {
              FBref.mAuth.signOut();
              si = new Intent(this, SignInActivity.class);
