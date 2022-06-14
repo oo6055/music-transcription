@@ -55,8 +55,7 @@ def start_server():
     # Bind the socket to the port
     server_address = ('0.0.0.0', 9002)
 
-    f = os.system("ipconfig")
-    print(f)
+    os.system("ipconfig")
     print('starting up on %s port %s' % server_address)
     sock.bind(server_address)
 
@@ -73,18 +72,19 @@ def start_server():
 
             # Receive the data in small chunks and retransmit it
             while True:
-                try:
-                    codeOfMsg = connection.recv(4).decode()
-                except (Exception):
-                    codeOfMsg = "0"
+                codeOfMsg = connection.recv(4).decode()
+
 
                 if codeOfMsg == ADD_DATA_CODE:
                     add_section(connection)
                     break
 
+        except Exception as e:
+            print(e)
         finally:
             # Clean up the connection
             connection.close()
+
 
 
 def add_section(connection):

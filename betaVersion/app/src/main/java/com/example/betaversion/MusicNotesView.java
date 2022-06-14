@@ -22,6 +22,7 @@ import androidx.annotation.RequiresApi;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 
 /**
@@ -526,7 +527,8 @@ public class MusicNotesView extends View {
         {
             if (com != null)
             {
-                notes.add(com.getElement().getName());
+
+                notes.add(com.getElement().getName().toLowerCase());
                 com = com.getNext();
             }
 

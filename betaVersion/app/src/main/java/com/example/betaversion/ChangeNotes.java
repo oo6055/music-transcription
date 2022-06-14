@@ -22,6 +22,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import java.util.ArrayList;
+import java.util.Date;
 
 /**
  * The Change notes activity.
@@ -142,6 +143,7 @@ public class ChangeNotes extends AppCompatActivity {
 
                             curr.setUid(FBref.mAuth.getUid());
                             curr.setPublicOrPrivate(true);
+                            curr.setDate((new Date()).toString());
                             FBref.FBDB.getReference().child("Public Sections").child(FBref.mAuth.getUid()).push().setValue(curr);
                         }
                     })
@@ -152,6 +154,7 @@ public class ChangeNotes extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
                             curr.setUid(FBref.mAuth.getUid());
+                            curr.setDate((new Date()).toString());
                             curr.setPublicOrPrivate(false);
                             FBref.FBDB.getReference().child("Private Sections").child(FBref.mAuth.getUid()).push().setValue(curr);
                         }
@@ -161,6 +164,7 @@ public class ChangeNotes extends AppCompatActivity {
         }
         else // if the user created the section
         {
+            curr.setDate((new Date()).toString());
             FBref.FBDB.getReference().child(privacy).child(uid).child(address).setValue(curr);
         }
 
