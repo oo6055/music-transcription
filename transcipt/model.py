@@ -70,15 +70,17 @@ class MusicRecognitionModel(nn.Module):
 
     def forward(self, x):
 
-        # [1,1,128,0] to [20,32,64,525]
+        # [20,1,128,1050] to [20,32,64,525]
         x = self.cnn(x)
-        #
+        # nothing
         x = self.rescnn_layers(x)
 
         sizes = x.size()
+        #
         x = x.view(sizes[0], sizes[1] * sizes[2], sizes[3])  # (batch, feature, time)
         x = x.transpose(1, 2)  # (batch, time, feature)
-        # x = self.birnn_layers(x)
+        # [20,525,2048]
         x = self.fully_connected(x)
         x = self.classifier(x)
+        # [20, 525, 86]
         return x

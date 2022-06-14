@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="30c34151-240e-439d-8326-20d61471f0e4" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/com/example/betaversion/SplashScreen.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/com/example/betaversion/System.puml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../res/drawable/bg_gradient.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../res/drawable/ic_baseline_home.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../res/drawable/onlyLogo.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../res/drawable/splash_background.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../res/layout/activity_splash_screen.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/../res/menu/menudown.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/../../../build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../AndroidManifest.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../AndroidManifest.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/com/example/betaversion/ChangeNotes.java" beforeDir="false" afterPath="$PROJECT_DIR$/com/example/betaversion/ChangeNotes.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/com/example/betaversion/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/com/example/betaversion/Node.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/com/example/betaversion/Note.java" beforeDir="false" afterPath="$PROJECT_DIR$/com/example/betaversion/Note.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/com/example/betaversion/ShowAllValidSections.java" beforeDir="false" afterPath="$PROJECT_DIR$/com/example/betaversion/ShowAllValidSections.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/com/example/betaversion/ShowMySections.java" beforeDir="false" afterPath="$PROJECT_DIR$/com/example/betaversion/ShowMySections.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/com/example/betaversion/SignInActivity.java" beforeDir="false" afterPath="$PROJECT_DIR$/com/example/betaversion/SignInActivity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../res/layout/activity_show_all_valid_sections.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../res/layout/activity_show_all_valid_sections.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../res/layout/activity_show_my_sections.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../res/layout/activity_show_my_sections.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../res/menu/generalmenu.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../res/menu/generalmenu.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../res/values/themes.xml" beforeDir="false" afterPath="$PROJECT_DIR$/../res/values/themes.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../server/file" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../server/file" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../server/file.3gp" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../server/file.3gp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../server/file.pdf" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../server/file.pdf" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../../../../../server/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../../../../../server/server.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../../../../.." />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2AYfYZhpj18XMeBQqmTBNwSlFH6" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "C:/Android Projects"
+  }
+}]]></component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="30c34151-240e-439d-8326-20d61471f0e4" name="Changes" comment="" />
+      <created>1655191492664</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1655191492664</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
