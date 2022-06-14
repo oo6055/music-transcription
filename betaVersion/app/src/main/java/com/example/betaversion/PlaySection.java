@@ -5,14 +5,13 @@ import static com.example.betaversion.FBref.filesRef;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
-import android.media.MediaPlayer;
-import android.os.Bundle;
+import android.content.*;
+import android.media.*;
+import android.os.*;
 import android.os.Handler;
-import android.view.View;
-import android.widget.ImageButton;
-import android.widget.SeekBar;
-import android.widget.TextView;
+import android.view.*;
+import android.widget.*;
+
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -24,18 +23,49 @@ import org.w3c.dom.Text;
 import java.io.File;
 import java.io.IOException;
 
+/**
+ * play the section activity
+ *
+ * @author Ori Ofek <oriofek106@gmail.com>
+ * @version 1
+ * @since 21 /4/2021  view the notes
+ */
 public class PlaySection extends AppCompatActivity {
 
+    /**
+     * The Media player.
+     */
     MediaPlayer mediaPlayer = null;
+    /**
+     * if there is a music that is playing.
+     */
     boolean isPlaying = false;
 
+    /**
+     * The File to play.
+     */
     File fileToPlay = null;
 
+    /**
+     * The Play btn.
+     */
     ImageButton playBtn;
+    /**
+     * The seekbar.
+     */
     SeekBar playerSeekbar;
+    /**
+     * The File name tv.
+     */
     TextView fileNameTv;
 
+    /**
+     * The Seekbar handler.
+     */
     Handler seekbarHandler;
+    /**
+     * The Update seekbar.
+     */
     Runnable updateSeekbar;
 
     @Override
@@ -72,14 +102,8 @@ public class PlaySection extends AppCompatActivity {
             }
         });
 
-
-
-
-
         StorageReference voiceRef = filesRef.child("/" + fileName);
 
-
-        // DOTO: check itttt
         File localFile = null;
         try {
             localFile = File.createTempFile("images", "jpg");
@@ -110,7 +134,10 @@ public class PlaySection extends AppCompatActivity {
 
     }
 
-
+    /**
+     * pause the audio.
+     *
+     */
     private void pauseAudio() {
         mediaPlayer.pause();
         playBtn.setImageResource(R.drawable.player_play_btn);
@@ -118,6 +145,10 @@ public class PlaySection extends AppCompatActivity {
         seekbarHandler.removeCallbacks(updateSeekbar);
     }
 
+    /**
+     * resume the audio.
+     *
+     */
     private void resumeAudio() {
         mediaPlayer.start();
         playBtn.setImageResource(R.drawable.player_pause_btn);
@@ -128,6 +159,10 @@ public class PlaySection extends AppCompatActivity {
 
     }
 
+    /**
+     * stop the audio.
+     * it call only in on destroy
+     */
     private void stopAudio() {
         //Stop The Audio
         playBtn.setImageResource(R.drawable.player_play_btn);
@@ -136,6 +171,9 @@ public class PlaySection extends AppCompatActivity {
         seekbarHandler.removeCallbacks(updateSeekbar);
     }
 
+    /**
+     * play the audio.
+     */
     private void playAudio(File fileToPlay) {
 
         mediaPlayer = new MediaPlayer();
@@ -166,6 +204,9 @@ public class PlaySection extends AppCompatActivity {
 
     }
 
+    /**
+     * update the seekbar.
+     */
     private void updateRunnable() {
         updateSeekbar = new Runnable() {
             @Override
@@ -176,6 +217,9 @@ public class PlaySection extends AppCompatActivity {
         };
     }
 
+    /**
+     * when it destroyes.
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -184,6 +228,11 @@ public class PlaySection extends AppCompatActivity {
         }
     }
 
+    /**
+     * Play.
+     *
+     * @param view the view
+     */
     public void play(View view) {
         if(isPlaying){
             pauseAudio();
@@ -193,5 +242,4 @@ public class PlaySection extends AppCompatActivity {
             }
         }
     }
-
 }

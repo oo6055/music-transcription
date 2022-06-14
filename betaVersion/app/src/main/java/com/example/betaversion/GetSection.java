@@ -69,18 +69,57 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
 
+/**
+ * The GetSection class
+ *
+ * @author Ori Ofek <oriofek106@gmail.com>
+ * @version 1
+ * @since 21 /4/2021  the activity that gets the class.
+ */
 public class GetSection extends AppCompatActivity {
+    /**
+     * The Ip.
+     */
     String IP = "192.168.1.196";
+    /**
+     * The Port.
+     */
     final int port = 9002;
+    /**
+     * The edit text that get the nickname
+     */
     EditText et;
+    /**
+     * The toggle button.
+     */
     ToggleButton tb;
+    /**
+     * The Music notes.
+     */
     String musicNotes;
+    /**
+     * The path to the record.
+     */
     String recordPath;
+    /**
+     * The Progress dialog. (show that there is a process)
+     */
     ProgressDialog progressDialog;
+    /**
+     * The File that it creates.
+     */
     Uri file = null;
+    /**
+     * The name of the file.
+     */
     private TextView filenameText;
-
+    /**
+     * if the app is recording.
+     */
     private boolean isRecording = false;
+    /**
+     * if we go through the private section or public sections.
+     */
     DatabaseReference privateSectionCase = null;
 
     private String recordPermission = Manifest.permission.RECORD_AUDIO;
@@ -89,7 +128,9 @@ public class GetSection extends AppCompatActivity {
 
     private MediaRecorder mediaRecorder;
     private String recordFile;
-
+    /**
+     * the timer.
+     */
     private Chronometer timer;
     // Storage Permissions
     private static final int REQUEST_EXTERNAL_STORAGE = 1;
@@ -115,7 +156,11 @@ public class GetSection extends AppCompatActivity {
         musicNotes = "";
     }
 
-
+    /**
+     * this function open dialog and in the end it's upload the section.
+     *
+     * @param msg input stream that we want to send
+     */
     private void sendMessage(final InputStream msg) {
 
         AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -175,7 +220,11 @@ public class GetSection extends AppCompatActivity {
         alert.show();
     }
 
-
+    /**
+     * this function upload the section and the audio file and get the transcript.
+     *
+     * @param msg input stream that we want to send
+     */
     private void update(InputStream msg)
     {
         StrictMode.ThreadPolicy policy = new StrictMode.ThreadPolicy.Builder().permitAll().build();
@@ -184,8 +233,8 @@ public class GetSection extends AppCompatActivity {
 
         Date date = new Date(); // This object contains the current date value
 
-
-        String name_of_file = mAuth.getUid() + file.getPath().substring(file.getPath().lastIndexOf("/")+1);
+        // add the date that it will be with other name
+        String name_of_file = mAuth.getUid() + file.getPath().substring(file.getPath().lastIndexOf("/")+1) + date.toString();
 
         // get the transcript
         try {
@@ -202,8 +251,6 @@ public class GetSection extends AppCompatActivity {
             musicNotes = "";
         }
 
-
-
         Node<Note> n = castFromStringToNote(musicNotes);
         musicNotes = "";
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
@@ -216,7 +263,11 @@ public class GetSection extends AppCompatActivity {
         privateSectionCase.child(mAuth.getUid()).push().setValue(s);
     }
 
-
+    /**
+     * this function is connected to the serer.
+     *
+     * @param msg input stream that we want to send , name_of_file the name of the file (for the firebase)
+     */
     private void getTranscript(InputStream msg, String name_of_file) {
         Client client = new Client();
         try {
@@ -254,10 +305,6 @@ public class GetSection extends AppCompatActivity {
             }
             musicNotes += a;
 
-
-
-
-
             client.stopConnection();
         } catch (IOException e) {
             e.printStackTrace();
@@ -265,6 +312,11 @@ public class GetSection extends AppCompatActivity {
     }
 
 
+    /**
+     * Recordclick.
+     *
+     * @param view the view
+     */
     public void recordclick(View view) {
         /*  Check, which button is pressed and do the task accordingly
          */
@@ -296,12 +348,21 @@ public class GetSection extends AppCompatActivity {
         }
     }
 
+    /**
+     * getDrawableResource.
+     *
+     * @param resID the id of the resource
+     */
     private Drawable getDrawableResource(int resID) {
         return ContextCompat.getDrawable(this, resID);
     }
 
 
-
+    /**
+     * Submit.
+     *
+     * @param view the view
+     */
     public void submit(View view) throws IOException {
         if (isRecording)
         {
@@ -309,10 +370,11 @@ public class GetSection extends AppCompatActivity {
             return;
         }
 
-        String name = tb.isChecked() ? "Public Sections" : "Private Sections";
+        // if the toggle button is on
+        String privacy = tb.isChecked() ? "Public Sections" : "Private Sections";
 
 
-        privateSectionCase = FBref.FBDB.getReference().child(name);
+        privateSectionCase = FBref.FBDB.getReference().child(privacy);
         if (mAuth.getCurrentUser() == null) {
             Toast.makeText(this, "not connected", Toast.LENGTH_SHORT).show();
             return;
@@ -332,10 +394,11 @@ public class GetSection extends AppCompatActivity {
         // Get the size of the file
         InputStream in = new FileInputStream(fileOfAudio);
         sendMessage(in);
-//        recognize(loadSoundFileURL(new File(file.getPath())));
-
     }
 
+    /**
+     * when the recorder is pressed it can stop.
+     */
     private void stopRecording() {
         //Stop Timer, very obvious
         timer.stop();
@@ -349,6 +412,9 @@ public class GetSection extends AppCompatActivity {
         mediaRecorder = null;
     }
 
+    /**
+     * when the recorder is pressed it can stop.
+     */
     private void startRecording() {
         //Start timer from 0
         timer.setBase(SystemClock.elapsedRealtime());
@@ -383,6 +449,9 @@ public class GetSection extends AppCompatActivity {
         mediaRecorder.start();
     }
 
+    /**
+     * this function check permissions for record
+     */
     private boolean checkPermissions() {
         //Check permission
         if (ActivityCompat.checkSelfPermission(GetSection.this, recordPermission) == PackageManager.PERMISSION_GRANTED) {
@@ -395,6 +464,9 @@ public class GetSection extends AppCompatActivity {
         }
     }
 
+    /**
+     * when the activity stop
+     */
     @Override
     public void onStop() {
         super.onStop();
@@ -403,6 +475,11 @@ public class GetSection extends AppCompatActivity {
         }
     }
 
+    /**
+     * Choose audio from galery.
+     *
+     * @param view the view
+     */
     public void chooseAudio(View view) {
         Intent intent_upload = new Intent();
         intent_upload.setType("audio/*");
@@ -410,9 +487,13 @@ public class GetSection extends AppCompatActivity {
         startActivityForResult(intent_upload,1);
     }
 
+    /**
+     * when we move to other activity (for the galary)
+     */
     @Override
     protected void onActivityResult(int requestCode,int resultCode,Intent data){
 
+        // requestCode = 1 --> get from the galery
         if(requestCode == 1){
 
             if(resultCode == RESULT_OK && verifyStoragePermissions()){
@@ -427,6 +508,9 @@ public class GetSection extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
+    /**
+     * path to uri
+     */
     private String getRealPathFromURI(Uri contentURI) {
         String result;
         Cursor cursor = getContentResolver().query(contentURI, null, null, null, null);
@@ -441,6 +525,11 @@ public class GetSection extends AppCompatActivity {
         return result;
     }
 
+    /**
+     * Verify storage permissions boolean.
+     *
+     * @return the boolean
+     */
     public boolean verifyStoragePermissions() {
         int permission = ActivityCompat.checkSelfPermission(GetSection.this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
 
@@ -459,9 +548,6 @@ public class GetSection extends AppCompatActivity {
             return false;
         }
     }
-
-
-
 
     /**
      * onCreateContextMenu
@@ -505,7 +591,4 @@ public class GetSection extends AppCompatActivity {
         }
         return  true;
     }
-
-
-
 }

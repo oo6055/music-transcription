@@ -29,14 +29,41 @@ import java.util.ArrayList;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.storage.StorageReference;
 
-
+ /**
+  * this activity is showing my sections
+  *
+  * @author Ori Ofek <oriofek106@gmail.com>
+  * @version 1
+  * @since 21 /4/2021  this activity is showing all the valid sections
+  */
  public class ShowMySections extends AppCompatActivity  implements View.OnCreateContextMenuListener {
+     /**
+      * The list view
+      */
      ListView ls;
+     /**
+      * The Fab.
+      */
      FloatingActionButton fab;
+     /**
+      * if the fab is open
+      */
      boolean isFABOpen;
+     /**
+      * The add fab.
+      */
      FloatingActionButton addfab;
+     /**
+      * The Sections list.
+      */
      ArrayList<Section> sectionsList;
+     /**
+      * The navigation bottom.
+      */
      BottomNavigationView btnnav;
+     /**
+      * The Hello text view.
+      */
      TextView hello;
 
      @Override
@@ -93,15 +120,23 @@ import com.google.firebase.storage.StorageReference;
                  }
      };
 
+     /**
+      * show the add fab.
+      */
     private void showFABMenu(){
         addfab.startAnimation(AnimationUtils.loadAnimation(this,R.anim.rotate_close_anim));
     }
-
+     /**
+      * close the fab.
+      */
     private void closeFABMenu(){
         addfab.animate().translationY(0);
     }
 
-    public void setAnimation()
+     /**
+      * Sets animation.
+      */
+     public void setAnimation()
     {
         if (!isFABOpen)
         {
@@ -115,7 +150,10 @@ import com.google.firebase.storage.StorageReference;
         }
     }
 
-    public void setVisible()
+     /**
+      * Sets visible.
+      */
+     public void setVisible()
     {
         if (!isFABOpen)
         {
@@ -210,6 +248,10 @@ import com.google.firebase.storage.StorageReference;
          return true;
      }
 
+     /**
+      * this func update the list view of the sections
+      *
+      */
     private void getUserSections() {
 
         // get the name of the user
@@ -243,9 +285,12 @@ import com.google.firebase.storage.StorageReference;
                     }
                 });
 
-        // get th
     }
 
+     /**
+      * this func gets the public sections
+      *
+      */
     private void getPublicSections() {
 
 
@@ -271,6 +316,10 @@ import com.google.firebase.storage.StorageReference;
                 });
     }
 
+     /**
+      * this function update the listview
+      *
+      */
     private void updateListView(ArrayList<Section> sectionsList) {
 
         MyListAdapter adapter=new MyListAdapter(this,sectionsList);

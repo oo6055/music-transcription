@@ -2,16 +2,35 @@ package com.example.betaversion;
 
 import java.util.*;
 
-
+/**
+ * template of linked list
+ *
+ * @param <T> the type parameter
+ * @author Ori Ofek <oriofek106@gmail.com>
+ * @version 1
+ * @since 21 /4/2021  my implement to node T
+ */
 public class Node<T> {
     private T element;
     private Node<T> next;
 
+    /**
+     * Instantiates a new Node.
+     *
+     * @param e the element
+     * @param n the next
+     */
     public Node(T e, Node<T> n) {
         element = e;
         next = n;
     }
 
+    /**
+     * Cast from string to note node.
+     *
+     * @param text the text
+     * @return the node
+     */
     public static Node<Note> castFromStringToNote(String text)
     {
         String[] notes = text.split(" ");
@@ -36,13 +55,29 @@ public class Node<T> {
         return head;
     }
 
+    /**
+     * Gets element.
+     *
+     * @return the element
+     */
     public T getElement() {
         return element;
     }
+
+    /**
+     * Sets element.
+     *
+     * @param e the element
+     */
     public void setElement(T e) {
          this.element = e;
     }
 
+    /**
+     * convert it to arraylist .
+     *
+     * @return the array list
+     */
     public ArrayList<T> toArraylist()
     {
         ArrayList<T> arr = new ArrayList<T>();
@@ -63,11 +98,20 @@ public class Node<T> {
     }
 
 
-
+    /**
+     * Gets next.
+     *
+     * @return the next
+     */
     public Node<T> getNext() {
         return next;
     }
 
+    /**
+     * Sets next.
+     *
+     * @param n the next that we want to determine
+     */
     public void setNext(Node<T> n) {
         next = n;
     }

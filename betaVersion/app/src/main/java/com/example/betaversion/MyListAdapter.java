@@ -11,11 +11,24 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+/**
+ * the adapter for the custom list
+ *
+ * @author Ori Ofek <oriofek106@gmail.com>
+ * @version 1
+ * @since 21 /4/2021  view the sections
+ */
 public class MyListAdapter extends BaseAdapter {
 
     private final Activity context;
     private ArrayList<Section> sections;
 
+    /**
+     * Instantiates a new My list adapter.
+     *
+     * @param context  the context
+     * @param sections the sections
+     */
     public MyListAdapter(Activity context, ArrayList<Section> sections) {
         // TODO Auto-generated constructor stub
 
@@ -26,11 +39,22 @@ public class MyListAdapter extends BaseAdapter {
 
     }
 
+    /**
+     * return the amount of sections.
+     *
+     * @return the amount of sections
+     */
     @Override
     public int getCount() {
         return sections.size();
     }
 
+    /**
+     * return the item in specific position
+     *
+     * @param position the pos that we want to get
+     * @return the amount of sections
+     */
     @Override
     public Object getItem(int position) {
         return null;
@@ -41,6 +65,14 @@ public class MyListAdapter extends BaseAdapter {
         return 0;
     }
 
+    /**
+     * return the item in specific position
+     *
+     * @param position
+     * @param view
+     * @param parent
+     * @return the view that it present in the list
+     */
     public View getView(int position, View view, ViewGroup parent) {
         LayoutInflater inflater=context.getLayoutInflater();
         View rowView=inflater.inflate(R.layout.mylist, null);

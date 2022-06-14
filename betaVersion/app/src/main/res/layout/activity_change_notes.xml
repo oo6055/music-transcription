@@ -42,12 +42,14 @@
                 android:layout_weight="1" />
 
             <Button
+                android:id="@+id/button2"
                 android:layout_width="0px"
                 android:layout_height="match_parent"
                 android:layout_weight="2"
-                android:onClick="saveNotes"
-                android:text="save"
-                android:textSize="24sp"
+                android:onClick="removeNote"
+                android:text="remove note"
+                android:textColor="#FAF1F1"
+                android:textSize="16sp"
                 app:backgroundTint="#F44336" />
 
             <Space
@@ -146,13 +148,31 @@
                 android:onClick="playSection"
                 android:text="Play"
                 android:textColor="#463468"
-                android:textSize="34sp"
+                android:textSize="24sp"
                 app:backgroundTint="#69F0AE" />
 
             <Space
                 android:layout_width="0px"
                 android:layout_height="match_parent"
+
                 android:layout_weight="1" />
+
+            <Button
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:onClick="saveNotes"
+                android:textColor="#463468"
+                android:text="save"
+                android:textSize="24sp"
+                app:backgroundTint="#69F0AE" />
+
+            <Space
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+
+                android:layout_weight="1" />
+
         </LinearLayout>
 
         <Space

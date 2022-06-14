@@ -25,14 +25,41 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.Query;
 
+/**
+ * The login activity
+ *
+ * @author Ori Ofek <oriofek106@gmail.com>
+ * @version 1
+ * @since 21 /4/2021  the activity for login
+ */
 public class LogInActivity extends AppCompatActivity {
 
-    TextView tVtitle;
-    EditText eTemail, eTpass;
+    /**
+     * the email.
+     */
+    EditText eTemail, /**
+     * The E tpass.
+     */
+    eTpass;
+    /**
+     the stay connected btn.
+     */
     CheckBox cBstayconnect;
+    /**
+     * The Btn.
+     */
     Button btn;
 
-    String  email, password;
+    /**
+     * The Email.
+     */
+    String  email, /**
+     * The Password.
+     */
+    password;
+    /**
+     * The Stay connect.
+     */
     Boolean stayConnect;
 
     @Override
@@ -40,7 +67,6 @@ public class LogInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_log_in);
 
-        tVtitle=(TextView) findViewById(R.id.tVtitle);
         eTemail=(EditText)findViewById(R.id.eTemail);
         eTpass=(EditText)findViewById(R.id.eTpass);
         cBstayconnect=(CheckBox)findViewById(R.id.cBstayconnect);
@@ -54,9 +80,11 @@ public class LogInActivity extends AppCompatActivity {
     /**
      * Logging in or Registering to the application
      * Using:   Firebase Auth with email & password
-     *          Firebase Realtime database with the object User to the branch Users
+     * Firebase Realtime database with the object User to the branch Users
      * If login or register process is Ok saving stay connect status & pass to next activity
      * <p>
+     *
+     * @param view the view
      */
     public void login(View view) {
 

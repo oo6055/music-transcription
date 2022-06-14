@@ -25,13 +25,35 @@ import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.database.DatabaseReference;
 
+/**
+ * this activity is showing my sections
+ *
+ * @author Ori Ofek <oriofek106@gmail.com>
+ * @version 1
+ * @since 21 /4/2021  sign in to the app
+ */
 public class SignInActivity extends AppCompatActivity {
 
-    public static final String TAG = "TAG";
-    EditText mFullName, mEmail, mPassword, mPhone;
-    Button mRegisterBtn;
-    TextView mLoginBtn;
+    /**
+     * The full name of the user
+     */
+    EditText mFullName, /**
+     * The email of the user.
+     */
+    mEmail, /**
+     * The password.
+     */
+    mPassword, /**
+     * The phone.
+     */
+    mPhone;
+    /**
+     * The Progress bar.
+     */
     ProgressBar progressBar;
+    /**
+     * The User id.
+     */
     String userID;
 
     @Override
@@ -55,6 +77,11 @@ public class SignInActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Register to the system
+     *
+     * @param view the view
+     */
     public void register(View view) {
 
         final String email = mEmail.getText().toString().trim();
@@ -92,8 +119,6 @@ public class SignInActivity extends AppCompatActivity {
                     fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
                         @Override
                         public void onSuccess(Void aVoid) {
-                            Toast.makeText(SignInActivity.this, "Verification Email Has been Sent.", Toast.LENGTH_SHORT).show();
-                            Toast.makeText(SignInActivity.this, "User created successfully", Toast.LENGTH_SHORT).show();
                             DatabaseReference usersRef = FBref.FBDB.getReference().child("Users");
                             usersRef.child(mAuth.getUid()).setValue(fullName);
                             Intent i = new Intent(getApplicationContext(), ShowMySections.class);
@@ -118,6 +143,11 @@ public class SignInActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Move to log in.
+     *
+     * @param view the view
+     */
     public void moveToLogIn(View view) {
         startActivity(new Intent(getApplicationContext(), LogInActivity.class));
 

@@ -24,38 +24,92 @@ import java.util.Arrays;
 import java.util.List;
 
 
+/**
+ * View the notes
+ *
+ * @author Ori Ofek <oriofek106@gmail.com>
+ * @version 1
+ * @since 21 /4/2021  view the notes
+ */
 public class MusicNotesView extends View {
     private ArrayList<String> notes; // not update many times
     private Bitmap structre;
     private ArrayList<MusicNoteCircle> middleOfCircles;
+    /**
+     * The radious
+     */
     float r;
+    /**
+     * The height of the structre.
+     */
     float height;
+
+    /**
+     * The dalteForNotes for note
+     */
     private float dalteForNotes;
+    /**
+     * if we need to add more notes to the viewer
+     */
     boolean notesAdded = false;
+    /**
+     * The Index of last touched.
+     */
     int indexOfLastTouches;
 
+    /**
+     * Instantiates a new Music notes view.
+     *
+     * @param context the context
+     */
     public MusicNotesView(Context context) {
         // if it gets a contex
         super(context);
         init(null);
     }
 
+    /**
+     * Instantiates a new Music notes view.
+     *
+     * @param context the context
+     * @param attrs   the attrs
+     */
     public MusicNotesView(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         init(attrs);
     }
 
+    /**
+     * Instantiates a new Music notes view.
+     *
+     * @param context      the context
+     * @param attrs        the attrs
+     * @param defStyleAttr the def style attr
+     */
     public MusicNotesView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init(attrs);
     }
 
+    /**
+     * Instantiates a new Music notes view.
+     *
+     * @param context      the context
+     * @param attrs        the attrs
+     * @param defStyleAttr the def style attr
+     * @param defStyleRes  the def style res
+     */
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
         public MusicNotesView(Context context, @Nullable AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(attrs);
     }
 
+    /**
+     * init the viewer and some fileds.
+     *
+     * @param set      the arrtibutes
+     */
     private void init(@Nullable AttributeSet set)
     {
         // create the line with the clef
@@ -78,6 +132,13 @@ public class MusicNotesView extends View {
 
     }
 
+    /**
+     * Add notes.
+     *
+     * @param notes  the notes
+     * @param width  the width
+     * @param height the height
+     */
     public void addNotes(ArrayList<String> notes, float width, float height)
     {
         int cxOfset = 0;
@@ -111,6 +172,16 @@ public class MusicNotesView extends View {
 
     }
 
+    /**
+     * Add bamol to note.
+     *
+     * @param canvas  the canvas
+     * @param xOfNote  the x coordinate of the bamol
+     * @param yNote the y coordinate of the bamol
+     * @param radius the radius of the note
+     * @param delta the delta that it moves
+     * @param fontSize the size of the font
+     */
     private void addBamol(Canvas canvas, float xOfNote, float yNote, float radius, float delta,float fontSize) {
         Paint p = new Paint();
         p.setColor(Color.BLACK);
@@ -118,6 +189,16 @@ public class MusicNotesView extends View {
         canvas.drawText("♭",xOfNote - delta - radius , yNote + p.getTextSize() / 14 ,p);
     }
 
+    /**
+     * Add diaz to note.
+     *
+     * @param canvas  the canvas
+     * @param xOfNote  the x coordinate of the diaz
+     * @param yNote the y coordinate of the diaz
+     * @param radius the radius of the note
+     * @param delta the delta that it moves
+     * @param fontSize the size of the font
+     */
     private void addDiaz(Canvas canvas, float xOfNote, float yNote, float radius, float delta,float fontSize) {
         Paint p = new Paint();
         p.setColor(Color.BLACK);
@@ -125,8 +206,12 @@ public class MusicNotesView extends View {
         canvas.drawText("#",xOfNote - delta - radius, yNote + p.getTextSize() / 3,p);
     }
 
-
-
+    /**
+     * draw the circles by the center of them.
+     *
+     * @param canvas  the canvas
+     * @param height  the height of the structre
+     */
     private void drawCircles(Canvas canvas, int height)
     {
         Paint p = new Paint();
@@ -186,18 +271,23 @@ public class MusicNotesView extends View {
             }
 
             // check if there is a sign
-            if (middleOfCircles.get(i).getSprcial() == '-')
+            if (middleOfCircles.get(i).getSpecial() == '-')
             {
                 addBamol(canvas, middleOfCircles.get(i).getX(), middleOfCircles.get(i).getY(), r, width / 40, width / 20);
             }
-            if (middleOfCircles.get(i).getSprcial() == '#')
+            if (middleOfCircles.get(i).getSpecial() == '#')
             {
                 addDiaz(canvas, middleOfCircles.get(i).getX(), middleOfCircles.get(i).getY(), r, width / 40, width / 24);
             }
         }
     }
 
-
+    /**
+     * get the y coordinate of note by his name.
+     *
+     * @param nameOfNote  the name of the note
+     * @param height  the height of the structre
+     */
     private float getPostion(float height, String nameOfNote) {
         char notes[] = {'c','d','e','f','g','a','b'};
         dalteForNotes = height / 18;
@@ -219,10 +309,16 @@ public class MusicNotesView extends View {
             notePos -= 7 * dalteForNotes * (int) ((nameOfNote.charAt(indexOfNumber) - '0') - 4);
         }
 
-
         return notePos;
     }
 
+    /**
+     * return index of note
+     *
+     * @param arr  the arr
+     * @param toFind  the chat that we want to get his index
+     * @return the index of the char
+     */
     private int findElement(char[] arr, char toFind)
     {
         for (int i = 0; i < arr.length; i++)
@@ -235,6 +331,14 @@ public class MusicNotesView extends View {
         return -1;
     }
 
+    /**
+     * return index of note
+     *
+     * @param bitmap  the picture
+     * @param width  desired width
+     * @param height desired height
+     * @return the new picture
+     */
     private Bitmap getResizesdBitMap(Bitmap bitmap, int width, int height) {
         Matrix matrix = new Matrix();
         RectF src = new RectF(0, 0, bitmap.getWidth(), bitmap.getHeight());
@@ -244,13 +348,18 @@ public class MusicNotesView extends View {
         return Bitmap.createBitmap(bitmap,0,0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
     }
 
+    /**
+     * Gets section that the viewer shows
+     *
+     * @return the section
+     */
     public Node<Note> getSection()
     {
         Node<Note> ptrOfNode = new Node<>(null,null);
         Node<Note> head = ptrOfNode;
         for (int i = 0; i < middleOfCircles.size(); i++)
         {
-            String note = getNote(middleOfCircles.get(i).getY(), middleOfCircles.get(i).getSprcial());
+            String note = getNote(middleOfCircles.get(i).getY(), middleOfCircles.get(i).getSpecial());
             // need to change
             ptrOfNode.setElement(new Note(note, 1, Note.takeFreqency(note)));
 
@@ -264,7 +373,14 @@ public class MusicNotesView extends View {
         return head;
     }
 
-    private String getNote(float y, char sprcial)
+    /**
+     * get a note from his y cords
+     *
+     * @param y  the y cords
+     * @param special if there is a special sign near it
+     * @return the name of the notes
+     */
+    private String getNote(float y, char special)
     {
         char notes[] = {'c','d','e','f','g','a','b'};
         // get the note pos (note hight - the first do) % num of notes in octave
@@ -284,18 +400,23 @@ public class MusicNotesView extends View {
         {
             index = notes.length + (index % 7);
         }
-        if (sprcial == 0)
+        if (special == 0)
         {
             String toReturn = String.valueOf(notes[index % 7]) + String.valueOf(octaveOfNote);
             return toReturn;
         }
         else
         {
-            String valueOfSpecial = sprcial == '#' ? "#" : "-";
+            String valueOfSpecial = special == '#' ? "#" : "-";
             return String.valueOf(notes[index % 7]) + valueOfSpecial +  String.valueOf(octaveOfNote);
         }
     }
 
+    /**
+     * when it touched
+     * @param event  the event
+     * @return change the y cords for the note that touched
+     */
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         boolean value = super.onTouchEvent(event);
@@ -336,6 +457,12 @@ public class MusicNotesView extends View {
         return value;
     }
 
+    /**
+     * get the index of the note that touched
+     * @param x  x cords of the touch
+     * @param y  y cords of the touch
+     * @return the index of the note that touched
+     */
     private int getIndex(float x, float y) {
         for (int i = 0; i < middleOfCircles.size(); i++)
         {
@@ -350,6 +477,10 @@ public class MusicNotesView extends View {
         return -1;
     }
 
+    /**
+     * it init the viewer
+     * @param canvas the canvas
+     */
     @Override
     protected void onDraw(Canvas canvas) {
         canvas.drawBitmap(structre, 0,0,null);
@@ -361,12 +492,20 @@ public class MusicNotesView extends View {
             addNotes(notes, structre.getWidth(), structre.getHeight());
             notesAdded = true;
         }
+        else
+        {
+            notes = convertToSectionOfStrings(getSection().toArraylist());
+        }
 
 
         drawCircles(canvas, structre.getHeight());
-        notes = convertToSectionOfStrings(getSection().toArraylist());
     }
 
+    /**
+     * convert ArrayList<Note> to ArrayList<String> (with the name)
+     * @param arr the arr that we want to convert
+     * @return ArrayList<String> that it needs
+     */
     private ArrayList<String> convertToSectionOfStrings(ArrayList<Note> arr) {
         ArrayList<String> notesArr = new ArrayList<>();
         for (int i = 0; i < arr.size(); i++)
@@ -376,6 +515,11 @@ public class MusicNotesView extends View {
         return notesArr;
     }
 
+    /**
+     * Sets notes.
+     *
+     * @param com the com
+     */
     public void setNotes(Node<Note> com) {
         notes = new ArrayList<>();
         while (com != null)
@@ -392,6 +536,11 @@ public class MusicNotesView extends View {
         postInvalidate();
     }
 
+    /**
+     * Add note.
+     *
+     * @param note the note
+     */
     public void addNote(String note) {
         notes.add(note);
 
@@ -399,18 +548,54 @@ public class MusicNotesView extends View {
         postInvalidate();
     }
 
+    /**
+     * Remove note from the section
+     */
+    public void removeNote() {
+        if (indexOfLastTouches != -1)
+        {
+            notes.remove(notes.get(indexOfLastTouches));
+
+            notesAdded = false;
+            postInvalidate();
+        }
+
+    }
+
+    /**
+     * Add diaz.
+     */
     public void addDiaz() {
         if (indexOfLastTouches != -1) {
-            middleOfCircles.get(indexOfLastTouches).setSprcial('#');
-            postInvalidate();
+            if (middleOfCircles.get(indexOfLastTouches).getSpecial() != '#')
+            {
+                middleOfCircles.get(indexOfLastTouches).setSpecial('#');
+                postInvalidate();
+            }
+            else
+            {
+                middleOfCircles.get(indexOfLastTouches).setSpecial((char)0);
+                postInvalidate();
+            }
+
         }
     }
 
+    /**
+     * Add bamol.
+     */
     public void addBamol() {
         if (indexOfLastTouches != -1)
         {
-            middleOfCircles.get(indexOfLastTouches).setSprcial('-');
-            postInvalidate();
+            if (middleOfCircles.get(indexOfLastTouches).getSpecial() != '-') {
+                middleOfCircles.get(indexOfLastTouches).setSpecial('-');
+                postInvalidate();
+            }
+            else
+            {
+                middleOfCircles.get(indexOfLastTouches).setSpecial((char)0);
+                postInvalidate();
+            }
         }
     }
 }

@@ -26,10 +26,26 @@ import com.google.firebase.storage.StorageReference;
 
 import java.util.ArrayList;
 
+/**
+ * this activity is showing all the valid sections
+ *
+ * @author Ori Ofek <oriofek106@gmail.com>
+ * @version 1
+ * @since 21 /4/2021  this activity is showing all the valid sections
+ */
 public class ShowAllValidSections extends AppCompatActivity {
 
+    /**
+     * The list view
+     */
     ListView ls;
+    /**
+     * The Sections list.
+     */
     ArrayList<Section> sectionsList;
+    /**
+     * The navigation btn.
+     */
     BottomNavigationView btnnav;
 
 
@@ -50,7 +66,10 @@ public class ShowAllValidSections extends AppCompatActivity {
         ls.setOnCreateContextMenuListener(this);
     }
 
-
+    /**
+     * get the the public sections
+     *
+     */
     private void getAllPublicSections() {
 
 
@@ -91,9 +110,6 @@ public class ShowAllValidSections extends AppCompatActivity {
                     return false;
                 }
             };
-
-
-
 
     /**
      * onCreateContextMenu
@@ -177,11 +193,15 @@ public class ShowAllValidSections extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * get the the public sections
+     *
+     * @param  sectionsList the list of sections that we want to show
+     */
     private void updateListView(ArrayList<Section> sectionsList) {
 
         MyListAdapter adapter=new MyListAdapter(this,sectionsList);
         ls.setAdapter(adapter);
-
     }
 
     /**
