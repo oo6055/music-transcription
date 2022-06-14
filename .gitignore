@@ -32,6 +32,8 @@ Latest commit f4c269d 15 hours ago
 # Built application files
 *.exe
 *.exe
+*.exe
+*.exe
 *.apk
 *.aar
 *.ap_
