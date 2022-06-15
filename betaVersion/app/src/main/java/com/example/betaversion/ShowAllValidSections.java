@@ -69,6 +69,13 @@ public class ShowAllValidSections extends AppCompatActivity {
         ls.setOnCreateContextMenuListener(this);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        sectionsList = new ArrayList<Section>();
+        getAllPublicSections();
+    }
+
     /**
      * get the the public sections
      *

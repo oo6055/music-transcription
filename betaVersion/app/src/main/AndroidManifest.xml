@@ -15,6 +15,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BetaVersion">
         <activity
+            android:name=".Credits"
+            android:exported="true" />
+        <activity
             android:name=".SignInActivity"
             android:exported="true" />
         <activity
@@ -34,8 +37,8 @@
             android:exported="true" />
         <activity
             android:name=".SplashScreen"
-            android:theme="@style/SplashTheme"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/SplashTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

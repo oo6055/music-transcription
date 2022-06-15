@@ -114,6 +114,7 @@ import com.google.firebase.storage.StorageReference;
      @Override
      protected void onResume() {
          super.onResume();
+         sectionsList = new ArrayList<Section>();
          getUserSections();
      }
 

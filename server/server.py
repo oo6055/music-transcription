@@ -94,7 +94,7 @@ def add_section(connection):
     data = b''
     while con.decode() == 'true':
         data += connection.recv(1024)
-        print('received "%s"' % data)
+        # print('received "%s"' % data)
         connection.sendall("more".encode())
         con = connection.recv(4)
         print('con =  "%s"' % con)
