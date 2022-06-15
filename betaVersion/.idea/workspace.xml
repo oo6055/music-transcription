@@ -12,13 +12,7 @@
     <option name="autoReloadType" value="NONE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="7e47f6bd-517b-4798-b4ce-73643f5035be" name="Default Changelist" comment="start login">
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../transcipt/createData.py" beforeDir="false" afterPath="$PROJECT_DIR$/../transcipt/createData.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../transcipt/server.py" beforeDir="false" afterPath="$PROJECT_DIR$/../transcipt/server.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../transcipt/test.py" beforeDir="false" afterPath="$PROJECT_DIR$/../transcipt/test.py" afterDir="false" />
-    </list>
+    <list default="true" id="16ad9d78-c64b-4926-bfb1-02e742de450a" name="Default Changelist" comment="finish for now" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -301,5 +295,12 @@
     <MESSAGE value="update" />
     <MESSAGE value="start login" />
     <option name="LAST_COMMIT_MESSAGE" value="start login" />
+  </component>
+  <component name="XDebuggerManager">
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="com.example.betaversion.Node" memberName="element" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
 </project>
