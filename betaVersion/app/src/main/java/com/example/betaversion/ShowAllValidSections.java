@@ -14,6 +14,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -196,23 +197,31 @@ public class ShowAllValidSections extends AppCompatActivity {
         }
         else if (op.equals("delete section"))
         {
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-            Query deleteQuery = ref.child(sectionsList.get(i).getPublicOrPrivate() ? "Public Sections" : "Private Sections").child(sectionsList.get(i).getUid()).orderByChild("date").equalTo(sectionsList.get(i).getDate());
+            if (sectionsList.get(i).getUid() != FBref.mAuth.getUid())
+            {
+                Toast.makeText(ShowAllValidSections.this, "you don't have permission for it", Toast.LENGTH_SHORT).show();
+            }
+            else
+            {
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
+                Query deleteQuery = ref.child(sectionsList.get(i).getPublicOrPrivate() ? "Public Sections" : "Private Sections").child(sectionsList.get(i).getUid()).orderByChild("date").equalTo(sectionsList.get(i).getDate());
 
-            deleteQuery.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
-                        appleSnapshot.getRef().removeValue();
+                deleteQuery.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
+                            appleSnapshot.getRef().removeValue();
+                            Toast.makeText(ShowAllValidSections.this, "deleted", Toast.LENGTH_SHORT).show();
+                        }
                     }
-                }
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
-                }
-            });
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+            }
 
-
+            sectionsList = new ArrayList<>();
             getAllPublicSections();
         }
 

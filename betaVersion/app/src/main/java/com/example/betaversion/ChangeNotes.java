@@ -150,7 +150,10 @@ public class ChangeNotes extends AppCompatActivity {
         // get the section to string
         while (theNotes != null)
         {
-            notes += theNotes.getElement().getName() + " ";
+            if (theNotes.getElement() != null)
+            {
+                notes += theNotes.getElement().getName() + " ";
+            }
             theNotes = theNotes.getNext();
         }
         // if the section is not belong to user He can't touch it

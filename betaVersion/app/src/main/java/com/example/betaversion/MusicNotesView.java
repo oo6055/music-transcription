@@ -546,8 +546,19 @@ public class MusicNotesView extends View {
     public boolean addNote(String note) {
         notes.add(note);
         float horizontalOffset = structre.getWidth() / 10;
+        float offsetOfTheStart = structre.getWidth() / 6;
 
-        if (structre.getWidth() < horizontalOffset + middleOfCircles.get(middleOfCircles.size() - 1).getX())
+
+        if(middleOfCircles.size() == 0)
+        {
+            notesAdded = false;
+            postInvalidate();
+
+            return true;
+        }
+
+        // if it is get out of bounth
+        if ((structre.getWidth() < offsetOfTheStart + horizontalOffset + middleOfCircles.get(middleOfCircles.size() - 1).getX()))
         {
             return false;
         }
