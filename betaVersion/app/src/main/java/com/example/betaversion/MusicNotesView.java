@@ -385,7 +385,7 @@ public class MusicNotesView extends View {
     {
         char notes[] = {'c','d','e','f','g','a','b'};
         // get the note pos (note hight - the first do) % num of notes in octave
-        float theNotesPostions = ((-1 * (y - (height - height / 10)) + dalteForNotes * 7 * 4)) % (dalteForNotes * 7);
+        float theNotesPostions =  (-1 * (y - (height - height / 10)) + dalteForNotes * 7 * 3) % (dalteForNotes * 7);
         // get the do of the cotave
         float noteHight = (y + theNotesPostions);
         float octave = (noteHight - (height - height / 10)) / (dalteForNotes * 7);
@@ -543,11 +543,22 @@ public class MusicNotesView extends View {
      *
      * @param note the note
      */
-    public void addNote(String note) {
+    public boolean addNote(String note) {
         notes.add(note);
+        float horizontalOffset = structre.getWidth() / 10;
 
-        notesAdded = false;
-        postInvalidate();
+        if (structre.getWidth() < horizontalOffset + middleOfCircles.get(middleOfCircles.size() - 1).getX())
+        {
+            return false;
+        }
+        else
+        {
+            notesAdded = false;
+            postInvalidate();
+
+            return true;
+        }
+
     }
 
     /**

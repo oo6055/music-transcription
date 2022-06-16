@@ -1,5 +1,4 @@
 import socket
-import sys
 import os
 import pyrebase
 import torch
@@ -25,6 +24,12 @@ storge = firebase.storage()
 
 
 def string_to_notes(string, file_name):
+    """
+    this function convertes string to pdf file and put him in the firebase
+    :param string: the string of notes
+    :param file_name: the file name
+    :return: none
+    """
     music_stream = music21.stream.Stream()
     print(string.split(" "))
 
@@ -43,12 +48,21 @@ def string_to_notes(string, file_name):
 
 
 def get_data_back(file_name = "file.wav"):
+    """
+    this function load the model
+    :param file_name: the audio file name
+    :return: a string of model transcript
+    """
     model2 = torch.jit.load('waveformToString.ptl')
     waveform, _ = torchaudio.load(file_name)
     return model2(waveform)
 
 
 def start_server():
+    """
+    this func starts the server
+    :return: none
+    """
     # Create a TCP/IP socket
     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
@@ -88,8 +102,11 @@ def start_server():
 
 
 def add_section(connection):
-
-
+    """
+    this func get a section from the client
+    :param connection: the socket transcript it and send to the firebase.
+    :return: none
+    """
     con = connection.recv(4)
     data = b''
     while con.decode() == 'true':
@@ -109,8 +126,9 @@ def add_section(connection):
         # create wav file
         if (os.path.isfile("file.wav")):
             os.remove("file.wav")
+        # convert file.3gp to file.wav
         os.system('ffmpeg -i file.3gp file.wav')
-        databack = get_data_back()
+        databack = get_data_back("file.wav")
         print(databack)
 
         string_to_notes(databack, name_of_file)
@@ -121,12 +139,11 @@ def add_section(connection):
     else:
         print('no more data from celint')
 
-
-def file_to_wav():
-    os.system('ffmpeg -i file.3gp file.wav')
-
-
 def main():
+    """
+    this main function
+    :return: none
+    """
     start_server()
 
 if __name__ == "__main__":

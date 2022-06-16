@@ -6,6 +6,7 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.TextUtils;
@@ -68,8 +69,10 @@ public class SignInActivity extends AppCompatActivity {
         mPhone = findViewById(R.id.phone);
 
         progressBar = findViewById(R.id.progressBar);
+        SharedPreferences prefs = this.getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
+        Boolean wantToBeConnected = prefs.getBoolean("stayConnect", false);
 
-        if (mAuth.getCurrentUser() != null) {
+        if (mAuth.getCurrentUser() != null &&  wantToBeConnected) {
             finish();
             Intent i = new Intent(getApplicationContext(), ShowMySections.class);
             startActivity(i);

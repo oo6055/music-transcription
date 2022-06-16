@@ -69,12 +69,6 @@ public class ShowAllValidSections extends AppCompatActivity {
         ls.setOnCreateContextMenuListener(this);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        sectionsList = new ArrayList<Section>();
-        getAllPublicSections();
-    }
 
     /**
      * get the the public sections
@@ -116,6 +110,7 @@ public class ShowAllValidSections extends AppCompatActivity {
                     if (item.getTitle().equals("show my sections")) {
                         Intent si = new Intent(ShowAllValidSections.this, ShowMySections.class);
                         startActivity(si);
+                        finish();
                     }
                     return false;
                 }
@@ -283,5 +278,4 @@ public class ShowAllValidSections extends AppCompatActivity {
 
         return  true;
     }
-
 }

@@ -4,5 +4,8 @@
     <item
         android:title="signout"
         />
+    <item
+        android:title="credits"
+        />
 
 </menu>

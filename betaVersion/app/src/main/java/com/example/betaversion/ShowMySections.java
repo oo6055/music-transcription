@@ -95,8 +95,6 @@ import com.google.firebase.storage.StorageReference;
 
          btnnav.setOnNavigationItemSelectedListener(bottomNavMethod);
 
-         sectionsList = new ArrayList<Section>();
-
          addfab.setOnClickListener(new View.OnClickListener() {
              @Override
              public void onClick(View view) {
@@ -111,13 +109,6 @@ import com.google.firebase.storage.StorageReference;
          ls.setOnCreateContextMenuListener(this);
      }
 
-     @Override
-     protected void onResume() {
-         super.onResume();
-         sectionsList = new ArrayList<Section>();
-         getUserSections();
-     }
-
      private BottomNavigationView.OnNavigationItemSelectedListener bottomNavMethod = new
              BottomNavigationView.OnNavigationItemSelectedListener() {
                  @Override
@@ -125,6 +116,7 @@ import com.google.firebase.storage.StorageReference;
                      if (item.getTitle().equals("search sections")) {
                          Intent si = new Intent(ShowMySections.this, ShowAllValidSections.class);
                          startActivity(si);
+                         finish();
                      }
                      return false;
                  }
@@ -297,12 +289,13 @@ import com.google.firebase.storage.StorageReference;
             }
         });
 
+
         FBref.FBDB.getReference().child("Private Sections").child(FBref.mAuth.getUid())
                 .addListenerForSingleValueEvent(new ValueEventListener() {
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-
+                        sectionsList = new ArrayList<>();
 
                         for(DataSnapshot ds : dataSnapshot.getChildren()) {
                             Section s = ds.getValue(Section.class);
@@ -399,6 +392,13 @@ import com.google.firebase.storage.StorageReference;
              FBref.mAuth.signOut();
              si = new Intent(this, SignInActivity.class);
              startActivity(si);
+         }
+         else if(whatClicked.equals("credits"))
+         {
+             FBref.mAuth.signOut();
+             si = new Intent(this, Credits.class);
+             startActivity(si);
+
          }
 
          return  true;

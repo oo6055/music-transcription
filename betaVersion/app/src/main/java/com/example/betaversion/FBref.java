@@ -30,5 +30,4 @@ public class FBref {
      * The files.
      */
     public static StorageReference filesRef = storage.getReference("files");
-
 }

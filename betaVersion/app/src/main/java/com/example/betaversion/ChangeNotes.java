@@ -21,6 +21,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
+
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -37,10 +39,12 @@ public class ChangeNotes extends AppCompatActivity {
      * the section that is running
      */
     Section curr;
+
+    int lastTouchMusicView = -1;
     /**
      * the viewer that I wrote
      */
-    MusicNotesView musicNotesView;
+    MusicNotesView[] arrOfMusicNotesViewr;
     /**
      * what is the privacy
      */
@@ -73,8 +77,7 @@ public class ChangeNotes extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_change_notes);
-
-        musicNotesView = (MusicNotesView) findViewById(R.id.musicNotesView);
+        arrOfMusicNotesViewr = new MusicNotesView[]{findViewById(R.id.musicNotesView), findViewById(R.id.musicNotesView2), findViewById(R.id.musicNotesView3), findViewById(R.id.musicNotesView4)};
 
         // get data from intent (abount the section)
         Intent gi = getIntent();
@@ -98,7 +101,7 @@ public class ChangeNotes extends AppCompatActivity {
                 }
 
                 // set the viewer
-                musicNotesView.setNotes(curr.NodeGetComposition());
+                setViewOfMusicNotesViewer(curr.NodeGetComposition());
             }
 
             @Override
@@ -109,6 +112,28 @@ public class ChangeNotes extends AppCompatActivity {
         });
     }
 
+    private void setViewOfMusicNotesViewer(Node<Note> musicNodes) {
+        int currentIndex = 0;
+        while (musicNodes != null)
+        {
+            if (arrOfMusicNotesViewr[currentIndex].addNote(musicNodes.getElement().getName()))
+            {
+                musicNodes = musicNodes.getNext();
+            }
+            else
+            {
+                currentIndex++;
+                if (currentIndex > arrOfMusicNotesViewr.length)
+                {
+                    Toast.makeText(ChangeNotes.this, "full place!", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+        }
+
+
+    }
+
     /**
      * Save notes.
      *
@@ -116,7 +141,8 @@ public class ChangeNotes extends AppCompatActivity {
      */
     public void saveNotes(View view) {
         // set the composition
-        Node<Note> theNotes = musicNotesView.getSection();
+
+        Node<Note> theNotes = getAllNotes();
         curr.setComposition(theNotes.toArraylist());
 
         String notes = "";
@@ -143,7 +169,8 @@ public class ChangeNotes extends AppCompatActivity {
 
                             curr.setUid(FBref.mAuth.getUid());
                             curr.setPublicOrPrivate(true);
-                            curr.setDate((new Date()).toString());
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                            curr.setDate(formatter.format(new Date()).toString());
                             FBref.FBDB.getReference().child("Public Sections").child(FBref.mAuth.getUid()).push().setValue(curr);
                         }
                     })
@@ -154,7 +181,8 @@ public class ChangeNotes extends AppCompatActivity {
                         public void onClick(DialogInterface dialog, int id) {
                             dialog.cancel();
                             curr.setUid(FBref.mAuth.getUid());
-                            curr.setDate((new Date()).toString());
+                            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+                            curr.setDate(formatter.format(new Date()).toString());
                             curr.setPublicOrPrivate(false);
                             FBref.FBDB.getReference().child("Private Sections").child(FBref.mAuth.getUid()).push().setValue(curr);
                         }
@@ -172,13 +200,42 @@ public class ChangeNotes extends AppCompatActivity {
         Toast.makeText(this, notes, Toast.LENGTH_SHORT).show();
     }
 
+    private Node<Note> getAllNotes() {
+        Node<Note> head = arrOfMusicNotesViewr[0].getSection();
+        Node<Note> ptr = getLast(head);
+        for (int i = 1; i < arrOfMusicNotesViewr.length; i++)
+        {
+            Node<Note> nodeHead = arrOfMusicNotesViewr[i].getSection();
+            ptr.setNext(nodeHead);
+            ptr = getLast(nodeHead);
+
+        }
+        return head;
+    }
+
+    private Node<Note> getLast(Node<Note> head) {
+        if (head == null)
+        {
+            return head;
+        }
+        while(head.getNext() != null)
+        {
+            head = head.getNext();
+        }
+        return head;
+    }
+
     /**
      * Add note.
      *
      * @param view the view
      */
     public void addNote(View view) {
-        musicNotesView.addNote("c4");
+        int index = 0;
+        while(index < arrOfMusicNotesViewr.length && !arrOfMusicNotesViewr[index].addNote("c4"))
+        {
+            index++;
+        }
 
     }
 
@@ -188,7 +245,10 @@ public class ChangeNotes extends AppCompatActivity {
      * @param view the view
      */
     public void addBamol(View view) {
-        musicNotesView.addBamol();
+        if (lastTouchMusicView != -1)
+        {
+            arrOfMusicNotesViewr[lastTouchMusicView].addBamol();
+        }
     }
 
     /**
@@ -197,7 +257,10 @@ public class ChangeNotes extends AppCompatActivity {
      * @param view the view
      */
     public void addDiaz(View view) {
-        musicNotesView.addDiaz();
+        if (lastTouchMusicView != -1)
+        {
+            arrOfMusicNotesViewr[lastTouchMusicView].addDiaz();
+        }
     }
 
     /**
@@ -216,9 +279,16 @@ public class ChangeNotes extends AppCompatActivity {
                     handler.post(new Runnable() {
 
                         public void run() {
+                            if ((curr.getComposition()) != null)
+                            {
+                                genTone(curr.getComposition());
+                                playSound();
+                            }
+                            else
+                            {
+                                curr.setComposition(new ArrayList<>());
+                            }
 
-                            genTone(curr.getComposition());
-                            playSound();
                         }
                     });
 
@@ -302,6 +372,15 @@ public class ChangeNotes extends AppCompatActivity {
      * @param view the view
      */
     public void removeNote(View view) {
-        musicNotesView.removeNote();
+        int index = arrOfMusicNotesViewr.length - 1;
+        while(index >= 0)
+        {
+            if(arrOfMusicNotesViewr[index].getSection() != null)
+            {
+                arrOfMusicNotesViewr[index].removeNote();
+            }
+
+            index--;
+        }
     }
 }
