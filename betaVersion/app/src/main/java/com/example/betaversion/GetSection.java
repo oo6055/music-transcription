@@ -386,20 +386,30 @@ public class GetSection extends AppCompatActivity {
             return;
         }
 
-        // upload the file
-        if (!recordFile.isEmpty())
+
+        if (recordFile == null)
         {
-            file = Uri.fromFile(new File(recordPath + "/" + recordFile));
+            Toast.makeText(GetSection.this, "please eneter a section", Toast.LENGTH_SHORT).show();
         }
         else
         {
-            file = Uri.fromFile(new File(recordFile));
+            // upload the file
+            if (!recordFile.isEmpty())
+            {
+                file = Uri.fromFile(new File(recordPath + "/" + recordFile));
+            }
+            else
+            {
+                file = Uri.fromFile(new File(recordFile));
+            }
+
+            File fileOfAudio = new File(recordPath + "/" + recordFile);
+            // Get the size of the file
+            InputStream in = new FileInputStream(fileOfAudio);
+            sendMessage(in);
         }
 
-        File fileOfAudio = new File(recordPath + "/" + recordFile);
-        // Get the size of the file
-        InputStream in = new FileInputStream(fileOfAudio);
-        sendMessage(in);
+
     }
 
     /**

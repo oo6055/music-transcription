@@ -32,28 +32,28 @@
                 <com.example.betaversion.MusicNotesView
                     android:id="@+id/musicNotesView"
                     android:layout_width="match_parent"
-                    android:layout_height="400px"
+                    android:layout_height="500px"
                     android:layout_weight="1"
                     android:background="#FFFFFF" />
 
                 <com.example.betaversion.MusicNotesView
                     android:id="@+id/musicNotesView2"
                     android:layout_width="match_parent"
-                    android:layout_height="400px"
+                    android:layout_height="500px"
                     android:layout_weight="1"
                     android:background="#FFFFFF" />
 
                 <com.example.betaversion.MusicNotesView
                     android:id="@+id/musicNotesView3"
                     android:layout_width="match_parent"
-                    android:layout_height="400px"
+                    android:layout_height="500px"
                     android:layout_weight="1"
                     android:background="#FFFFFF" />
 
                 <com.example.betaversion.MusicNotesView
                     android:id="@+id/musicNotesView4"
                     android:layout_width="match_parent"
-                    android:layout_height="400px"
+                    android:layout_height="500px"
                     android:layout_weight="1"
                     android:background="#FFFFFF" />
             </LinearLayout>

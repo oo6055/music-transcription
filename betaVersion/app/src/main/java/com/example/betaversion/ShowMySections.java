@@ -109,6 +109,12 @@ import com.google.firebase.storage.StorageReference;
          ls.setOnCreateContextMenuListener(this);
      }
 
+     @Override
+     protected void onResume() {
+         super.onResume();
+         getUserSections();
+     }
+
      private BottomNavigationView.OnNavigationItemSelectedListener bottomNavMethod = new
              BottomNavigationView.OnNavigationItemSelectedListener() {
                  @Override
@@ -257,6 +263,7 @@ import com.google.firebase.storage.StorageReference;
                      for (DataSnapshot appleSnapshot: dataSnapshot.getChildren()) {
                          appleSnapshot.getRef().removeValue();
                      }
+                     getUserSections();
                  }
 
                  @Override

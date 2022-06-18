@@ -12,6 +12,7 @@ import android.media.AudioManager;
 import android.media.AudioTrack;
 import android.os.Bundle;
 import android.os.Handler;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Toast;
 
@@ -25,6 +26,7 @@ import com.google.firebase.database.ValueEventListener;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * The Change notes activity.
@@ -79,6 +81,43 @@ public class ChangeNotes extends AppCompatActivity {
         setContentView(R.layout.activity_change_notes);
         arrOfMusicNotesViewr = new MusicNotesView[]{findViewById(R.id.musicNotesView), findViewById(R.id.musicNotesView2), findViewById(R.id.musicNotesView3), findViewById(R.id.musicNotesView4)};
 
+        arrOfMusicNotesViewr[0].setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                lastTouchMusicView = 0;
+                arrOfMusicNotesViewr[0].onTouchEvent(event);
+                return true;
+            }
+        });
+        arrOfMusicNotesViewr[1].setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                lastTouchMusicView = 1;
+                arrOfMusicNotesViewr[1].onTouchEvent(event);
+
+
+                return true;
+            }
+        });
+        arrOfMusicNotesViewr[3].setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                lastTouchMusicView = 3;
+                arrOfMusicNotesViewr[3].onTouchEvent(event);
+                return true;
+            }
+        });
+        arrOfMusicNotesViewr[2].setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                lastTouchMusicView = 2;
+                arrOfMusicNotesViewr[2].onTouchEvent(event);
+                return true;
+            }
+        });
+
+
+
         // get data from intent (abount the section)
         Intent gi = getIntent();
         String name = gi.getStringExtra("fileName");
@@ -92,7 +131,6 @@ public class ChangeNotes extends AppCompatActivity {
 
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 // get the path of the section (for the update)
                 address = dataSnapshot.getKey();
                 for (DataSnapshot sec : dataSnapshot.getChildren())
@@ -114,24 +152,33 @@ public class ChangeNotes extends AppCompatActivity {
 
     private void setViewOfMusicNotesViewer(Node<Note> musicNodes) {
         int currentIndex = 0;
+        zeroViewer();
         while (musicNodes != null)
         {
-            if (arrOfMusicNotesViewr[currentIndex].addNote(musicNodes.getElement().getName()))
+            if (arrOfMusicNotesViewr[currentIndex].addNote(musicNodes.getElement().getName().toLowerCase()))
             {
                 musicNodes = musicNodes.getNext();
             }
             else
             {
                 currentIndex++;
-                if (currentIndex > arrOfMusicNotesViewr.length)
+                if (currentIndex == arrOfMusicNotesViewr.length)
                 {
                     Toast.makeText(ChangeNotes.this, "full place!", Toast.LENGTH_SHORT).show();
+                    break;
                 }
             }
 
         }
 
 
+    }
+
+    private void zeroViewer() {
+        for (int i = 0; i < arrOfMusicNotesViewr.length; i ++)
+        {
+            arrOfMusicNotesViewr[i].setNotes(null);
+        }
     }
 
     /**
@@ -195,7 +242,8 @@ public class ChangeNotes extends AppCompatActivity {
         }
         else // if the user created the section
         {
-            curr.setDate((new Date()).toString());
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
+            curr.setDate(formatter.format(new Date()).toString());
             FBref.FBDB.getReference().child(privacy).child(uid).child(address).setValue(curr);
         }
 
@@ -209,8 +257,15 @@ public class ChangeNotes extends AppCompatActivity {
         for (int i = 1; i < arrOfMusicNotesViewr.length; i++)
         {
             Node<Note> nodeHead = arrOfMusicNotesViewr[i].getSection();
-            ptr.setNext(nodeHead);
-            ptr = getLast(nodeHead);
+            if (nodeHead.getElement() == null)
+            {
+            }
+            else
+            {
+                ptr.setNext(nodeHead);
+                ptr = getLast(nodeHead);
+            }
+
 
         }
         return head;
@@ -235,7 +290,7 @@ public class ChangeNotes extends AppCompatActivity {
      */
     public void addNote(View view) {
         int index = 0;
-        while(index < arrOfMusicNotesViewr.length && !arrOfMusicNotesViewr[index].addNote("c4"))
+        while((index < arrOfMusicNotesViewr.length) && !arrOfMusicNotesViewr[index].addNote("c4"))
         {
             index++;
         }
@@ -375,15 +430,27 @@ public class ChangeNotes extends AppCompatActivity {
      * @param view the view
      */
     public void removeNote(View view) {
-        int index = arrOfMusicNotesViewr.length - 1;
-        while(index >= 0)
-        {
-            if(arrOfMusicNotesViewr[index].getSection() != null)
-            {
-                arrOfMusicNotesViewr[index].removeNote();
-            }
+    if (lastTouchMusicView != -1)
+    {
+        arrOfMusicNotesViewr[lastTouchMusicView].removeNote();
+        setViewOfMusicNotesViewer(getAllNotes());
 
-            index--;
+    }
+
+    }
+
+    public void selectTouch(View view) {
+        lastTouchMusicView = findTheIndex(arrOfMusicNotesViewr,view.getId());
+    }
+
+    private int findTheIndex(MusicNotesView[] arrOfMusicNotesViewr, int id) {
+        for (int i = 0; i < arrOfMusicNotesViewr.length; i++)
+        {
+            if (arrOfMusicNotesViewr[i].getId() == id)
+            {
+                return i;
+            }
         }
+        return -1;
     }
 }

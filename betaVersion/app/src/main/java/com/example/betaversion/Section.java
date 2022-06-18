@@ -68,7 +68,15 @@ public class Section {
      */
     public ArrayList<Note> getComposition()
     {
-        return composition.toArraylist();
+        if (composition != null)
+        {
+            return composition.toArraylist();
+        }
+        else
+        {
+            return null;
+        }
+
     }
 
     /**

@@ -486,19 +486,19 @@ public class MusicNotesView extends View {
     protected void onDraw(Canvas canvas) {
         canvas.drawBitmap(structre, 0,0,null);
 
-        if (! notesAdded)
-        {
+        if (! notesAdded) {
             height = structre.getHeight();
 
             addNotes(notes, structre.getWidth(), structre.getHeight());
             notesAdded = true;
+
+
         }
         else
         {
+            height = structre.getHeight();
             notes = convertToSectionOfStrings(getSection().toArraylist());
         }
-
-
         drawCircles(canvas, structre.getHeight());
     }
 
@@ -533,7 +533,7 @@ public class MusicNotesView extends View {
             }
 
         }
-
+        addNotes(notes,structre.getWidth(), structre.getHeight());
         notesAdded = false;
         postInvalidate();
     }
@@ -544,14 +544,15 @@ public class MusicNotesView extends View {
      * @param note the note
      */
     public boolean addNote(String note) {
-        notes.add(note);
         float horizontalOffset = structre.getWidth() / 10;
         float offsetOfTheStart = structre.getWidth() / 6;
 
 
-        if(middleOfCircles.size() == 0)
+        if (middleOfCircles.size() == 0)
         {
-            notesAdded = false;
+            notes.add(note);
+            addNotes(notes, structre.getWidth(), structre.getHeight());
+            notesAdded = true;
             postInvalidate();
 
             return true;
@@ -560,11 +561,14 @@ public class MusicNotesView extends View {
         // if it is get out of bounth
         if ((structre.getWidth() < offsetOfTheStart + horizontalOffset + middleOfCircles.get(middleOfCircles.size() - 1).getX()))
         {
+            postInvalidate();
             return false;
         }
         else
         {
-            notesAdded = false;
+            notes.add(note);
+            addNotes(notes, structre.getWidth(), structre.getHeight());
+            notesAdded = true;
             postInvalidate();
 
             return true;
@@ -579,7 +583,7 @@ public class MusicNotesView extends View {
         if (indexOfLastTouches != -1)
         {
             notes.remove(notes.get(indexOfLastTouches));
-
+            addNotes(notes, structre.getWidth(), structre.getHeight());
             notesAdded = false;
             postInvalidate();
         }
