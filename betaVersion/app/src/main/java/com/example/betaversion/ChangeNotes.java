@@ -23,6 +23,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -132,9 +133,9 @@ public class ChangeNotes extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 // get the path of the section (for the update)
-                address = dataSnapshot.getKey();
                 for (DataSnapshot sec : dataSnapshot.getChildren())
                 {
+                    address = sec.getKey();
                     curr = sec.getValue(Section.class);
                 }
 
@@ -337,16 +338,12 @@ public class ChangeNotes extends AppCompatActivity {
                     handler.post(new Runnable() {
 
                         public void run() {
-                            if ((curr.getComposition()) != null)
+                            Node<Note> section = getAllNotes();
+                            if (section != null)
                             {
-                                genTone(curr.getComposition());
+                                genTone(section.toArraylist());
                                 playSound();
                             }
-                            else
-                            {
-                                curr.setComposition(new ArrayList<>());
-                            }
-
                         }
                     });
 
@@ -430,27 +427,11 @@ public class ChangeNotes extends AppCompatActivity {
      * @param view the view
      */
     public void removeNote(View view) {
-    if (lastTouchMusicView != -1)
-    {
-        arrOfMusicNotesViewr[lastTouchMusicView].removeNote();
-        setViewOfMusicNotesViewer(getAllNotes());
-
-    }
-
-    }
-
-    public void selectTouch(View view) {
-        lastTouchMusicView = findTheIndex(arrOfMusicNotesViewr,view.getId());
-    }
-
-    private int findTheIndex(MusicNotesView[] arrOfMusicNotesViewr, int id) {
-        for (int i = 0; i < arrOfMusicNotesViewr.length; i++)
+        if (lastTouchMusicView != -1)
         {
-            if (arrOfMusicNotesViewr[i].getId() == id)
-            {
-                return i;
-            }
+            arrOfMusicNotesViewr[lastTouchMusicView].removeNote();
+            setViewOfMusicNotesViewer(getAllNotes());
         }
-        return -1;
+
     }
 }

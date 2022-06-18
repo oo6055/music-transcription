@@ -26,6 +26,9 @@ import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.database.DatabaseReference;
 
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 /**
  * this activity is showing my sections
  *
@@ -44,10 +47,7 @@ public class SignInActivity extends AppCompatActivity {
     mEmail, /**
      * The password.
      */
-    mPassword, /**
-     * The phone.
-     */
-    mPhone;
+    mPassword;
     /**
      * The Progress bar.
      */
@@ -62,11 +62,9 @@ public class SignInActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-
         mFullName = findViewById(R.id.fullName);
         mEmail = findViewById(R.id.Email);
         mPassword = findViewById(R.id.password);
-        mPhone = findViewById(R.id.phone);
 
         progressBar = findViewById(R.id.progressBar);
         SharedPreferences prefs = this.getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
@@ -90,7 +88,6 @@ public class SignInActivity extends AppCompatActivity {
         final String email = mEmail.getText().toString().trim();
         String password = mPassword.getText().toString().trim();
         final String fullName = mFullName.getText().toString();
-        final String phone = mPhone.getText().toString();
 
         if (TextUtils.isEmpty(email)) {
             mEmail.setError("Email is Required.");
@@ -107,11 +104,16 @@ public class SignInActivity extends AppCompatActivity {
             return;
         }
 
+        if (password.length() < 6) {
+            mPassword.setError("Password Must be >= 6 Characters");
+            return;
+        }
+
         progressBar.setVisibility(View.VISIBLE);
 
         // register the user in firebase
 
-        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.createUserWithEmailAndPassword (email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {

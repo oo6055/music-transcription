@@ -83,8 +83,9 @@ public class ShowAllValidSections extends AppCompatActivity {
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-
+                        sectionsList = new ArrayList<>();
                         for(DataSnapshot ds : dataSnapshot.getChildren()) {
+
                             for (DataSnapshot sc : ds.getChildren())
                             {
                                 Section s = sc.getValue(Section.class);
@@ -116,6 +117,12 @@ public class ShowAllValidSections extends AppCompatActivity {
                     return false;
                 }
             };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getAllPublicSections();
+    }
 
     /**
      * onCreateContextMenu
@@ -213,6 +220,7 @@ public class ShowAllValidSections extends AppCompatActivity {
                             appleSnapshot.getRef().removeValue();
                             Toast.makeText(ShowAllValidSections.this, "deleted", Toast.LENGTH_SHORT).show();
                         }
+                        getAllPublicSections();
                     }
 
                     @Override

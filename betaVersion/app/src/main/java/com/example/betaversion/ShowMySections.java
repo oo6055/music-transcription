@@ -25,6 +25,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -59,7 +61,10 @@ import com.google.firebase.storage.StorageReference;
      /**
       * The Sections list.
       */
-     ArrayList<Section> sectionsList;
+     ArrayList<Section> allSectionsList;
+
+     ArrayList<Section> publicSectionList;
+     ArrayList<Section> privateSectionList;
      /**
       * The navigation bottom.
       */
@@ -208,20 +213,22 @@ import com.google.firebase.storage.StorageReference;
          AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
          int i = info.position;
          Intent si;
+         allSectionsList = (ArrayList<Section>) privateSectionList.clone();
+         allSectionsList.addAll(publicSectionList);
 
 
          if (op.equals("play section"))
          {
              si = new Intent(this,PlaySection.class);
-             si.putExtra("fileName",sectionsList.get(i).getNameOfFile());
-             si.putExtra("nickname",sectionsList.get(i).getNickName());
+             si.putExtra("fileName",allSectionsList.get(i).getNameOfFile());
+             si.putExtra("nickname",allSectionsList.get(i).getNickName());
 
              startActivity(si);
 
          }
          else if (op.equals("get transcript"))
          {
-             String pathInFireBase = sectionsList.get(i).getNameOfFile();
+             String pathInFireBase = allSectionsList.get(i).getNameOfFile();
              pathInFireBase = pathInFireBase.substring(0,pathInFireBase.indexOf(".")) + ".pdf";
              StorageReference pdfRef = FBref.filesRef.child("/" + pathInFireBase);
              pdfRef.getDownloadUrl().addOnSuccessListener(new OnSuccessListener<Uri>() {
@@ -244,9 +251,9 @@ import com.google.firebase.storage.StorageReference;
          else if (op.equals("change section"))
          {
              si = new Intent(this,ChangeNotes.class);
-             si.putExtra("fileName",sectionsList.get(i).getNameOfFile());
-             si.putExtra("privacy",sectionsList.get(i).getPublicOrPrivate());
-             si.putExtra("uid",sectionsList.get(i).getUid());
+             si.putExtra("fileName",allSectionsList.get(i).getNameOfFile());
+             si.putExtra("privacy",allSectionsList.get(i).getPublicOrPrivate());
+             si.putExtra("uid",allSectionsList.get(i).getUid());
 
 
 
@@ -255,7 +262,7 @@ import com.google.firebase.storage.StorageReference;
          else if (op.equals("delete section"))
          {
              DatabaseReference ref = FirebaseDatabase.getInstance().getReference();
-             Query deleteQuery = ref.child(sectionsList.get(i).getPublicOrPrivate() ? "Public Sections" : "Private Sections").child(sectionsList.get(i).getUid()).orderByChild("date").equalTo(sectionsList.get(i).getDate());
+             Query deleteQuery = ref.child(allSectionsList.get(i).getPublicOrPrivate() ? "Public Sections" : "Private Sections").child(allSectionsList.get(i).getUid()).orderByChild("date").equalTo(allSectionsList.get(i).getDate());
 
              deleteQuery.addListenerForSingleValueEvent(new ValueEventListener() {
                  @Override
@@ -302,11 +309,11 @@ import com.google.firebase.storage.StorageReference;
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
-                        sectionsList = new ArrayList<>();
+                        privateSectionList = new ArrayList<>();
 
                         for(DataSnapshot ds : dataSnapshot.getChildren()) {
                             Section s = ds.getValue(Section.class);
-                            sectionsList.add(s);
+                            privateSectionList.add(s);
                         }
 
                         getPublicSections();
@@ -330,13 +337,15 @@ import com.google.firebase.storage.StorageReference;
 
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        publicSectionList = new ArrayList<Section>();
 
                         for(DataSnapshot ds : dataSnapshot.getChildren()) {
                             Section s = ds.getValue(Section.class);
-                            sectionsList.add(s);
+                            publicSectionList.add(s);
                         }
-
-                        updateListView(sectionsList);
+                        allSectionsList = (ArrayList<Section>) privateSectionList.clone();
+                        allSectionsList.addAll(publicSectionList);
+                        updateListView(allSectionsList);
                     }
 
                     @Override
