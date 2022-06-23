@@ -47,24 +47,25 @@ public class SignInActivity extends AppCompatActivity {
     mEmail, /**
      * The password.
      */
-    mPassword;
+    mPassword, /**
+     * The phone.
+     */
+    mPhone;
     /**
      * The Progress bar.
      */
     ProgressBar progressBar;
-    /**
-     * The User id.
-     */
-    String userID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
+
         mFullName = findViewById(R.id.fullName);
         mEmail = findViewById(R.id.Email);
         mPassword = findViewById(R.id.password);
+        mPhone = findViewById(R.id.phone);
 
         progressBar = findViewById(R.id.progressBar);
         SharedPreferences prefs = this.getSharedPreferences("PREFS_NAME", MODE_PRIVATE);
@@ -79,6 +80,23 @@ public class SignInActivity extends AppCompatActivity {
     }
 
     /**
+     * check if phone is valid
+     *
+     * @param s the number of phone
+     */
+    public static boolean isValid(String s)
+    {
+
+        Pattern p = Pattern.compile(
+                "^(\\+\\d{1,3}( )?)?((\\(\\d{1,3}\\))|\\d{1,3})[- .]?\\d{3,4}[- .]?\\d{4}$");
+
+        Matcher m = p.matcher(s);
+
+        // Returns boolean value
+        return (m.matches());
+    }
+
+    /**
      * Register to the system
      *
      * @param view the view
@@ -88,6 +106,7 @@ public class SignInActivity extends AppCompatActivity {
         final String email = mEmail.getText().toString().trim();
         String password = mPassword.getText().toString().trim();
         final String fullName = mFullName.getText().toString();
+        String phone = mPhone.getText().toString().trim();
 
         if (TextUtils.isEmpty(email)) {
             mEmail.setError("Email is Required.");
@@ -108,37 +127,31 @@ public class SignInActivity extends AppCompatActivity {
             mPassword.setError("Password Must be >= 6 Characters");
             return;
         }
+        if (!isValid(phone)) {
+            mPhone.setError("invalid phone number!");
+            return;
+        }
+
 
         progressBar.setVisibility(View.VISIBLE);
 
         // register the user in firebase
 
-        mAuth.createUserWithEmailAndPassword (email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+        mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(new OnCompleteListener<AuthResult>() {
             @Override
             public void onComplete(@NonNull Task<AuthResult> task) {
                 if (task.isSuccessful()) {
 
                     // send verification link
 
-                    FirebaseUser fuser = mAuth.getCurrentUser();
-                    fuser.sendEmailVerification().addOnSuccessListener(new OnSuccessListener<Void>() {
-                        @Override
-                        public void onSuccess(Void aVoid) {
-                            DatabaseReference usersRef = FBref.FBDB.getReference().child("Users");
-                            usersRef.child(mAuth.getUid()).setValue(fullName);
-                            Intent i = new Intent(getApplicationContext(), ShowMySections.class);
-                            startActivity(i);
-
-
-                        }
-                    }).addOnFailureListener(new OnFailureListener() {
-                        @Override
-                        public void onFailure(@NonNull Exception e) {
-                        }
-                    });
+                    DatabaseReference usersRef = FBref.FBDB.getReference().child("Users");
+                    usersRef.child(mAuth.getUid()).setValue(fullName);
+                    usersRef.child(mAuth.getUid() + " phone").setValue(mPhone.getText().toString());
+                    Intent i = new Intent(getApplicationContext(), ShowMySections.class);
+                    startActivity(i);
 
                     Toast.makeText(SignInActivity.this, "User Created.", Toast.LENGTH_SHORT).show();
-                    userID = mAuth.getCurrentUser().getUid();
+                    finish();
 
                 } else {
                     Toast.makeText(SignInActivity.this, "Error ! " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -155,6 +168,7 @@ public class SignInActivity extends AppCompatActivity {
      */
     public void moveToLogIn(View view) {
         startActivity(new Intent(getApplicationContext(), LogInActivity.class));
+        finish();
 
     }
 }

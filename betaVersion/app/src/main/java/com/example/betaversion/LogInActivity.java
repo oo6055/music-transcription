@@ -91,6 +91,17 @@ public class LogInActivity extends AppCompatActivity {
         email = eTemail.getText().toString();
         password = eTpass.getText().toString();
 
+        if (email.isEmpty())
+        {
+            eTemail.setError("please enter an email");
+            return;
+        }
+        if (password.isEmpty())
+        {
+            eTpass.setError("please enter your password");
+            return;
+        }
+
         final ProgressDialog pd = ProgressDialog.show(this, "Login", "Connecting...", true);
         FBref.mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -105,6 +116,7 @@ public class LogInActivity extends AppCompatActivity {
                             Toast.makeText(LogInActivity.this, "Login Success", Toast.LENGTH_SHORT).show();
                             Intent si = new Intent(LogInActivity.this, ShowMySections.class);
                             startActivity(si);
+                            finish();
                         } else {
                             Log.d("MainActivity", "signinUserWithEmail:fail");
                             Toast.makeText(LogInActivity.this, "e-mail or password are wrong!", Toast.LENGTH_LONG).show();
